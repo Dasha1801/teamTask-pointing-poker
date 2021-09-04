@@ -6,7 +6,7 @@ import  rssLogo  from '../../../shared/assets/icons/rs-school-logo.svg';
 
 const Footer = ():JSX.Element => {
   return (
-    <footer className={styles.footer} data-testid='footer'>
+    <footer className={styles.footer}>
       <div className={styles.container}>
       <img src={logoGithub} className={styles.github} alt='logo github' />
       <ul className={styles.team}>
