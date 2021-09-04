@@ -1,0 +1,47 @@
+.footer {
+  background-color: var(--bg-blue);
+  display: flex;
+  padding: 0.3% 1%;
+  justify-content: space-between;
+
+
+  .rssLogo {
+    max-height: 50px;
+    display: flex;
+    color: white;
+    font-size: 21px;
+    font-weight: bold;
+    text-decoration: none;
+    align-items: center;
+  }
+
+  .rss {
+    height: 40px;
+    width: 100px;
+  }
+
+  .github {
+    max-width: 45px;
+    max-height: 45px;
+  }
+
+  .team {
+    list-style-type: none;
+    font-size: 12px;
+    text-align: start;
+    align-self: center;
+    width: 130px;
+    padding-left: 2%;
+    margin: 0;
+    line-height: 14px;
+  }
+
+  .member {
+    text-decoration: none;
+    color: gainsboro;
+  }
+
+  .container {
+    display: flex;
+  }
+}
