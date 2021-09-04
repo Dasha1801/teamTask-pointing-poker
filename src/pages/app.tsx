@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { appActions } from '../redux/slices/app/app-slice';
 import { appSelectors } from '../redux/selectors';
-import { Header } from './shared/header/header';
+import Header from './shared/header/header';
 
 function App(): JSX.Element {
   const dispatch = useDispatch();
