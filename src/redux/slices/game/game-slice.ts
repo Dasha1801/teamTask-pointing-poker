@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { gameReducers } from '../../reducers';
 import { Game } from '../../types';
 
-const initialState = new Game();
+export const initialState = new Game().toObject();
 
 export const gameSlice = createSlice({
   name: 'game',

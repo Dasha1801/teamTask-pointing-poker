@@ -1,59 +1,41 @@
-import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import { CaseReducer, PayloadAction, AnyAction } from '@reduxjs/toolkit';
 import {
   IGame,
-  IGameSettings,
   IIssue,
-  IIssueScorePayload,
   IIssueUpdatePayload,
   IMessage,
   IUser,
   TGameStatus,
-} from './types';
-import { IApp } from './types/app';
+  Game,
+  IIssueScorePayload,
+} from '../types';
 
 const changeId: CaseReducer<IGame, PayloadAction<string>> = (state, action) => {
   state.id = action.payload;
 };
 
-const changeUserId: CaseReducer<IGame, PayloadAction<string>> = (
-  state,
-  action
-) => {
-  state.userId = action.payload;
+const resetGame: CaseReducer<IGame, AnyAction> = (state) => {
+  Object.assign(state, new Game({ status: TGameStatus.inactive }).toObject());
 };
-const changeDealerId: CaseReducer<IGame, PayloadAction<string>> = (
-  state,
-  action
-) => {
-  state.dealerId = action.payload;
-};
+
 const changeCurrentIssueId: CaseReducer<IGame, PayloadAction<string>> = (
   state,
   action
 ) => {
   state.currentIssueId = action.payload;
 };
-const changeSettings: CaseReducer<IGame, PayloadAction<IGameSettings>> = (
-  state,
-  action
-) => {
-  state.settings = action.payload;
-};
+
 const changeStatus: CaseReducer<IGame, PayloadAction<TGameStatus>> = (
   state,
   action
 ) => {
   state.status = action.payload;
 };
-const changeCurrentRoundResults: CaseReducer<
-  IGame,
-  PayloadAction<IIssueScorePayload>
-> = (state, action) => {
-  state.currentRoundResults[action.payload.issueId] = action.payload.score;
-};
+
 const addPlayer: CaseReducer<IGame, PayloadAction<IUser>> = (state, action) => {
   state.players.push(action.payload);
 };
+
 const deletePlayer: CaseReducer<IGame, PayloadAction<string>> = (
   state,
   action
@@ -62,15 +44,37 @@ const deletePlayer: CaseReducer<IGame, PayloadAction<string>> = (
     (player) => player.id !== action.payload
   );
 };
+
 const postMessage: CaseReducer<IGame, PayloadAction<IMessage>> = (
   state,
   action
 ) => {
   state.messages.push(action.payload);
 };
-const addIssue: CaseReducer<IGame, PayloadAction<IIssue>> = (state, action) => {
+
+const createIssue: CaseReducer<IGame, PayloadAction<IIssue>> = (
+  state,
+  action
+) => {
   state.issues.push(action.payload);
 };
+
+const scoreIssue: CaseReducer<IGame, PayloadAction<IIssueScorePayload>> = (
+  state,
+  action
+) => {
+  const issueIndex = state.issues.findIndex(
+    (issue) => issue.id === action.payload.issueId
+  );
+  const scoredIssue = state.issues[issueIndex];
+  const updatedRoundResult = {
+    ...scoredIssue.lastRoundResult,
+    [action.payload.playerId]: action.payload.score,
+  };
+  const updated = { ...scoredIssue, lastRoundResult: updatedRoundResult };
+  state.issues[issueIndex] = updated;
+};
+
 const updateIssue: CaseReducer<IGame, PayloadAction<IIssueUpdatePayload>> = (
   state,
   action
@@ -78,15 +82,13 @@ const updateIssue: CaseReducer<IGame, PayloadAction<IIssueUpdatePayload>> = (
   const issueIndex = state.issues.findIndex(
     (issue) => issue.id === action.payload.issueId
   );
-  if (issueIndex < 0) {
-    throw Error('Issue not found');
-  }
   const updated = Object.assign(
     { ...state.issues[issueIndex] },
     action.payload.issue
   );
   state.issues[issueIndex] = updated;
 };
+
 const deleteIssue: CaseReducer<IGame, PayloadAction<string>> = (
   state,
   action
@@ -94,29 +96,40 @@ const deleteIssue: CaseReducer<IGame, PayloadAction<string>> = (
   state.issues = state.issues.filter((issue) => issue.id !== action.payload);
 };
 
-export const gameReducers = {
-  changeId,
-  changeUserId,
-  changeDealerId,
-  changeCurrentIssueId,
-  changeSettings,
-  changeStatus,
-  changeCurrentRoundResults,
-  addPlayer,
-  deletePlayer,
-  addIssue,
-  updateIssue,
-  deleteIssue,
-  postMessage,
-};
-
-const changeConnectionStatus: CaseReducer<IApp, PayloadAction<boolean>> = (
+const changeIssues: CaseReducer<IGame, PayloadAction<IIssue[]>> = (
   state,
   action
 ) => {
-  state.isConnected = action.payload;
+  state.issues = action.payload;
 };
 
-export const appReducers = {
-  changeConnectionStatus,
+const changePlayers: CaseReducer<IGame, PayloadAction<IUser[]>> = (
+  state,
+  action
+) => {
+  state.players = action.payload;
+};
+
+const changeMessages: CaseReducer<IGame, PayloadAction<IMessage[]>> = (
+  state,
+  action
+) => {
+  state.messages = action.payload;
+};
+
+export const gameReducers = {
+  changeId,
+  changeCurrentIssueId,
+  changeStatus,
+  addPlayer,
+  deletePlayer,
+  createIssue,
+  updateIssue,
+  deleteIssue,
+  scoreIssue,
+  postMessage,
+  changeIssues,
+  changePlayers,
+  changeMessages,
+  resetGame,
 };
