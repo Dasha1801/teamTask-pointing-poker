@@ -5,6 +5,8 @@ import Button from 'react-bootstrap/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { appActions } from '../redux/slices/app/app-slice';
 import { appSelectors } from '../redux/selectors';
+import Header from './shared/header/header';
+import Footer from './shared/footer/footer';
 
 function App(): JSX.Element {
   const dispatch = useDispatch();
@@ -16,12 +18,14 @@ function App(): JSX.Element {
 
   return (
     <div className={styles.app}>
+      <Header/>
       <Router>
         <Button type="button" onClick={onClick}>
           Test
         </Button>
         <input type="text" value={String(connectionStatus)} />
       </Router>
+      <Footer/>
     </div>
   );
 }
