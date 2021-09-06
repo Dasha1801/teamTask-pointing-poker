@@ -1,5 +1,7 @@
 import { TCardScore } from './card';
 
+export type TRoundResult = Record<string, TCardScore>;
+
 export type TIssueScoreStatistics = { [key in TCardScore]?: number };
 
 export enum TIssuePriority {
@@ -12,35 +14,36 @@ export interface IIssue {
   title: string;
   priority: TIssuePriority;
   link: string;
-  statistics: TIssueScoreStatistics;
+  lastRoundResult: TRoundResult;
 }
 
 type TIssueParameters = Omit<IIssue, 'priority' | 'link'> &
   Partial<Pick<IIssue, 'priority' | 'link'>>;
 
 export class Issue implements IIssue {
-  id: string;
-  title: string;
-  priority: TIssuePriority;
-  link: string;
-  statistics: TIssueScoreStatistics;
+  id = '';
+  title = '';
+  priority = TIssuePriority.medium;
+  link = '';
+  lastRoundResult: TRoundResult = {};
 
-  constructor({
-    id,
-    title,
-    priority = TIssuePriority.medium,
-    link = '',
-    statistics,
-  }: TIssueParameters) {
-    this.id = id;
-    this.title = title;
-    this.priority = priority;
-    this.link = link;
-    this.statistics = statistics;
+  constructor(issueParameters?: Partial<TIssueParameters>) {
+    Object.assign(this, issueParameters);
+  }
+
+  toObject(): IIssue {
+    return {
+      id: this.id,
+      title: this.title,
+      priority: this.priority,
+      link: this.link,
+      lastRoundResult: this.lastRoundResult,
+    };
   }
 }
 
 export interface IIssueScorePayload {
+  playerId: string;
   issueId: string;
   score: TCardScore;
 }
