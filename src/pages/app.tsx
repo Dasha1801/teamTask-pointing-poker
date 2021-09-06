@@ -9,7 +9,6 @@ import Header from './shared/header/header';
 import Footer from './shared/footer/footer';
 
 
-
 function App(): JSX.Element {
   const dispatch = useDispatch();
   const connectionStatus = useSelector(appSelectors.selectConnectionStatus);
