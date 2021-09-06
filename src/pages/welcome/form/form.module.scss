@@ -40,6 +40,10 @@
     width: 55%;
   }
 
+  .wrapperBtnStart {
+    margin-left: 55%;
+  }
+
   .btn {
     background: var(--bg-blue);
     width: 200px;
@@ -116,6 +120,38 @@
 
     .input {
       font-size: 10px;
+    }
+  }
+}
+
+@media (max-width: 490px) {
+  .container {
+    .rootForm {
+      width: 75%;
+    }
+
+    .label1,
+    .label2 {
+      font-size: 1em;
+    }
+
+    .btn {
+      font-size: 9px;
+    }
+
+    .input {
+      font-size: 9px;
+    }
+  }
+}
+
+@media (max-width: 410px) {
+  .container {
+    .rootForm {
+      width: 100%;
+    }
+    .btn {
+      width: 90px;
     }
   }
 }

@@ -11,18 +11,18 @@ const FormWelcome = ():JSX.Element => {
         <img src={logoGame} className={styles.logo} alt='logo game'></img>
       </div>
     <Form className={styles.rootForm} >
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+      <Form.Group className='mb-3'>
         <Form.Label className={styles.label1}>Start your planning:</Form.Label>
-          <Form.Control type="email" placeholder="" className={styles.input} />
-          <Button variant="primary" type="submit" className={styles.btn}>Start new game</Button>
+        <div className={styles.wrapperBtnStart}>
+          <Button type='button' className={styles.btn}>Start new game</Button>
+        </div>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label className={styles.label2}>OR:  </Form.Label>
-          <Form.Control type="email" placeholder="Connect to lobby by URL:" className={styles.input} />
-          <Button variant="primary" type="submit" className={styles.btn}>Connect</Button>
+      <Form.Group className='mb-3'>
+        <Form.Label className={styles.label2}>OR:</Form.Label>
+          <Form.Control type='url' placeholder='Connect to lobby by URL:' className={styles.input} />
+          <Button type='button' className={styles.btn}>Connect</Button>
       </Form.Group>
     </Form>
-
     </div>
   )
 }
