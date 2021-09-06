@@ -29,7 +29,7 @@ const FormWelcome = ():JSX.Element => {
       <div className={styles.wrapperLogo}>
         <img src={logoGame} className={styles.logo} alt='logo game'></img>
       </div>
-    <Form className={styles.rootForm} >
+    <Form className={styles.rootForm}>
       <Form.Group className='mb-3'>
         <Form.Label className={styles.label1}>Start your planning:</Form.Label>
         <div className={styles.wrapperBtnStart}>
@@ -39,7 +39,7 @@ const FormWelcome = ():JSX.Element => {
       <Form.Group className={`mb-3 ${styles.wrapUrl}`}>
         <Form.Label className={styles.label2}>OR:</Form.Label>
           <Form.Control type='url' placeholder='Connect to lobby by URL:' value={url} className={styles.input} onChange={handleChange}/>
-          <Button type='button' className={styles.btn} onClick={testUrl}>Connect</Button>
+          <Button type='button' className={styles.btn} onClick={testUrl} data-testid = 'btn'>Connect</Button>
       </Form.Group>
       <span className={styles.warning}>{warn}</span>
     </Form>

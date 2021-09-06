@@ -7,7 +7,6 @@ import WelcomePage from './welcome/welcome';
 
 
 function App(): JSX.Element {
-
   return (
     <div className={styles.app}>
       <Header/>
