@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { appSlice, appActions } from './app-slice';
-import { IApp } from '../../types/app';
+import { IApp } from '../../types';
 
 describe('app slice', () => {
   const initialState: IApp = { isConnected: false };
@@ -12,15 +12,6 @@ describe('app slice', () => {
   });
 
   test('should handle changeConnectionStatus', () => {
-    expect(
-      appSlice.reducer(undefined, appActions.changeConnectionStatus(true))
-    ).toEqual({
-      ...initialState,
-      isConnected: true,
-    });
-  });
-
-  test('should handle connectAsync', () => {
     expect(
       appSlice.reducer(undefined, appActions.changeConnectionStatus(true))
     ).toEqual({

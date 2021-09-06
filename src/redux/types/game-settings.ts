@@ -1,5 +1,4 @@
 import { TCardType } from './card';
-import { immerable } from 'immer';
 
 export interface ITimer {
   minutes: number;
@@ -7,7 +6,6 @@ export interface ITimer {
 }
 
 export interface IGameSettings {
-  [immerable]: boolean;
   timer?: ITimer;
   cardBackImage?: string;
   canDealerPlay: boolean;
@@ -18,7 +16,6 @@ export interface IGameSettings {
 }
 
 export class GameSettings {
-  [immerable] = true;
   timer?: ITimer;
   cardBackImage?: string;
   canDealerPlay = true;
@@ -26,7 +23,20 @@ export class GameSettings {
   autoFlipCards = true;
   canScoreAfterFlip = false;
   cardType = TCardType.fib;
+
   constructor(settings?: Partial<IGameSettings>) {
     Object.assign(this, settings);
+  }
+
+  toObject(): IGameSettings {
+    return {
+      timer: this.timer,
+      cardBackImage: this.cardBackImage,
+      canDealerPlay: this.canDealerPlay,
+      autoAdmit: this.autoAdmit,
+      autoFlipCards: this.autoFlipCards,
+      canScoreAfterFlip: this.canScoreAfterFlip,
+      cardType: this.cardType,
+    };
   }
 }
