@@ -5,8 +5,7 @@ import { Game } from '../redux/types';
 
 describe('App component', () => {
   test('renders component', () => {
-    const { getByText } = render(<App />);
-    expect(getByText(/test/i));
+    render(<App />);
   });
   test('renders component with custom route', () => {
     render(<App />, {
