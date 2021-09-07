@@ -4,10 +4,12 @@ import logoGame from '../../../shared/assets/icons/logo.svg';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { APP_CONSTANTS } from '../../../shared/constants';
+import { BasePopup } from '../../shared/base-popup/base-popup';
 
 const FormWelcome = (): JSX.Element => {
   const [warn, setWarn] = useState('');
   const [url, setUrl] = useState('');
+  const [isConnect, setConnect] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -15,32 +17,58 @@ const FormWelcome = (): JSX.Element => {
     setWarn('');
   };
 
-  const testUrl = () => {
-    const value = url;
+  const testUrl = (urlToTest: string): boolean => {
     const regexQuery = new RegExp(APP_CONSTANTS.URL_REGEXP);
-    const test = regexQuery.test(value);
+    const test = regexQuery.test(urlToTest);
     if (!test) {
       setWarn('*incorrect URL!');
+      return false;
+    }
+    return true;
+  };
+
+  const handleClickNewGame = () => {
+    console.log('new game');
+  };
+
+  const handleClickConnect = () => {
+    const validUrl = testUrl(url);
+    if (validUrl) {
+      setConnect(true);
     }
   };
 
   return (
     <div className={styles.container}>
+      {isConnect && (
+        <BasePopup
+          heading="Connect to lobby"
+          buttonOkText="Confirm"
+          buttonCancelText="Cancel"
+          buttonCancelProps={{ onClick: () => setConnect(false) }}
+        >
+          New game settings
+        </BasePopup>
+      )}
       <div className={styles.wrapperLogo}>
         <img src={logoGame} className={styles.logo} alt="logo game"></img>
       </div>
       <Form className={styles.rootForm}>
-        <Form.Group className="mb-3">
+        <Form.Group>
           <Form.Label className={styles.label1}>
             Start your planning:
           </Form.Label>
           <div className={styles.wrapperBtnStart}>
-            <Button type="button" className={styles.btn}>
+            <Button
+              type="button"
+              className={styles.btn}
+              onClick={handleClickNewGame}
+            >
               Start new game
             </Button>
           </div>
         </Form.Group>
-        <Form.Group className={`mb-3 ${styles.wrapUrl}`}>
+        <Form.Group className={styles.connection}>
           <Form.Label className={styles.label2}>OR:</Form.Label>
           <Form.Control
             type="url"
@@ -52,13 +80,13 @@ const FormWelcome = (): JSX.Element => {
           <Button
             type="button"
             className={styles.btn}
-            onClick={testUrl}
+            onClick={handleClickConnect}
             data-testid="btn"
           >
             Connect
           </Button>
+          <span className={styles.warning}>{warn}</span>
         </Form.Group>
-        <span className={styles.warning}>{warn}</span>
       </Form>
     </div>
   );

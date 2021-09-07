@@ -1,10 +1,10 @@
 import styles from './base-popup.module.scss';
 import React from 'react';
-import { BaseButton } from '../buttons/base-button/base-button';
+import { BaseButton as BaseButton } from '../buttons/base-button/base-button';
 import { ButtonBlue } from '../buttons/button-blue/button-blue';
 
 interface IBasePopupProps {
-  buttonOkProps?: React.ComponentProps<typeof ButtonBlue>;
+  buttonOkProps?: React.ComponentProps<typeof BaseButton>;
   buttonCancelProps?: React.ComponentProps<typeof BaseButton>;
   buttonOkText?: string;
   buttonCancelText?: string;
@@ -29,30 +29,32 @@ export function BasePopup({
   return (
     <>
       <div className={styles.overlay} />
-      <div className={`${styles.popup} ${popupStyle}`}>
-        {heading && <h2 className={styles.heading}>{heading}</h2>}
-        <div className={styles.content}>{children}</div>
-        <div className={styles.buttons}>
-          {buttonOkText && (
-            <BaseButton
-              {...{
-                ...buttonOkProps,
-                className: buttonOkClass,
-              }}
-            >
-              {buttonOkText}
-            </BaseButton>
-          )}
-          {buttonCancelText && (
-            <ButtonBlue
-              {...{
-                ...buttonCancelProps,
-                className: buttonCancelClass,
-              }}
-            >
-              {buttonCancelText}
-            </ButtonBlue>
-          )}
+      <div className={styles.popupContainer}>
+        <div className={`${styles.popup} ${popupStyle}`}>
+          {heading && <h2 className={styles.heading}>{heading}</h2>}
+          <div className={styles.content}>{children}</div>
+          <div className={styles.buttons}>
+            {buttonOkText && (
+              <ButtonBlue
+                {...{
+                  ...buttonOkProps,
+                  className: buttonOkClass,
+                }}
+              >
+                {buttonOkText}
+              </ButtonBlue>
+            )}
+            {buttonCancelText && (
+              <BaseButton
+                {...{
+                  ...buttonCancelProps,
+                  className: buttonCancelClass,
+                }}
+              >
+                {buttonCancelText}
+              </BaseButton>
+            )}
+          </div>
         </div>
       </div>
     </>
