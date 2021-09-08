@@ -12,7 +12,7 @@ describe('Base pop-up', () => {
     const handleButtonCancel = jest.fn();
     const { getByText } = render(
       <BasePopup
-        heading="heading"
+        headingText="heading"
         buttonOkText="buttonOk"
         buttonCancelText="buttonCancel"
         buttonOkProps={{ onClick: handleButtonOk }}

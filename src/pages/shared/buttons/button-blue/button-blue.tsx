@@ -2,17 +2,17 @@ import styles from './button-blue.module.scss';
 import React from 'react';
 import { BaseButton } from '../base-button/base-button';
 
-export function ButtonBlue({
-  onClick,
-  className,
-  children,
-}: React.ComponentProps<typeof BaseButton>): JSX.Element {
+export function ButtonBlue(
+  props: React.ComponentProps<typeof BaseButton>
+): JSX.Element {
   return (
     <BaseButton
-      className={`${className || ''} ${styles.buttonBlue}`}
-      onClick={onClick}
+      {...{
+        ...props,
+        className: `${props.className} || '' ${styles.buttonBlue}`,
+      }}
     >
-      {children}
+      {props.children}
     </BaseButton>
   );
 }

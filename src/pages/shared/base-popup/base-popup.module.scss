@@ -64,7 +64,18 @@ $bg-overlay: var(--bg-overlay);
   word-break: break-all;
 }
 
+@media (max-width: 1000px) {
+  .heading {
+    font-size: 40px;
+    line-height: 150%;
+  }
+}
+
 @media (max-width: 640px) {
+  .heading {
+    font-size: 26px;
+    line-height: 150%;
+  }
   .popup {
     width: 90%;
   }

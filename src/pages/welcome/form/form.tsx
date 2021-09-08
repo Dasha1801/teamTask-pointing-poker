@@ -5,11 +5,15 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { APP_CONSTANTS } from '../../../shared/constants';
 import { BasePopup } from '../../shared/base-popup/base-popup';
+import { useDispatch } from 'react-redux';
+import { thunks } from '../../../redux/thunks/thunks';
+import { AppDispatch } from '../../../redux/store';
 
 const FormWelcome = (): JSX.Element => {
   const [warn, setWarn] = useState('');
   const [url, setUrl] = useState('');
-  const [isConnect, setConnect] = useState(false);
+  const [isLobbyConnect, setLobbyConnect] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -27,27 +31,28 @@ const FormWelcome = (): JSX.Element => {
     return true;
   };
 
-  const handleClickNewGame = () => {
-    console.log('new game');
+  const handleClickNewGame = async () => {
+    await dispatch(thunks.connectThunk());
   };
 
   const handleClickConnect = () => {
     const validUrl = testUrl(url);
     if (validUrl) {
-      setConnect(true);
+      setLobbyConnect(true);
     }
   };
 
   return (
     <div className={styles.container}>
-      {isConnect && (
+      {isLobbyConnect && (
         <BasePopup
-          heading="Connect to lobby"
+          contentProps={{ className: 'asd' }}
+          headingText="Connect to lobby"
           buttonOkText="Confirm"
           buttonCancelText="Cancel"
-          buttonCancelProps={{ onClick: () => setConnect(false) }}
+          buttonCancelProps={{ onClick: () => setLobbyConnect(false) }}
         >
-          New game settings
+          Player settings
         </BasePopup>
       )}
       <div className={styles.wrapperLogo}>
