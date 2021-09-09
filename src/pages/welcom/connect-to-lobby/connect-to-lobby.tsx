@@ -2,22 +2,91 @@ import styles from './connect-to-lobby.module.scss';
 import React, { useRef, useState } from 'react';
 import { Form, Row, Col, Container, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
+import { useDispatch } from 'react-redux';
 
 type FormData = {
   firstName: string;
+  lastName: string;
+  jobPosition: string;
+  base64: string | undefined;
+  isObserver: boolean;
 };
 
-const ConnectToLobby = ():JSX.Element => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const onSubmit = handleSubmit(data => alert(JSON.stringify(data)));
-  const inputFile = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState('Choose file');
+const initialFormData: FormData = {
+  firstName: '',
+  lastName: '',
+  jobPosition: '',
+  base64: '',
+  isObserver: false
+}
 
+const ConnectToLobby = ():JSX.Element => {
+  const dispatch = useDispatch();
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const inputFile = useRef<HTMLInputElement>(null);
+  const image = useRef<HTMLImageElement>(null);
+  const [fileName, setFileName] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [filePath, setFilePath] = useState<any>('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [base64, setBase64] = useState<any>('');
+  const [playerName, setPlayerName] = useState('NN');
+  const [formData, setFormData] = useState<FormData>(initialFormData)
+
+  function toBase64String(img: HTMLImageElement | null): string | undefined {
+    const c = document.createElement('canvas');
+    let ctx, base64String
+    if (img) {
+      const minSide = Math.min(img.naturalHeight, img.naturalWidth);
+      if (img.naturalHeight > minSide) {
+        c.height = img.naturalHeight / minSide * 100
+        c.width = 100
+      } else {
+        c.height = 100;
+        c.width = img.naturalWidth / minSide * 100;
+      }
+      ctx = c.getContext('2d');
+      if (ctx) ctx.drawImage(img, 0, 0, c.width, c.height);
+      base64String = c.toDataURL(); //.replace(/^data:image.+;base64,/, '')
+    }
+    return base64String
+  }
+
+  const onSubmit = handleSubmit(data => {
+    console.log(base64)
+    setFormData(data);
+    if (image.current) setFormData(prevData => ({ ...prevData, base64: toBase64String(image.current) }));
+    setTimeout(() => {
+      console.log(formData)
+      // const currentUser = new User
+    }, 1000)
+
+  });
+  
   const handleChange = () => {
     if (inputFile.current?.files) {
       setFileName(inputFile.current.files[0].name);
-    }  
+      setFilePath(window.URL.createObjectURL(inputFile.current.files[0]));
+    }
   }
+
+  const handleLoad = () => {
+    const stringImage = toBase64String(image.current);
+    setBase64(stringImage)
+    //  if (image.current) setBase64(toBase64String(image.current))
+     if (image.current) alert(stringImage)
+  }
+
+  const handleChangeInput = handleSubmit(data => {
+    if (fileName !== '') {  
+    } else {  
+      if (data.lastName === '') {
+        setPlayerName(`${data.firstName.slice(0, 1).toUpperCase()}${data.firstName.slice(-1).toUpperCase()}`)
+      } else if (data.lastName !== '') {
+        setPlayerName(`${data.firstName.slice(0, 1).toUpperCase()}${data.lastName.slice(0, 1).toUpperCase()}`)
+      }
+    }
+  });
 
   return (
     <Form className={styles.connect} onSubmit={onSubmit}>
@@ -30,8 +99,10 @@ const ConnectToLobby = ():JSX.Element => {
             <Container className={styles.observer}>
               <div className="form-check form-switch">
                 <div className={styles.observerLabel}>Connect as<br />Observer 
-                  <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
-                    <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
+                  <label className="form-check-label" htmlFor="isObserver">
+                    <input className="form-check-input" type="checkbox" id="isObserver" 
+                    {...register("isObserver")}
+                    />
                   </label>
                 </div>
               </div>
@@ -41,10 +112,10 @@ const ConnectToLobby = ():JSX.Element => {
         <Row>
           <Col lg={7}>
             <Form.Label htmlFor="firstName" className={styles.label}>Your first name:</Form.Label>
-            <InputGroup className="mb-3">
-              <FormControl id="firstName" aria-describedby="basic-addon3" 
+            <InputGroup className="mb-3" onChange={handleChangeInput}>
+              <FormControl id="firstName" aria-describedby="basic-addon3"
                 {...register("firstName", {
-                  validate: {
+                   validate: {
                     noName: (value) => value !== '',
                     tooShort: (value) => value.length >= 3,
                     tooLong: (value) => value.length <= 20,
@@ -67,8 +138,10 @@ const ConnectToLobby = ():JSX.Element => {
         <Row>
           <Col lg={7}>
             <Form.Label htmlFor="lastName" className={styles.label}>Your last name (optional):</Form.Label>
-              <InputGroup className="mb-3">
-                <FormControl id="lastName" aria-describedby="basic-addon3" />
+              <InputGroup className="mb-3" onChange={handleChangeInput}>
+                <FormControl id="lastName" aria-describedby="basic-addon3" 
+                  {...register("lastName")}
+                />
               </InputGroup>         
           </Col>
           <Col lg={2}>
@@ -78,7 +151,7 @@ const ConnectToLobby = ():JSX.Element => {
           <Col lg={7}>
             <Form.Label htmlFor="jobPosition" className={styles.label}>Your job position (optional):</Form.Label>
             <InputGroup className="mb-3">
-              <FormControl id="jobPosition" aria-describedby="basic-addon3" />
+              <FormControl id="jobPosition" aria-describedby="basic-addon3" {...register("jobPosition")}/>
             </InputGroup>          
           </Col>
           <Col lg={2}>
@@ -86,27 +159,34 @@ const ConnectToLobby = ():JSX.Element => {
         </Row>
         <Row>
           <Col lg={7}>
-            <Form.Label htmlFor="fileChooser" className={styles.label}>Image:</Form.Label>
-            <InputGroup className={styles.field__wrapper}>
+            <Form.Label htmlFor="avatar" className={styles.label}>Image:</Form.Label>
+            <InputGroup className={styles.field__wrapper} onChange={handleChange}>
               <FormControl
                 className={styles.placeholder}
-                placeholder={fileName}
+                value={fileName}
+                placeholder="Choose footer"
                 aria-describedby="basic-addon2"
                 readOnly
               />
-            <input id="fileChooser" type="file" ref={inputFile} className={styles.field__file} onChange={handleChange} />
+              <input 
+                ref={inputFile}
+                id="avatar" 
+                type="file" 
+                className={styles.field__file} 
+              />
               <Form.Label 
-                htmlFor="fileChooser" 
+                htmlFor="avatar"    
                 className={styles.chooser} 
               >
                 Browse
               </Form.Label>
             </InputGroup>
-           <div className={styles.avatar}>
-              NN
+            <div className={styles.avatar} style={{background: `no-repeat center/cover url(${filePath}) #60DABF`}}>
+              {filePath === '' && playerName}
+              <img ref={image} src={filePath} alt="" style={{ display: "none" }} onLoad={handleLoad} />
             </div>
           </Col>
-          <Col lg={2}>
+          <Col lg={2}> 
           </Col>
         </Row>
         <Container className={styles.btnsRow}>
