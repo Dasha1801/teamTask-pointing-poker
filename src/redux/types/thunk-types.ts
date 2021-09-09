@@ -12,6 +12,7 @@ export interface IThunkAddPlayerResult {
 
 export interface IThunkCreateGameResult {
   dealer: IUser;
+  gameId: string;
 }
 
 export interface IThunkPostMessageResult {

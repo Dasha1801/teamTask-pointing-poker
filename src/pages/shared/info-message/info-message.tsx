@@ -7,6 +7,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { appActions } from '../../../redux/slices/app/app-slice';
 import { APP_CONSTANTS } from '../../../shared/constants';
+import ButtonClose from '../buttons/button-close/button-close';
 
 interface IInfoMessageProps {
   message: IInfoMessage;
@@ -61,13 +62,9 @@ export default function InfoMessage({
   return (
     <div className={styles.messageContainer} style={{ opacity }}>
       <div className={messageStyle}>{message.text}</div>
-      <button
-        type="button"
-        className={styles.buttonClose}
-        onClick={handleCloseClick}
-      >
-        &nbsp;
-      </button>
+      <div className={styles.buttonCloseContainer}>
+        <ButtonClose onClick={handleCloseClick} />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { appSlice } from './app/app-slice';
-import { currentUserSlice } from './currentUser/current-user-slice';
+import { currentUserSlice } from './current-user/current-user-slice';
 import { gameSettingsSlice } from './game-settings/game-settings-slice';
 import { gameSlice } from './game/game-slice';
 import { lobbyPageSlice } from './lobby-page/lobby-page';

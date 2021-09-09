@@ -13,10 +13,10 @@ describe('Lobby page slice', () => {
 
   test('should handle toggleSideBar', () => {
     expect(
-      lobbyPageSlice.reducer(undefined, lobbyPageActions.toggleSideBar(true))
+      lobbyPageSlice.reducer(undefined, lobbyPageActions.toggleSideBar())
     ).toEqual({
       ...initialState,
-      isShowSideBar: true,
+      isSideBarShown: true,
     });
   });
 });

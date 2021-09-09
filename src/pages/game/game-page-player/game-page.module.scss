@@ -1,0 +1,51 @@
+.heading {
+  padding: 40px 0 45px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.content {
+  width: 70%;
+  padding: 0 38px 31px 38px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
+    column-gap: 30px;
+  }
+}
+.controls {
+  padding: 20px 0 90px;
+}
+.issuesHeading {
+  text-align: left;
+  padding-left: 40px;
+}
+.statisticsSection {
+  flex: 1;
+  align-self: flex-start;
+  min-width: 300px;
+  overflow-x: scroll;
+  scrollbar-width: none;
+}
+.statisticsSection::-webkit-scrollbar {
+  display: none;
+}
+.statisticsHeading {
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .content {
+    width: 90%;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 0 10px 31px 10px;
+  }
+}

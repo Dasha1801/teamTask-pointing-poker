@@ -33,7 +33,7 @@ import {
 } from '../../shared/services/types';
 import { gameActions } from '../slices/game/game-slice';
 import { appActions } from '../slices/app/app-slice';
-import { currentUserActions } from '../slices/currentUser/current-user-slice';
+import { currentUserActions } from '../slices/current-user/current-user-slice';
 import { gameSettingsActions } from '../slices/game-settings/game-settings-slice';
 
 export const connectThunk = createAsyncThunk<IConnectResponse, void>(
@@ -51,16 +51,16 @@ export const createGameThunk = createAsyncThunk<
   IThunkCreateGameResult,
   IThunkCreateGameParameters
 >('game/createGameThunk', async ({ dealerInfo }, thunkApi) => {
-  const response = await ApiService.createGame({ dealerInfo });
+  const { gameId, dealerId } = await ApiService.createGame({ dealerInfo });
   const dealer = new User({
     ...dealerInfo,
-    id: response.dealerId,
+    id: dealerId,
     role: TUserRole.dealer,
   }).toObject();
   thunkApi.dispatch(currentUserActions.changeCurrentUser(dealer));
-  thunkApi.dispatch(gameActions.changeId(response.gameId));
+  thunkApi.dispatch(gameActions.changeId(gameId));
   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
-  return { dealer };
+  return { dealer, gameId };
 });
 
 export const addPlayerThunk = createAsyncThunk<
@@ -77,6 +77,7 @@ export const addPlayerThunk = createAsyncThunk<
   thunkApi.dispatch(gameActions.changePlayers(players.concat(player)));
   thunkApi.dispatch(currentUserActions.changeCurrentUser(player));
   thunkApi.dispatch(gameActions.changeId(gameId));
+  thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
   return { gameId, dealer, player };
 });
 

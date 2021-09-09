@@ -1,18 +1,24 @@
-import styles from './app.module.scss';
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import Header from './shared/header/header';
-import Footer from './shared/footer/footer';
-import WelcomePage from './welcome/welcome';
+import { useSelector } from 'react-redux';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { currentUserSelectors } from '../redux/selectors';
+import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
-
+import styles from './app.module.scss';
+import { GamePage } from './game/game-page-player/game-page';
+import PlayerLobby from './lobby/player-lobby';
+import Footer from './shared/footer/footer';
+import Header from './shared/header/header';
+import WelcomePage from './welcome/welcome';
 
 function App(): JSX.Element {
+  const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+
   return (
     <div className={styles.app}>
-      <Header />
       <Router>
+        <Header />
         <main className={styles.content}>
           <TransitionGroup className="transition-group">
             <CSSTransition
@@ -23,18 +29,26 @@ function App(): JSX.Element {
                 <Route exact path="/">
                   <WelcomePage />
                 </Route>
-                <Route path="/lobby/:gameId">
-                  <div>Lobby page</div>
-                </Route>
                 <Route path="/game/:gameId">
-                  <div>Game page</div>
+                  {currentUser.role === TUserRole.dealer ? (
+                    <GamePage />
+                  ) : (
+                    <div>Game page</div>
+                  )}
+                </Route>
+                <Route path="/lobby/:gameId">
+                  {currentUser.role === TUserRole.dealer ? (
+                    <div>Lobby page dealer</div>
+                  ) : (
+                    <PlayerLobby />
+                  )}
                 </Route>
               </Switch>
             </CSSTransition>
           </TransitionGroup>
         </main>
+        <Footer />
       </Router>
-      <Footer />
     </div>
   );
 }

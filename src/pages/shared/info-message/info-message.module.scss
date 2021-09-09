@@ -29,6 +29,10 @@ $text-dark: rgba(79, 79, 79, 1);
   background: $error-bg;
   border: 1px solid $error-border;
 }
+.buttonCloseContaienr {
+  position: relative;
+  padding-right: 10px;
+}
 .buttonClose {
   position: absolute;
   right: 40px;
