@@ -3,6 +3,8 @@ import React, { useRef, useState } from 'react';
 import { Form, Row, Col, Container, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
+import { TUserRole, User } from '../../../redux/types';
+import { thunks } from '../../../redux/thunks/thunks';
 
 type FormData = {
   firstName: string;
@@ -12,14 +14,6 @@ type FormData = {
   isObserver: boolean;
 };
 
-const initialFormData: FormData = {
-  firstName: '',
-  lastName: '',
-  jobPosition: '',
-  base64: '',
-  isObserver: false
-}
-
 const ConnectToLobby = ():JSX.Element => {
   const dispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
@@ -28,10 +22,7 @@ const ConnectToLobby = ():JSX.Element => {
   const [fileName, setFileName] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filePath, setFilePath] = useState<any>('');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [base64, setBase64] = useState<any>('');
   const [playerName, setPlayerName] = useState('NN');
-  const [formData, setFormData] = useState<FormData>(initialFormData)
 
   function toBase64String(img: HTMLImageElement | null): string | undefined {
     const c = document.createElement('canvas');
@@ -53,14 +44,19 @@ const ConnectToLobby = ():JSX.Element => {
   }
 
   const onSubmit = handleSubmit(data => {
-    console.log(base64)
-    setFormData(data);
-    if (image.current) setFormData(prevData => ({ ...prevData, base64: toBase64String(image.current) }));
-    setTimeout(() => {
-      console.log(formData)
-      // const currentUser = new User
-    }, 1000)
-
+    let base64String: string | undefined;
+    if (image.current) base64String = toBase64String(image.current);
+    (async function() {
+      const currentUser = new User({
+        id: '',
+        role: data.isObserver ? TUserRole.observer : TUserRole.player,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        jobPosition: data.jobPosition,
+        image: base64String,
+      })
+        await dispatch(thunks.addPlayerThunk({addedPlayer: currentUser}))
+      })();
   });
   
   const handleChange = () => {
@@ -68,13 +64,6 @@ const ConnectToLobby = ():JSX.Element => {
       setFileName(inputFile.current.files[0].name);
       setFilePath(window.URL.createObjectURL(inputFile.current.files[0]));
     }
-  }
-
-  const handleLoad = () => {
-    const stringImage = toBase64String(image.current);
-    setBase64(stringImage)
-    //  if (image.current) setBase64(toBase64String(image.current))
-     if (image.current) alert(stringImage)
   }
 
   const handleChangeInput = handleSubmit(data => {
@@ -183,7 +172,7 @@ const ConnectToLobby = ():JSX.Element => {
             </InputGroup>
             <div className={styles.avatar} style={{background: `no-repeat center/cover url(${filePath}) #60DABF`}}>
               {filePath === '' && playerName}
-              <img ref={image} src={filePath} alt="" style={{ display: "none" }} onLoad={handleLoad} />
+              <img ref={image} src={filePath} alt="" style={{ display: "none" }} />
             </div>
           </Col>
           <Col lg={2}> 
