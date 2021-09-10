@@ -8,6 +8,7 @@ import { BasePopup } from '../../shared/base-popup/base-popup';
 import { useDispatch } from 'react-redux';
 import { thunks } from '../../../redux/thunks/thunks';
 import { AppDispatch } from '../../../redux/store';
+import ConnectToLobby from '../../welcom/connect-to-lobby/connect-to-lobby';
 
 const FormWelcome = (): JSX.Element => {
   const [warn, setWarn] = useState('');
@@ -52,7 +53,7 @@ const FormWelcome = (): JSX.Element => {
           buttonCancelText="Cancel"
           buttonCancelProps={{ onClick: () => setLobbyConnect(false) }}
         >
-          Player settings
+          <ConnectToLobby />
         </BasePopup>
       )}
       <div className={styles.wrapperLogo}>
