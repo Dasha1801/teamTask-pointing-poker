@@ -1,4 +1,10 @@
 .app {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  text-align: center;
+}
+
+.content {
+  flex: 1;
 }

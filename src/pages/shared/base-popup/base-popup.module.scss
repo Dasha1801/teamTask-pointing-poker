@@ -1,0 +1,82 @@
+$overlay-z-index: var(--overlay-z-index);
+$popup-z-index: var(--popup-z-index);
+$shadow: var(--main-shadow);
+$font: var(--main-font);
+$bg-overlay: var(--bg-overlay);
+
+.overlay {
+  position: absolute;
+  z-index: $overlay-z-index;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $bg-overlay;
+}
+
+.popupContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.popup {
+  position: fixed;
+  display: flex;
+  flex-flow: column nowrap;
+  z-index: $popup-z-index;
+  width: 60%;
+  max-width: 876px;
+  padding: 36px 40px 33px;
+  background: #fff;
+  box-shadow: $shadow;
+}
+
+.heading {
+  padding-bottom: 25px;
+  font: normal 700 64px/75px $font;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  row-gap: 15px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.buttonOk,
+.buttonCancel {
+  width: 189px;
+  height: 47px;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  padding-bottom: 25px;
+  word-break: break-all;
+}
+
+@media (max-width: 1000px) {
+  .heading {
+    font-size: 40px;
+    line-height: 150%;
+  }
+}
+
+@media (max-width: 640px) {
+  .heading {
+    font-size: 26px;
+    line-height: 150%;
+  }
+  .popup {
+    width: 90%;
+  }
+}
