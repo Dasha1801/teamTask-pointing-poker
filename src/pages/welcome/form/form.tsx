@@ -4,10 +4,10 @@ import logoGame from '../../../shared/assets/icons/logo.svg';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { APP_CONSTANTS } from '../../../shared/constants';
-import { BasePopup } from '../../shared/base-popup/base-popup';
 import { useDispatch } from 'react-redux';
 import { thunks } from '../../../redux/thunks/thunks';
 import { AppDispatch } from '../../../redux/store';
+import ConnectToLobby from '../connect-to-lobby/connect-to-lobby';
 
 const FormWelcome = (): JSX.Element => {
   const [warn, setWarn] = useState('');
@@ -45,13 +45,7 @@ const FormWelcome = (): JSX.Element => {
   return (
     <div className={styles.container}>
       {isLobbyConnect && (
-        <BasePopup
-          contentProps={{ className: 'asd' }}
-          headingText="Connect to lobby"
-          buttonOkText="Confirm"
-          buttonCancelText="Cancel"
-          buttonCancelProps={{ onClick: () => setLobbyConnect(false) }}
-        ></BasePopup>
+        <ConnectToLobby onCancelClick={() => setLobbyConnect(false)} />
       )}
       <div className={styles.wrapperLogo}>
         <img src={logoGame} className={styles.logo} alt="logo game"></img>
