@@ -21,7 +21,7 @@ export interface IGame {
 export class Game implements IGame {
   id = '';
   currentIssueId = '';
-  status = TGameStatus.lobby;
+  status = TGameStatus.inactive;
   players: IUser[] = [];
   issues: IIssue[] = [];
   messages: IMessage[] = [];

@@ -6,7 +6,7 @@ describe('Header component', () => {
   test('renders component', () => {
     const el = render(<Header />);
     const elRoot = el.getByTestId('header');
-    expect(elRoot.childElementCount).toBe(2);
+    expect(elRoot.childElementCount).toBe(1);
   });
 });
 

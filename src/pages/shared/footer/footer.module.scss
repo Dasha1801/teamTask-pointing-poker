@@ -46,3 +46,26 @@
     display: flex;
   }
 }
+
+
+@media(max-width:560px){
+  .footer{
+    .github {
+      max-width: 35px;
+      max-height: 35px;
+    }
+    .container{
+      align-items: center;
+    }
+    .rss{
+      width: 75px;
+    }
+    .rssLogo{
+      font-size: 18px;
+    }
+    .team {
+      font-size: 9px;
+      line-height: 11px;
+    }
+  }
+}
