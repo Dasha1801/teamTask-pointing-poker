@@ -5,23 +5,19 @@ import message from '../../../shared/assets/icons/message.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { TGameStatus } from '../../../redux/types';
 import { gameSelectors } from '../../../redux/selectors';
-import { sideBarActions } from '../../../redux/slices/side-bar/side-bar';
+import { lobbyPageActions } from '../../../redux/slices/lobby-page/lobby-page';
 
-interface IHeaderProps {
-  sideBarShow: boolean
-}
-
-const Header = ({sideBarShow}:IHeaderProps): JSX.Element => {
+const Header = (): JSX.Element => {
   const dispatch = useDispatch();
-  const connectionStatus = useSelector(gameSelectors.selectGame).status;
-  
+  const gameStatus = useSelector(gameSelectors.selectGame).status;
+
   const showSideBar = () => {
-    dispatch(sideBarActions.changeShowSideBar(!sideBarShow));
+    dispatch(lobbyPageActions.toggleSideBar());
   };
   return (
     <header className={styles.header} data-testid="header">
       <img src={logo} className={styles.logo} alt="logo" />
-      {connectionStatus === TGameStatus.lobby ? (
+      {gameStatus === TGameStatus.lobby ? (
         <img
           src={message}
           className={styles.message}

@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { appReducers } from '../../reducers';
+import { IApp } from '../../types';
 
-const initialAppState = { isConnected: false };
+const initialAppState: IApp = { isConnected: false, infoMessages: [] };
 
 export const appSlice = createSlice({
   name: 'app',
-  initialState: { ...initialAppState },
+  initialState: initialAppState,
   reducers: appReducers,
 });
 

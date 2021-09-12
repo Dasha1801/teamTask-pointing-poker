@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { gameSelectors } from '../../redux/selectors';
-import { sideBarSelectors } from '../../redux/selectors/side-bar-selectors';
+import { sideBarSelectors } from '../../redux/selectors/lobby-page-selectors';
 import { IUser } from '../../redux/types';
 import SideBar from '../shared/side-bar/side-bar';
 import AboutDealer from './aboutDealer/aboutDealer';
@@ -9,7 +9,6 @@ import Members from './members/members';
 import styles from './playerLobby.module.scss';
 
 const PlayerLobby = (): JSX.Element => {
-
   const sideBar = useSelector(sideBarSelectors.selectSideBar).isShowSideBar;
   const users = useSelector(gameSelectors.selectPlayers);
   const issues = useSelector(gameSelectors.selectIssues);
