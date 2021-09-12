@@ -7,6 +7,7 @@ import Footer from './shared/footer/footer';
 import WelcomePage from './welcome/welcome';
 import { APP_CONSTANTS } from '../shared/constants';
 
+
 function App(): JSX.Element {
   return (
     <div className={styles.app}>

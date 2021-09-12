@@ -1,4 +1,5 @@
 import { Issue, Message, TUserRole, User } from '../redux/types';
+// import { useDispatch } from 'react-redux';
 import { TStatusCode } from './constants';
 
 export const mockConnectResponseSuccess = {
@@ -172,13 +173,13 @@ export const users = [
 
 export const currentUser = new User({
   role: TUserRole.player,
-    firstName: 'Ann',
-    lastName: 'Moroz',
-    image:
-      'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
-    jobPosition: 'FrontEnd Developer',
-    id: '3',
-}).toObject();
+  firstName: 'Ann',
+  lastName: 'Moroz',
+  image:
+    'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
+  jobPosition: 'FrontEnd Developer',
+  id: '3',
+});
 
 export const dealer = new User({
   role: TUserRole.dealer,
@@ -186,8 +187,6 @@ export const dealer = new User({
   lastName: 'Pit',
   id: '2',
 }).toObject();
-
-export const issue = new Issue({ title: 'Planning 23' }).toObject();
 
 export const messages = [
   new Message({ id: '1', userId: '1', message: 'Hello everyone!' }).toObject(),
@@ -208,3 +207,4 @@ export const messages = [
     message: 'To create a production build, use npm run build.',
   }).toObject(),
 ];
+export const issue = new Issue({ title: 'Planning 23' }).toObject();
