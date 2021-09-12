@@ -23,23 +23,16 @@ const Members = ({ users }: IUsersProps): JSX.Element => {
       <h2 className={styles.h2}>Members:</h2>
       <div className={styles.playersContainer}>
         {users.map((player) => {
-          if (currentUserRole === 'observer') {
-            return (
+          return (
+            player.role !== TUserRole.dealer && (
               <Player
+                key={player.id}
                 user={player}
                 isCurrentUser={player.id === currentUserId}
-                isPlayer={false}
+                isPlayer={!(currentUserRole === TUserRole.observer)}
               />
-            );
-          } else if (player.role != TUserRole.dealer) {
-            return (
-              <Player
-                user={player}
-                isCurrentUser={player.id === currentUserId}
-                isPlayer={true}
-              />
-            );
-          }
+            )
+          );
         })}
       </div>
     </div>
