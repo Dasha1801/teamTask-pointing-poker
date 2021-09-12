@@ -1,4 +1,5 @@
-import { TUserRole, User } from '../redux/types';
+// import { useDispatch } from 'react-redux';
+import { Issue, TUserRole, User } from '../redux/types';
 import { TStatusCode } from './constants';
 
 export const mockConnectResponseSuccess = {
@@ -103,3 +104,82 @@ export const changeCurrentIssueResponseSuccess = {
   issueId: 'mockIssueId',
   statusCode: TStatusCode.OK,
 };
+
+
+export const issues = [
+  new Issue({ title: 'Planning 23' }).toObject(),
+  new Issue({ title: '123456' }).toObject(),
+  new Issue({ title: '222285' }).toObject(),
+];
+
+export const users = [new User({
+  role: TUserRole.observer,
+  firstName: 'John',
+  jobPosition: 'IOS Developer',
+  lastName: 'Tramp',
+  image:
+    'https://www.liga.net/images/general/2019/02/14/20190214174619-9721.png',
+  id: '1',
+}).toObject(),
+new User({
+  role: TUserRole.dealer,
+  firstName: 'Simon',
+  lastName: 'Pit',
+  id: '2',
+}).toObject(),
+new User({
+  role: TUserRole.player,
+  firstName: 'Ann',
+  image:
+    'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
+  jobPosition: 'FrontEnd Developer',
+  id: '3',
+}).toObject(),
+new User({
+  role: TUserRole.player,
+  firstName: 'John',
+  jobPosition: 'IOS Developer',
+  id: '4',
+  lastName: 'Tramp',
+  image:
+    'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-15.44.03.png',
+}).toObject(),
+new User({
+  role: TUserRole.player,
+  firstName: 'Simon',
+  lastName: 'Pit',
+  id: '5',
+}).toObject(),
+new User({
+  role: TUserRole.player,
+  firstName: 'Ann',
+  image:
+    'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
+  jobPosition: 'FrontEnd Developer',
+  id: '6',
+}).toObject(),
+new User({ role: TUserRole.player, firstName: 'Simon' }).toObject(),
+new User({
+  role: TUserRole.observer,
+  firstName: 'Jack',
+  image:
+    'https://cdn.maximonline.ru/ec/5b/70/ec5b701b6dc90d27cbde89b6e19a0d07/728x728_1_848ca9ef388ee0fdc2c538677e5709a7@1024x1024_0xac120002_17992516771550233711.jpg',
+  jobPosition: 'FrontEnd Developer',
+  id: '7',
+}).toObject()];
+
+export const currentUser = new User({
+  role: TUserRole.dealer,
+  firstName: 'Simon',
+  lastName: 'Pit',
+  id: '2',
+}).toObject();
+
+export const dealer = new User({
+  role: TUserRole.dealer,
+  firstName: 'Simon',
+  lastName: 'Pit',
+  id: '2',
+}).toObject();
+
+export const issue =  new Issue({ title: 'Planning 23' }).toObject();

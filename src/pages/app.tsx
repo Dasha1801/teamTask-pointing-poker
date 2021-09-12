@@ -5,6 +5,7 @@ import Header from './shared/header/header';
 import Footer from './shared/footer/footer';
 import WelcomePage from './welcome/welcome';
 
+
 function App(): JSX.Element {
   return (
     <div className={styles.app}>
