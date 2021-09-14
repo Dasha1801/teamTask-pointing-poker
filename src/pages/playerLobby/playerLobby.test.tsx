@@ -42,12 +42,16 @@ describe('render page PlayerLobby', () => {
   });
 
   test('should handle currentUser', () => {
+    const currentGameState = gameSlice.reducer(
+      undefined,
+      gameActions.changePlayers([dealer, currentUser])
+    );
     const currenUserState = currentUserSlice.reducer(
       undefined,
       currentUserActions.changeCurrentUser(currentUser)
     );
     const page = render(<PlayerLobby />, {
-      preloadedState: { currentUser: currenUserState, game: gameState },
+      preloadedState: { currentUser: currenUserState, game: currentGameState },
     });
     page.getByText(`${currentUser.firstName} ${currentUser.lastName}`);
   });
