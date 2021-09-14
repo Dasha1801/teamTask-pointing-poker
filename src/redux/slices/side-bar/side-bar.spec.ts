@@ -13,7 +13,7 @@ describe('side-bar slice', () => {
 
   test('should handle changeConnectionStatus', () => {
     expect(
-      sideBarSlice.reducer(undefined, sideBarActions.changeShowMessage(true))
+      sideBarSlice.reducer(undefined, sideBarActions.changeShowSideBar(true))
     ).toEqual({
       ...initialState,
       isShowSideBar: true,

@@ -130,6 +130,7 @@ export const users = [
   new User({
     role: TUserRole.player,
     firstName: 'Ann',
+    lastName: 'Moroz',
     image:
       'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
     jobPosition: 'FrontEnd Developer',
@@ -172,6 +173,7 @@ export const users = [
 export const currentUser = new User({
   role: TUserRole.player,
     firstName: 'Ann',
+    lastName: 'Moroz',
     image:
       'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
     jobPosition: 'FrontEnd Developer',

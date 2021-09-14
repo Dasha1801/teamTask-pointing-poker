@@ -7,7 +7,7 @@ interface IPlayerProps {
   user: IUser;
   isCurrentUser: boolean;
   isPlayer: boolean;
-  className?: string
+  className?: string;
 }
 
 const Player = ({
@@ -35,9 +35,7 @@ const Player = ({
       )}
       <div className={styles.name}>
         {isCurrentUser && <h6 className={styles.currentUser}>It`s you</h6>}
-        <h5 className={styles.h5}>
-          {user?.firstName} {user?.lastName}
-        </h5>
+        <h5 className={styles.h5}>{`${user?.firstName} ${user?.lastName}`}</h5>
         <h6 className={styles.h6}>{user?.jobPosition}</h6>
       </div>
       {isPlayer && (
