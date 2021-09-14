@@ -57,7 +57,7 @@ $text-dark: rgba(79, 79, 79, 1);
   height: 3px;
   left: 50%;
   top: 50%;
-  z-index: calc($max-z-index + 1);
+  z-index: calc(#{$max-z-index} + 1);
 }
 .buttonClose::before {
   transform: translate(-50%, -50%) rotate(45deg);
