@@ -1,12 +1,12 @@
 import styles from './base-popup.module.scss';
-import React, { Component } from 'react';
+import React, { ButtonHTMLAttributes, HTMLAttributes } from 'react';
 import { BaseButton as BaseButton } from '../buttons/base-button/base-button';
 import { ButtonBlue } from '../buttons/button-blue/button-blue';
 
 interface IBasePopupProps {
-  buttonOkProps?: React.ComponentProps<typeof BaseButton>;
-  buttonCancelProps?: React.ComponentProps<typeof BaseButton>;
-  contentProps?: React.ComponentProps<typeof Component>;
+  buttonOkProps?: ButtonHTMLAttributes<HTMLButtonElement>;
+  buttonCancelProps?: ButtonHTMLAttributes<HTMLButtonElement>;
+  contentProps?: HTMLAttributes<HTMLDivElement>;
   buttonOkText?: string;
   buttonCancelText?: string;
   className?: string;

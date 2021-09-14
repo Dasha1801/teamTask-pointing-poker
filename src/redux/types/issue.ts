@@ -40,6 +40,25 @@ export class Issue implements IIssue {
       lastRoundResult: this.lastRoundResult,
     };
   }
+
+  static getRoundResultPercentages(issue: IIssue): number[] {
+    const issueScores = Object.values(issue.lastRoundResult);
+    const groupedVotes = issueScores.reduce(
+      (acc: TIssueScoreStatistics, cur: TCardScore) => {
+        const score = acc[cur];
+        if (score !== undefined) {
+          acc[cur] = score + 1;
+        } else {
+          acc[cur] = 1;
+        }
+        return acc;
+      },
+      {}
+    );
+    return Object.values(groupedVotes).map(
+      (numberOfVotes) => ((numberOfVotes || 0) / issueScores.length) * 100
+    );
+  }
 }
 
 export interface IIssueScorePayload {

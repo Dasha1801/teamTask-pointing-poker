@@ -1,12 +1,16 @@
 import React from 'react';
 import { BasePopup } from '../../shared/base-popup/base-popup';
-import FormConnectToLobby from './components/formConnectToLobby';
+import FormConnectToLobby from './components/form-connect-to-lobby';
+
+interface IConnectToLobbyProps {
+  gameId: string;
+  onCancelClick: () => void;
+}
 
 const ConnectToLobby = ({
   onCancelClick,
-}: {
-  onCancelClick: () => void;
-}): JSX.Element => {
+  gameId,
+}: IConnectToLobbyProps): JSX.Element => {
   return (
     <BasePopup
       buttonOkText="Confirm"
@@ -17,7 +21,7 @@ const ConnectToLobby = ({
         type: 'submit',
       }}
     >
-      <FormConnectToLobby onCancelClick={onCancelClick} />
+      <FormConnectToLobby gameId={gameId} onCancelClick={onCancelClick} />
     </BasePopup>
   );
 };

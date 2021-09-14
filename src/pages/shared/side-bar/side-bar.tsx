@@ -5,7 +5,7 @@ import { IMessage, IUser } from '../../../redux/types';
 import Player from '../cardPlayer/cardPlayer';
 import styles from './side-bar.module.scss';
 
-interface ISideBar {
+interface ISideBarProps {
   message?: IMessageProps;
 }
 
@@ -14,10 +14,10 @@ interface IMessageProps {
   users: IUser[];
 }
 
-const SideBar = ({ message }: ISideBar): JSX.Element => {
+const SideBar = ({ message }: ISideBarProps): JSX.Element => {
   const { messagesProps, users } = message || ({} as IMessageProps);
   const currentUserId = useSelector(currentUserSelectors.selectCurrentUser).id;
-  
+
   return (
     <div className={styles.container}>
       {message ? (

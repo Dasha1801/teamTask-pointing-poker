@@ -1,0 +1,75 @@
+$active-color: var(--bg-light-green);
+$font: var(--main-font);
+$shadow: var(--main-shadow);
+
+.issueCard {
+  display: flex;
+  position: relative;
+  padding: 18px 24px 18px 18px;
+  box-shadow: $shadow;
+}
+
+.issueInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 50%;
+}
+
+.currentStatus {
+  font: normal 700 12px $font;
+  text-transform: uppercase;
+}
+
+.title,
+.score {
+  font: normal 300 48px $font;
+}
+
+.title {
+  width: 100%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.score {
+  width: 60px;
+  margin-left: auto;
+  border: none;
+  color: #000;
+  background: transparent;
+}
+
+.score:focus {
+  box-shadow: 0px 4px 4px 0px #0000002e inset;
+  outline: none;
+}
+
+.priority {
+  font: normal 300 10px $font;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.current {
+  background: $active-color;
+}
+
+.buttonCloseContainer {
+  position: relative;
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .issueCard {
+    padding-right: 0;
+  }
+  .title,
+  .score {
+    font-size: 26px;
+  }
+}

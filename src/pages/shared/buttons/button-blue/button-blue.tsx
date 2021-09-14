@@ -1,9 +1,9 @@
-import styles from './button-blue.module.scss';
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import { BaseButton } from '../base-button/base-button';
+import styles from './button-blue.module.scss';
 
 export function ButtonBlue(
-  props: React.ComponentProps<typeof BaseButton>
+  props: ButtonHTMLAttributes<HTMLButtonElement>
 ): JSX.Element {
   return (
     <BaseButton

@@ -41,7 +41,6 @@ import {
   kickPlayerResponseSuccess,
   leaveGameResponseSuccess,
   mockAddPlayerResponseSuccess,
-  mockCheckGameResponseSuccess,
   mockConnectResponseSuccess,
   mockCreateGameResponseSuccess,
   mockPostMessageResponseSuccess,
@@ -49,6 +48,7 @@ import {
   startGameResponseSuccess,
   startRoundResponseSuccess,
   updateIssueResponseSuccess,
+  mockCheckGameResponseSuccess,
 } from '../mocks';
 
 export class ApiService {

@@ -1,9 +1,9 @@
 import styles from './base-button.module.scss';
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import Button from 'react-bootstrap/Button';
 
 export function BaseButton(
-  props: React.ComponentProps<typeof Button>
+  props: ButtonHTMLAttributes<HTMLButtonElement>
 ): JSX.Element {
   return (
     <Button

@@ -14,7 +14,10 @@
   --overlay-z-index: 99;
   --popup-z-index: 100;
   --guidelines: 1440px;
+  --page-width: 1000px;
   --bg-overlay: rgba(196, 196, 196, 0.6);
+  --max-z-index: 999;
+  --button-z-index: 10;
 }
 
 body {

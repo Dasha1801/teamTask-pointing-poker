@@ -8,11 +8,15 @@ import { useDispatch } from 'react-redux';
 import { thunks } from '../../../redux/thunks/thunks';
 import { AppDispatch } from '../../../redux/store';
 import ConnectToLobby from '../connect-to-lobby/connect-to-lobby';
+import { ICheckGameResponse } from '../../../shared/services/types';
+import CreateGame from '../create-game/create-game';
 
 const FormWelcome = (): JSX.Element => {
   const [warn, setWarn] = useState('');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState('http://www.poker.ru/lobby/123');
+  const [gameId, setGameId] = useState('');
   const [isLobbyConnect, setLobbyConnect] = useState(false);
+  const [isNewGame, setNewGame] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,8 +26,9 @@ const FormWelcome = (): JSX.Element => {
   };
 
   const testUrl = (urlToTest: string): boolean => {
-    const regexQuery = new RegExp(APP_CONSTANTS.URL_REGEXP);
-    const test = regexQuery.test(urlToTest);
+    const urlQuery = new RegExp(APP_CONSTANTS.URL_REGEXP);
+    const gameUrlQuery = new RegExp(APP_CONSTANTS.GAME_URL_REGEXP);
+    const test = urlQuery.test(urlToTest) && gameUrlQuery.test(urlToTest);
     if (!test) {
       setWarn('*incorrect URL!');
       return false;
@@ -32,21 +37,36 @@ const FormWelcome = (): JSX.Element => {
   };
 
   const handleClickNewGame = async () => {
-    await dispatch(thunks.connectThunk());
+    // await dispatch(thunks.connectThunk());
+    setNewGame(true);
   };
 
-  const handleClickConnect = () => {
+  const handleClickConnect = async () => {
     const validUrl = testUrl(url);
     if (validUrl) {
-      setLobbyConnect(true);
+      const gameIdLocal = url.split('/').slice(-1)[0];
+      const response = await dispatch(
+        thunks.checkGameThunk({ gameId: gameIdLocal })
+      );
+      const { gameExists } = response.payload as ICheckGameResponse;
+      setLobbyConnect(gameExists);
+      if (!gameExists) {
+        setWarn(`Game with id '${gameId} is not found'`);
+      } else {
+        setGameId(gameIdLocal);
+      }
     }
   };
 
   return (
     <div className={styles.container}>
       {isLobbyConnect && (
-        <ConnectToLobby onCancelClick={() => setLobbyConnect(false)} />
+        <ConnectToLobby
+          gameId={gameId}
+          onCancelClick={() => setLobbyConnect(false)}
+        />
       )}
+      {isNewGame && <CreateGame onCancelClick={() => setNewGame(false)} />}
       <div className={styles.wrapperLogo}>
         <img src={logoGame} className={styles.logo} alt="logo game"></img>
       </div>

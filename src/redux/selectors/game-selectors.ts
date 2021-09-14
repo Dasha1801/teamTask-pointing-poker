@@ -6,6 +6,8 @@ const selectGame = (state: RootState): IGame => state.game;
 
 const selectId = createSelector(selectGame, (game) => game.id);
 
+const selectStatus = createSelector(selectGame, (game) => game.status);
+
 const selectDealer = createSelector(selectGame, (game) => {
   const players = game.players;
   return players.find((player) => player.role === TUserRole.dealer);
@@ -20,13 +22,14 @@ const selectCurrentIssueId = createSelector(
   (game) => game.currentIssueId
 );
 
-const selectCurrentIssue = createSelector(selectGame, (game) => {
-  game.issues.find((issue) => issue.id === game.currentIssueId);
-});
+const selectCurrentIssue = createSelector(selectGame, (game) =>
+  game.issues.find((issue) => issue.id === game.currentIssueId)
+);
 
 export const gameSelectors = {
   selectGame,
   selectId,
+  selectStatus,
   selectDealer,
   selectPlayers,
   selectIssues,
