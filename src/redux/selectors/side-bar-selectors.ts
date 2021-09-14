@@ -9,7 +9,7 @@ const selectShowMessage = createSelector(
   (sideBar) => sideBar.isShowSideBar
 );
 
-export const appSelectors = {
+export const sideBarSelectors = {
   selectSideBar,
   selectShowMessage,
 };

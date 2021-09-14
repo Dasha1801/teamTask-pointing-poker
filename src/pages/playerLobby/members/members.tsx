@@ -1,9 +1,9 @@
-import styles from './members.module.scss';
 import React from 'react';
-import { IUser, TUserRole } from '../../../redux/types';
-import Player from '../../shared/cardPlayer/cardPlayer';
 import { useSelector } from 'react-redux';
 import { currentUserSelectors } from '../../../redux/selectors';
+import { IUser, TUserRole } from '../../../redux/types';
+import Player from '../../shared/cardPlayer/cardPlayer';
+import styles from './members.module.scss';
 
 interface IUsersProps {
   users: IUser[];

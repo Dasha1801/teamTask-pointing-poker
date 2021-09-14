@@ -1,7 +1,7 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { ISideBar } from '../types/side-bar';
 
-const changeShowMessage: CaseReducer<ISideBar, PayloadAction<boolean>> = (
+const changeShowSideBar: CaseReducer<ISideBar, PayloadAction<boolean>> = (
   state,
   action
 ) => {
@@ -9,5 +9,5 @@ const changeShowMessage: CaseReducer<ISideBar, PayloadAction<boolean>> = (
 };
 
 export const sideBarReducers = {
-  changeShowMessage,
+  changeShowSideBar,
 };

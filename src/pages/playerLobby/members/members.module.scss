@@ -1,7 +1,7 @@
 .container {
   padding: 2% 0 10%;
   color: gray;
-
+}
   .btnWrapper {
     display: flex;
     justify-content: flex-end;
@@ -17,6 +17,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    font-size: 17px;
   }
 
   .btnExit {
@@ -27,10 +28,14 @@
     background-color: white;
     padding: 0.5% 6%;
   }
-}
 
+@media (max-width: 1200px){
+  .playersContainer{
+    font-size: 15px;
+  }
+}
 @media (max-width: 940px) {
-  .container {
+ 
     .btnExit {
       padding: 0.3% 4.5%;
       font-size: 11px;
@@ -38,11 +43,17 @@
     .h2 {
       font-size: 19px;
     }
+  
+}
+
+@media (max-width: 810px){
+  .playersContainer{
+    font-size: 13px;
   }
 }
 
 @media (max-width: 530px) {
-  .container {
+
     .playersContainer {
       justify-content: center;
     }
@@ -50,4 +61,3 @@
       margin-right: 10%;
     }
   }
-}
