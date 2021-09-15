@@ -1,0 +1,109 @@
+.playCard {
+  position: relative;
+  width: 9vw;
+  height: 14vw;
+  max-width: 130px;
+  max-height: 211px;
+  min-width: 50px;
+  min-height: 80px;
+  font-family: Ruda;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 4.5vw;
+  text-align: center;
+  color: #000000;
+  background: #ffffff;
+  border: 3px solid #eeeeee;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.playCard[data-mode='deck'] {
+  margin-left: -3vw;
+}
+
+.top {
+  position: absolute;
+  width: 16%;
+  top: 0;
+  left: 0.2vw;
+  font-size: 2vw;
+}
+
+.bottom {
+  position: absolute;
+  width: 16%;
+  bottom: 0;
+  right: 0.2vw;
+  font-size: 2vw;
+  transform: rotate(180deg);
+}
+
+.deck {
+  display: flex;
+}
+
+.choosenCard {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  background: rgba(10, 207, 131, 0.5);
+  border-radius: 10px;
+}
+
+[data-selected='selected'] {
+  z-index: 9;
+}
+
+.spinner {
+  background-image: url(../../../../../src/shared/assets/icons/loading.svg);
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  animation-name: rotation;
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotation {
+  0% {
+    transform: scale(0.25) rotate(-360deg);
+    opacity: 0.5;
+    filter: grayscale(0.25);
+  }
+  25% {
+    transform: scale(0.5) rotate(-180deg);
+    opacity: 0.75;
+    filter: grayscale(0.5);
+  }
+  50% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    filter: grayscale(1);
+  }
+  75% {
+    transform: scale(0.5) rotate(-180deg);
+    opacity: 0.75;
+    filter: grayscale(50%);
+  }
+
+  100% {
+    transform: scale(0.25) rotate(-360deg);
+    opacity: 0.5;
+    filter: grayscale(25%);
+  }
+}
