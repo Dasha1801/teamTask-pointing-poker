@@ -1,5 +1,6 @@
 import {
   Issue,
+  Message,
   TCardScoreSpecialValue,
   TRoundResult,
   TUserRole,
@@ -159,6 +160,7 @@ export const mockIssues = [
     lastRoundResult: mockLastRoundResult,
   }).toObject(),
   new Issue({ id: '2', title: '123456' }).toObject(),
+  new Issue({ id: '4', title: '1234562222' }).toObject(),
   new Issue({ id: '3', title: '222285' }).toObject(),
 ];
 
@@ -212,5 +214,28 @@ export const mockUsers = [
     image:
       'https://cdn.maximonline.ru/ec/5b/70/ec5b701b6dc90d27cbde89b6e19a0d07/728x728_1_848ca9ef388ee0fdc2c538677e5709a7@1024x1024_0xac120002_17992516771550233711.jpg',
     jobPosition: 'FrontEnd Developer',
+  }).toObject(),
+];
+
+export const mockMessages = [
+  new Message({
+    id: '7',
+    userId: '22',
+    message: 'ghkjklpkouhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '6',
+    userId: '23',
+    message: 'ghkjklpkoasdfghjytresdfghuhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '5',
+    userId: '24',
+    message: 'ghkjertyjkl,jmhngfklpkouhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '7',
+    userId: '25',
+    message: 'ghkjklpkouhuvghijkl',
   }).toObject(),
 ];
