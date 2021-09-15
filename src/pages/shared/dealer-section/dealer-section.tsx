@@ -5,19 +5,15 @@ import styles from './dealer-section.module.scss';
 
 interface IDealerSectionProps {
   dealer: IUser;
-  isCurrentUser: boolean;
-  minutes?: number;
-  seconds?: number;
 }
 
 export default function DealerSection({
   dealer,
-  isCurrentUser,
 }: IDealerSectionProps): JSX.Element {
   return (
     <div className={styles.container}>
       <div className={styles.dealerSection}>
-        <DealerCard dealer={dealer} isCurrentUser={isCurrentUser} />
+        <DealerCard dealer={dealer} />
       </div>
     </div>
   );

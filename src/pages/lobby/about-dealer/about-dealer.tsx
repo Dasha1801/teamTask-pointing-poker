@@ -14,7 +14,7 @@ const AboutDealer = (): JSX.Element => {
     <div className={styles.container}>
       <h4 className={styles.role}>Scrum master:</h4>
       <div className={styles.playersContainer}>
-        <PlayerCard user={dealer} isPlayer={false} />
+        <PlayerCard user={dealer} />
       </div>
     </div>
   );

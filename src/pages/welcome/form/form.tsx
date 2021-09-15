@@ -37,7 +37,7 @@ const FormWelcome = (): JSX.Element => {
   };
 
   const handleClickNewGame = async () => {
-    // await dispatch(thunks.connectThunk());
+    await dispatch(thunks.connectThunk());
     setNewGame(true);
   };
 

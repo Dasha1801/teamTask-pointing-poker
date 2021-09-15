@@ -258,23 +258,18 @@ export const mockUsers = [
 
 export const mockMessages = [
   new Message({
-    id: '7',
-    userId: '22',
-    message: 'ghkjklpkouhuvghijkl',
+    id: '1',
+    userId: mockUsers[0].id,
+    message: 'message 1',
   }).toObject(),
   new Message({
-    id: '6',
-    userId: '23',
-    message: 'ghkjklpkoasdfghjytresdfghuhuvghijkl',
+    id: '2',
+    userId: mockUsers[1].id,
+    message: 'message 2',
   }).toObject(),
   new Message({
-    id: '5',
-    userId: '24',
-    message: 'ghkjertyjkl,jmhngfklpkouhuvghijkl',
-  }).toObject(),
-  new Message({
-    id: '7',
-    userId: '25',
-    message: 'ghkjklpkouhuvghijkl',
+    id: '3',
+    userId: mockUsers[2].id,
+    message: 'message 3',
   }).toObject(),
 ];

@@ -1,26 +1,63 @@
-import styles from './game-page.module.scss';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
-import { IIssue, IUser, TUserRole } from '../../../redux/types';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import {
+  currentUserSelectors,
+  gamePageSelectors,
+  gameSelectors,
+  gameSettingsSelectors,
+} from '../../../redux/selectors';
+import { gamePageActions } from '../../../redux/slices/game-page/game-page';
+import { gameActions } from '../../../redux/slices/game/game-slice';
+import { IUser, TGameStatus, TUserRole } from '../../../redux/types';
 import { BasePopup } from '../../shared/base-popup/base-popup';
 import DealerSection from '../../shared/dealer-section/dealer-section';
 import { IssueStatistics } from '../../shared/issue-statistics/issue-statistics';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import GameControls from '../game-controls/game-controls';
 import IssuesList from '../issues-list/issues-list';
+import SideBar from '../side-bar/side-bar';
+import styles from './game-page.module.scss';
 
 export function GamePage(): JSX.Element {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const isSidebarShown = true;
   const [isStatisticsShown] = useState(false);
   const [createIssue, setCreateIssue] = useState(false);
   const issues = useSelector(gameSelectors.selectIssues);
   const dealer = useSelector(gameSelectors.selectDealer) as IUser;
+  const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
+  const isDealer = useSelector(currentUserSelectors.selectIsDealer);
+  const timer = useSelector(gamePageSelectors.selectTimer);
+  const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
+  const gameStatus = useSelector(gameSelectors.selectStatus);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
-  const currentIssueId = useSelector(gameSelectors.selectCurrentIssueId);
-  const currentIssue = issues.find(
-    (issue) => issue.id === currentIssueId
-  ) as IIssue;
-  const isDealer = currentUser.role === TUserRole.dealer;
+
+  useEffect(() => {
+    if (gameSettings.timer && !timer.minutes && !timer.seconds) {
+      dispatch(gameActions.changeStatus(TGameStatus.started));
+      dispatch(
+        gamePageActions.changeTimer({
+          minutes: gameSettings.timer.minutes,
+          seconds: gameSettings.timer.seconds,
+        })
+      );
+      dispatch(gameActions.getNextIssue());
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    if (currentUser.role !== TUserRole.dealer) {
+      switch (gameStatus) {
+        case TGameStatus.inactive:
+          history.push('/');
+          break;
+        default:
+          break;
+      }
+    }
+  }, [gameStatus]);
 
   const handleCreateClick = () => {
     setCreateIssue(true);
@@ -32,40 +69,39 @@ export function GamePage(): JSX.Element {
 
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.heading}>
-          <SprintHeading issues={issues} />
+      {gameStatus !== TGameStatus.inactive && (
+        <div
+          className={`${styles.content} ${
+            isSidebarShown ? styles.contentWithSidebar : ''
+          }`}
+        >
+          <div className={styles.heading}>
+            <SprintHeading issues={issues} />
+          </div>
+          <DealerSection dealer={dealer} />
+          <div className={styles.controls}>
+            <GameControls />
+          </div>
+          <h4 className={styles.issuesHeading}>Issues</h4>
+          <div className={styles.main}>
+            <IssuesList
+              issues={issues}
+              canEditScore={isDealer}
+              canRemove={isDealer}
+              canAdd={isDealer}
+              handleCreateClick={handleCreateClick}
+            />
+            {isStatisticsShown && currentIssue && (
+              <div className={styles.statisticsSection}>
+                <h4 className={styles.statisticsHeading}>Statistics:</h4>
+                <IssueStatistics issue={currentIssue} />
+              </div>
+            )}
+          </div>
+          <div className={styles.cards}></div>
         </div>
-        <DealerSection
-          dealer={dealer}
-          isCurrentUser={currentUser.id === dealer.id}
-        />
-        <div className={styles.controls}>
-          <GameControls
-            isDealer={currentUser.id === dealer.id}
-            minutes={10}
-            seconds={20}
-          />
-        </div>
-        <h4 className={styles.issuesHeading}>Issues</h4>
-        <div className={styles.main}>
-          <IssuesList
-            issues={issues}
-            canEditScore={isDealer}
-            canRemove={isDealer}
-            canAdd={isDealer}
-            currentIssueId={currentIssueId}
-            handleCreateClick={handleCreateClick}
-          />
-          {isStatisticsShown && (
-            <div className={styles.statisticsSection}>
-              <h4 className={styles.statisticsHeading}>Statistics:</h4>
-              <IssueStatistics issue={currentIssue} />
-            </div>
-          )}
-        </div>
-        <div className={styles.cards}></div>
-      </div>
+      )}
+      {isSidebarShown && <SideBar />}
       {createIssue && (
         <BasePopup
           buttonOkText="Yes"

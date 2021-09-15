@@ -1,13 +1,21 @@
 import { TStatusCode } from '../constants';
-import { IUser, IMessage, IIssue } from '../../redux/types';
+import {
+  IUser,
+  IMessage,
+  IIssue,
+  IGameSettings,
+  TGameStatus,
+} from '../../redux/types';
 
-interface IResponse {
+export interface IResponse {
   statusCode: TStatusCode;
   message?: string;
+  errorCode?: number;
 }
 
 export interface IConnectResponse extends IResponse {
   connectionStatus: boolean;
+  socketId: string;
 }
 
 export interface ICheckGameResponse extends IResponse {
@@ -20,12 +28,47 @@ export interface ICreateGameResponse extends IResponse {
 }
 
 export interface IAddPlayerResponse extends IResponse {
-  gameId: string;
   dealer: IUser;
   playerId: string;
   messages: IMessage[];
   issues: IIssue[];
   players: IUser[];
+  gameStatus: TGameStatus;
+}
+
+export interface IAddPlayerResponseWS {
+  addedPlayer: IUser;
+}
+
+export interface IUpdateIssueResponseWS {
+  updatedIssue: IIssue;
+}
+
+export interface IAddIssueResponseWS {
+  addedIssue: IIssue;
+}
+
+export interface IStartGameResponseWS {
+  settings: IGameSettings;
+}
+
+export interface IKickPlayerResponseWS {
+  kickedPlayerId: string;
+}
+
+export interface IStartVotingToKickResponseWS {
+  kickedPlayerId: string;
+  votingPlayerId: string;
+}
+
+export interface IVoteToKickResponseWS {
+  kickedPlayerId: string;
+  acceptNumber: number;
+  numberOfPlayers: number;
+}
+
+export interface IDeleteIssueResponseWS {
+  deletedIssueId: string;
 }
 
 export interface IPostMessageResponse extends IResponse {
@@ -62,10 +105,7 @@ export interface IUpdateIssueResponse extends IResponse {
   issueId: string;
 }
 
-export interface IDeleteIssueResponse extends IResponse {
-  gameId: string;
-  deletedIssueId: string;
-}
+// export interface IDeleteIssueResponse extends IResponse {}
 
 export interface ILeaveGameResponse extends IResponse {
   gameId: string;

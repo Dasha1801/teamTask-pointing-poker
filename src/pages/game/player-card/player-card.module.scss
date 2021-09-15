@@ -1,44 +1,55 @@
 $main-font: var(--main-font);
+$second-font: var(--second-font);
 
 .card {
-  color: gray;
   display: flex;
-  width: 500px;
-  min-width: 260px;
-  height: 120px;
+  width: 300px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   align-items: center;
-  padding: 10px 0 10px 10px;
-  font-style: var(--second-font);
+  padding: 10px;
+  font-style: $second-font;
+  font-size: 24px;
+  border-radius: 4px;
 }
+.avatarContainer {
+  position: relative;
+  width: 17%;
+  height: 0;
+  padding-top: 17%;
+}
+
 .img,
 .avatar {
-  height: 83px;
-  width: 83px;
-  min-width: 3.5rem;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   display: block;
 }
 .avatar {
-  font-size: 24px;
-  background: #60dabf;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  font-size: 0.75em;
+  background: #60dabf;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .info {
   display: flex;
   flex-direction: column;
-  align-self: center;
+  width: 60%;
   margin-left: 2%;
   text-align: start;
 }
 .remove {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
+  width: 14%;
+  padding-top: 14%;
   margin-left: auto;
   cursor: pointer;
 }
@@ -46,69 +57,33 @@ $main-font: var(--main-font);
   transform: scale(1.2);
 }
 .removeImg {
-  width: 70%;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 .name {
-  max-width: 340px;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 48px;
   font-weight: 300;
+  line-height: 1em;
   color: #000;
 }
 .jobPosition {
-  font-size: 12px;
+  font-size: 0.38em;
 }
 .currentUser {
+  margin-bottom: 0;
   color: black;
   text-transform: uppercase;
   font-family: $main-font;
-  font-size: 14px;
+  font-size: 0.44em;
   font-weight: 700;
-  margin-bottom: 0;
-}
-
-@media (max-width: 995px) {
-  .card {
-    width: 300px;
-  }
-  .name {
-    max-width: 175px;
-  }
-  .currentUser {
-    font-size: 11px;
-  }
 }
 
 @media (max-width: 810px) {
-  .name {
-    font-size: 13px;
-  }
-  .jobPosition {
-    font-size: 8px;
-  }
-  .avatar {
-    font-size: 18px;
-  }
-  .img,
-  .avatar {
-    height: 60px;
-    width: 60px;
-  }
-  .removeImg {
-    width: 50%;
-  }
-  .currentUser {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 530px) {
   .card {
-    width: 80%;
-  }
-  .currentUser {
-    font-size: 8px;
+    width: 200px;
+    font-size: 18px;
   }
 }

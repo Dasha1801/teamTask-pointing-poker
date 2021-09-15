@@ -24,7 +24,7 @@ export class GameSettings {
   autoFlipCards = false;
   canScoreAfterFlip = false;
   cardType = TCardType.fib;
-  showTimer= false;
+  showTimer = false;
 
   constructor(settings?: Partial<IGameSettings>) {
     Object.assign(this, settings);
@@ -39,7 +39,7 @@ export class GameSettings {
       autoFlipCards: this.autoFlipCards,
       canScoreAfterFlip: this.canScoreAfterFlip,
       cardType: this.cardType,
-      showTimer: this.showTimer
+      showTimer: this.showTimer,
     };
   }
 }

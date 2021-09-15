@@ -17,6 +17,8 @@ const selectPlayers = createSelector(selectGame, (game) => game.players);
 
 const selectIssues = createSelector(selectGame, (game) => game.issues);
 
+const selectMessages = createSelector(selectGame, (game) => game.messages);
+
 const selectCurrentIssueId = createSelector(
   selectGame,
   (game) => game.currentIssueId
@@ -33,6 +35,7 @@ export const gameSelectors = {
   selectDealer,
   selectPlayers,
   selectIssues,
+  selectMessages,
   selectCurrentIssueId,
   selectCurrentIssue,
 };

@@ -47,20 +47,19 @@
   }
 }
 
-
-@media(max-width:560px){
-  .footer{
+@media (max-width: 560px) {
+  .footer {
     .github {
       max-width: 35px;
       max-height: 35px;
     }
-    .container{
+    .container {
       align-items: center;
     }
-    .rss{
+    .rss {
       width: 75px;
     }
-    .rssLogo{
+    .rssLogo {
       font-size: 18px;
     }
     .team {

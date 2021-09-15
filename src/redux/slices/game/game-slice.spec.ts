@@ -131,7 +131,7 @@ describe('game slice', () => {
   test('should handle updateIssue', () => {
     const gameState = gameSlice.reducer(
       { ...initialState, issues: [issue1] },
-      gameActions.updateIssue({ issueId: issue1.id, issue: issue2 })
+      gameActions.updateIssue({ issueId: issue1.id, updatedIssue: issue2 })
     );
     expect(gameState.issues).toEqual(
       expect.arrayContaining([expect.objectContaining(issue2)])

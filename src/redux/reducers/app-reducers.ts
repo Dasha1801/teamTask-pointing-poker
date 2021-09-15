@@ -9,6 +9,13 @@ const changeConnectionStatus: CaseReducer<IApp, PayloadAction<boolean>> = (
   state.isConnected = action.payload;
 };
 
+const changeSocketId: CaseReducer<IApp, PayloadAction<string>> = (
+  state,
+  action
+) => {
+  state.socketId = action.payload;
+};
+
 const changeInfoMessages: CaseReducer<IApp, PayloadAction<IInfoMessage[]>> = (
   state,
   action
@@ -37,4 +44,5 @@ export const appReducers = {
   changeInfoMessages,
   addOneInfoMessage,
   removeOneInfoMessage,
+  changeSocketId,
 };

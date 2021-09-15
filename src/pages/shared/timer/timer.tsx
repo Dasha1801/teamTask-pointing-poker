@@ -6,8 +6,8 @@ import { ITimer } from '../../../redux/types';
 import styles from './timer.module.scss';
 
 interface ITimerProps {
-  minutes: number;
-  seconds: number;
+  minutes?: number;
+  seconds?: number;
   disabled?: boolean;
 }
 
@@ -19,7 +19,6 @@ export default function Timer({
   const dispatch = useDispatch();
   const timer = useSelector(gameSettingsSelectors.selectSettings)
     .timer as ITimer;
-
   return (
     <div className={styles.timer}>
       <div className={styles.legend}>

@@ -3,7 +3,6 @@ import styles from './switcher.module.scss';
 import React from 'react';
 import { Col, Container, FormControl, FormControlProps } from 'react-bootstrap';
 
-
 interface ISwitcherProps {
   reg: FormControlProps;
 }
