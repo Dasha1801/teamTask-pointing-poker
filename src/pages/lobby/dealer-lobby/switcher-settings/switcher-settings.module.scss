@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.switcher {
+  cursor: pointer;
+  width: 3em !important;
+  height: 1.4em;
+}
+
+.right {
+  text-align: start;
+}

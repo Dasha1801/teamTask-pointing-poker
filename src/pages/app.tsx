@@ -39,13 +39,13 @@ function App(): JSX.Element {
                 </Route>
                 <Route path="/lobby/:gameId">
                   {currentUser.role === TUserRole.dealer ? (
-                    <PlayerLobby />
-                    
-                    // <DealerLobby/>
-                  ) : (
+                    // <PlayerLobby />
                     
                     <DealerLobby/>
-                    // <PlayerLobby />
+                  ) : (
+                    
+                    // <DealerLobby/>
+                    <PlayerLobby />
                   )}
                 </Route>
               </Switch>

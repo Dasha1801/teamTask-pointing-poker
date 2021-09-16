@@ -120,7 +120,7 @@ export const mockCurrentUser = new User({
   role: TUserRole.dealer,
   firstName: 'Simon',
   lastName: 'Pit',
-  id: '2',
+  id: '22',
 }).toObject();
 
 export const mockCurrentUser1 = new User({
@@ -130,7 +130,7 @@ export const mockCurrentUser1 = new User({
   image:
     'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
   jobPosition: 'FrontEnd Developer',
-  id: '3',
+  id: '32',
 }).toObject();
 
 export const mockDealer = new User({
@@ -138,7 +138,7 @@ export const mockDealer = new User({
   jobPosition: 'Developer',
   firstName: 'Simon',
   lastName: 'Pit',
-  id: '2',
+  id: '22',
 }).toObject();
 
 export const mockIssue = new Issue({ title: 'Planning 23' }).toObject();
@@ -155,13 +155,13 @@ export const mockLastRoundResult: TRoundResult = {
 
 export const mockIssues = [
   new Issue({
-    id: '1',
+    id: '99',
     title: 'Planning 23',
     lastRoundResult: mockLastRoundResult,
   }).toObject(),
-  new Issue({ id: '2', title: '123456' }).toObject(),
-  new Issue({ id: '4', title: '1234562222' }).toObject(),
-  new Issue({ id: '3', title: '222285' }).toObject(),
+  new Issue({ id: '299', title: '123456' }).toObject(),
+  new Issue({ id: '499', title: '1234562222' }).toObject(),
+  new Issue({ id: '399', title: '222285' }).toObject(),
 ];
 
 export const mockUsers = [
