@@ -111,10 +111,10 @@ export const updateIssueThunk = createAsyncThunk<
   void,
   IThunkUpdateIssueParameters
 >('game/updateIssueThunk', async ({ dealerId, updatedIssue }, thunkApi) => {
-  const response = await ApiService.updateIssue({ dealerId, updatedIssue });
+  await ApiService.updateIssue({ dealerId, updatedIssue });
   thunkApi.dispatch(
     gameActions.updateIssue({
-      issueId: response.issueId,
+      issueId: updatedIssue.id,
       issue: updatedIssue,
     })
   );

@@ -9,16 +9,8 @@ import {
   gameSettingsSelectors,
   lobbyPageSelectors,
 } from '../../../redux/selectors';
-import { gameSettingsActions } from '../../../redux/slices/game-settings/game-settings-slice';
-import { gameActions } from '../../../redux/slices/game/game-slice';
 import { thunks } from '../../../redux/thunks/thunks';
 import editIssue from '../../../shared/assets/icons/edit-issue.svg';
-import {
-  mockGameSettings,
-  mockIssues,
-  mockMessages,
-  mockUsers,
-} from '../../../shared/mocks';
 import SideBar from '../../shared/side-bar/side-bar';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import Timer from '../../shared/timer/timer';
@@ -32,10 +24,6 @@ import SwitcherSettings from './switcher-settings/switcher-settings';
 const DealerLobby = (): JSX.Element => {
   const dispatch = useDispatch();
   const history = useHistory();
-  dispatch(gameActions.changePlayers(mockUsers));
-  dispatch(gameActions.changeMessages(mockMessages));
-  dispatch(gameActions.changeIssues(mockIssues));
-  dispatch(gameSettingsActions.changeSettings(mockGameSettings));
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
