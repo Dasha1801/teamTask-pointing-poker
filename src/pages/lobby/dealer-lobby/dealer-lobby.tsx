@@ -2,10 +2,23 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
-import { gameSelectors, lobbyPageSelectors } from '../../../redux/selectors';
+import { useHistory } from 'react-router';
+import {
+  currentUserSelectors,
+  gameSelectors,
+  gameSettingsSelectors,
+  lobbyPageSelectors,
+} from '../../../redux/selectors';
+import { gameSettingsActions } from '../../../redux/slices/game-settings/game-settings-slice';
 import { gameActions } from '../../../redux/slices/game/game-slice';
+import { thunks } from '../../../redux/thunks/thunks';
 import editIssue from '../../../shared/assets/icons/edit-issue.svg';
-import { mockIssues, mockMessages, mockUsers } from '../../../shared/mocks';
+import {
+  mockGameSettings,
+  mockIssues,
+  mockMessages,
+  mockUsers,
+} from '../../../shared/mocks';
 import SideBar from '../../shared/side-bar/side-bar';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import Timer from '../../shared/timer/timer';
@@ -18,15 +31,28 @@ import SwitcherSettings from './switcher-settings/switcher-settings';
 
 const DealerLobby = (): JSX.Element => {
   const dispatch = useDispatch();
+  const history = useHistory();
   dispatch(gameActions.changePlayers(mockUsers));
   dispatch(gameActions.changeMessages(mockMessages));
   dispatch(gameActions.changeIssues(mockIssues));
+  dispatch(gameSettingsActions.changeSettings(mockGameSettings));
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
   const messagesIds = new Set(messages.map((item) => item.id));
   const issues = useSelector(gameSelectors.selectIssues);
+  const dealer = useSelector(currentUserSelectors.selectCurrentUser);
+  const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
 
+  const handleCancel = async () => {
+    history.push('/');
+    await dispatch(thunks.finishGameThunk({ dealerId: dealer.id }));
+  };
+
+  const handleStart = async () => {
+    history.push('/game/:gameId');
+    await dispatch(thunks.startGameThunk({ settings: gameSettings }));
+  };
   return (
     <div className={styles.rootContainer}>
       <div className={styles.wrapper}>
@@ -60,14 +86,14 @@ const DealerLobby = (): JSX.Element => {
           <Button
             type="button"
             className={styles.btnStart}
-            // onClick={handleClickConnect}
+            onClick={handleStart}
           >
             Start Game
           </Button>
           <Button
             type="button"
             className={styles.btnCancel}
-            // onClick={handleClickConnect}
+            onClick={handleCancel}
           >
             Cancel game
           </Button>
@@ -134,17 +160,17 @@ const DealerLobby = (): JSX.Element => {
             </div>
           </div>
         </div>
+      </div>
+      {sideBar ? (
+        <div className={styles.sideBar}>
+          <SideBar
+            message={{
+              messagesProps: messages,
+              users: users.filter((user) => messagesIds.has(user.id)),
+            }}
+          />
         </div>
-        {sideBar ? (
-          <div className={styles.sideBar}>
-            <SideBar
-              message={{
-                messagesProps: messages,
-                users: users.filter((user) => messagesIds.has(user.id)),
-              }}
-            />
-          </div>
-        ) : null}
+      ) : null}
     </div>
   );
 };

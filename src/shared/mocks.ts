@@ -1,7 +1,9 @@
 import {
+  GameSettings,
   Issue,
   Message,
   TCardScoreSpecialValue,
+  TCardType,
   TRoundResult,
   TUserRole,
   User,
@@ -239,3 +241,12 @@ export const mockMessages = [
     message: 'ghkjklpkouhuvghijkl',
   }).toObject(),
 ];
+
+
+export const mockGameSettings = new GameSettings({
+  canDealerPlay: true,
+  autoAdmit: false,
+  autoFlipCards: true,
+  canScoreAfterFlip: false,
+  cardType: TCardType.custom,
+}).toObject();
