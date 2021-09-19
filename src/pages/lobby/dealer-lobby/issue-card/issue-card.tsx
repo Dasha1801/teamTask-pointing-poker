@@ -33,8 +33,16 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
         updatedIssue: issueFields,
       })
     );
-    console.log(issueFields);
     handleClose();
+  };
+
+  const handleDeleteIssue = async () => {
+    await dispatch(
+      thunks.deleteIssueThunk({
+        dealerId: dealer.id,
+        deletedIssueId: issueFields.id,
+      })
+    );
   };
 
   return (
@@ -46,7 +54,11 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
           className={styles.iconEdit}
           onClick={handleShowEdit}
         ></img>
-        <img src={deleteIssue} className={styles.iconDelete}></img>
+        <img
+          src={deleteIssue}
+          className={styles.iconDelete}
+          onClick={handleDeleteIssue}
+        ></img>
       </div>
       <div className={styles.priority}>Priority {infoIssue.priority}</div>
 
