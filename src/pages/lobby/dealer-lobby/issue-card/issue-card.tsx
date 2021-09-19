@@ -17,6 +17,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const [showEdit, setShowEdit] = useState(false);
   const [issueFields, setIssueFields] = useState(infoIssue);
+  const [warning, setWarning] = useState('');
   const dispatch = useDispatch();
   const handleClose = () => {
     setShowEdit(false);
@@ -26,7 +27,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
     setShowEdit(true);
   };
 
-  const handleSubmit = async () => {
+  const handleUpdateIssue = async () => {
     await dispatch(
       thunks.updateIssueThunk({
         dealerId: dealer.id,
@@ -34,6 +35,14 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       })
     );
     handleClose();
+  };
+
+  const handleSubmit = () => {
+    if (issueFields.link !== '' && issueFields.title !== '') {
+      handleUpdateIssue();
+    } else {
+      setWarning('*fields in the form cannot be empty');
+    }
   };
 
   const handleDeleteIssue = async () => {
@@ -68,10 +77,13 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
           buttonOkProps={{ onClick: handleSubmit }}
           buttonCancelText="No"
           buttonOkText="Yes"
+          contentProps={{className:`${styles.warning}`, }}
+        
         >
           <PopupChangeIssue
             info={issueFields}
             setIssueFields={setIssueFields}
+            warning={warning}
           />
         </BasePopup>
       )}

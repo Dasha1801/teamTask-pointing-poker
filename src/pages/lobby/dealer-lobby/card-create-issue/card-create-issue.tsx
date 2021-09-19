@@ -18,6 +18,7 @@ const CreateIssueCard = (): JSX.Element => {
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const [showPopup, setShowPopup] = useState(false);
   const [issueFields, setIssueFields] = useState(emptyIssue);
+  const [warning, setWarning] = useState('');
   const dispatch = useDispatch();
   const handleClose = () => {
     setShowPopup(false);
@@ -27,7 +28,7 @@ const CreateIssueCard = (): JSX.Element => {
     setShowPopup(true);
   };
 
-  const handleSubmit = async () => {
+  const handleCreateIssue = async () => {
     await dispatch(
       thunks.createIssueThunk({
         dealerId: dealer.id,
@@ -37,6 +38,14 @@ const CreateIssueCard = (): JSX.Element => {
     handleClose();
     setIssueFields(emptyIssue);
   };
+
+  const handleSubmit = () => {
+    if (issueFields.link !== '' && issueFields.title !== '') {
+      handleCreateIssue();
+    } else {
+      setWarning('*fields in the form cannot be empty');
+    }
+  }
 
   return (
     <div className={styles.cardCreateIssue}>
@@ -54,6 +63,7 @@ const CreateIssueCard = (): JSX.Element => {
           <PopupChangeIssue
             info={issueFields}
             setIssueFields={setIssueFields}
+            warning={warning}
           />
         </BasePopup>
       )}

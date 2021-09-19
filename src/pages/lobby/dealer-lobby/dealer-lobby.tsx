@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,6 +32,8 @@ const DealerLobby = (): JSX.Element => {
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
 
+  const [link, setLink] = useState('');
+
   const handleCancel = async () => {
     history.push('/');
     await dispatch(thunks.finishGameThunk({ dealerId: dealer.id }));
@@ -56,14 +58,13 @@ const DealerLobby = (): JSX.Element => {
               <Form.Control
                 type="url"
                 placeholder="http://pockerplanning....."
-                // value={url}
                 className={styles.input}
-                // onChange={handleChange}
+                onChange={(event) => setLink(event.target.value)}
               />
               <Button
                 type="button"
                 className={styles.btn}
-                // onClick={handleClickConnect}
+                onClick={() => navigator.clipboard.writeText(link)}
               >
                 Copy
               </Button>

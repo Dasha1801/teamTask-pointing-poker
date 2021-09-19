@@ -5,11 +5,13 @@ import styles from './popupChangeIssue.module.scss';
 interface IPropsChangeIssue {
   info: IIssue;
   setIssueFields: React.Dispatch<React.SetStateAction<IIssue>>;
+  warning: string;
 }
 
 const PopupChangeIssue = ({
   info,
   setIssueFields,
+  warning,
 }: IPropsChangeIssue): JSX.Element => {
   return (
     <div className={styles.container}>
@@ -58,6 +60,7 @@ const PopupChangeIssue = ({
           </select>
         </label>
       </form>
+      <div className={styles.warning}>{warning}</div>
     </div>
   );
 };
