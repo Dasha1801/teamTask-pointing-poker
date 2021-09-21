@@ -32,7 +32,6 @@ const DealerLobby = (): JSX.Element => {
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
 
-
   const clientHeight = window.screen.height;
   const handleCancel = async () => {
     history.push('/');
