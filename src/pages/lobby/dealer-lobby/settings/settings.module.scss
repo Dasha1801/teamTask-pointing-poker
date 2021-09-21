@@ -1,0 +1,77 @@
+$font: var(--second-font);
+.settingsList {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  text-align: start;
+}
+.itemSettings {
+  display: flex;
+  margin-bottom: 1%;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.setting {
+  font-family: $font;
+  font-weight: bold;
+  font-size: 18px;
+}
+.select {
+  border: 1px solid #2b3a67;
+  box-sizing: border-box;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 0px 0px 0px 10px;
+  width: 35%;
+}
+.container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.switcher {
+  cursor: pointer;
+  width: 3em !important;
+  height: 1.4em;
+}
+
+.right {
+  text-align: start;
+}
+
+
+@media (max-width: 1080px) {
+  .settingsList {
+    width: 65%;
+  }
+  .setting {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 820px) {
+  .settingsList {
+    width: 85%;
+  }
+  .setting {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 530px) {
+  .settingsList {
+    width: 80%;
+    text-align: start;
+    margin: 0 auto;
+  }
+
+  .select {
+    width: 45%;
+  }
+}
+
+@media (max-width: 425px) {
+  .setting {
+    font-size: 12px;
+  }
+}

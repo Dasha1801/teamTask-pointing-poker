@@ -3,7 +3,7 @@ import { GameSettings, IGameSettings } from '../types';
 
 const changeSettings: CaseReducer<
   IGameSettings,
-  PayloadAction<IGameSettings>
+  PayloadAction<Partial<IGameSettings>>
 > = (state, action) => {
   Object.assign(state, action.payload);
 };

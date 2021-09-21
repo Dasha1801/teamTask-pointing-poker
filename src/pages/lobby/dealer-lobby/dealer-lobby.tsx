@@ -13,13 +13,12 @@ import { thunks } from '../../../redux/thunks/thunks';
 import editIssue from '../../../shared/assets/icons/edit-issue.svg';
 import SideBar from '../../shared/side-bar/side-bar';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
-import Timer from '../../shared/timer/timer';
 import AboutDealer from '../about-dealer/about-dealer';
 import Members from '../members/members';
 import CreateIssueCard from './card-create-issue/card-create-issue';
 import styles from './dealer-lobby.module.scss';
 import IssueCard from './issue-card/issue-card';
-import SwitcherSettings from './switcher-settings/switcher-settings';
+import Settings from './settings/settings';
 
 const DealerLobby = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -34,6 +33,7 @@ const DealerLobby = (): JSX.Element => {
 
   const [link, setLink] = useState('');
 
+  const clientHeight = window.screen.height;
   const handleCancel = async () => {
     history.push('/');
     await dispatch(thunks.finishGameThunk({ dealerId: dealer.id }));
@@ -48,7 +48,11 @@ const DealerLobby = (): JSX.Element => {
       <div className={styles.wrapper}>
         <div className={styles.titleSprint}>
           <SprintHeading issues={issues} />
-          <img src={editIssue} className={styles.iconIssue}></img>
+          <img
+            src={editIssue}
+            className={styles.iconIssue}
+            onClick={() => scroll(0, clientHeight)}
+          ></img>
         </div>
         <AboutDealer />
         <div className={styles.containerLinkToLobby}>
@@ -104,50 +108,7 @@ const DealerLobby = (): JSX.Element => {
 
         <div className={styles.containerSettings}>
           <div className={styles.titleSettings}>Game settings:</div>
-
-          <div className={styles.settingsList}>
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Scram master as player:</h5>
-              <SwitcherSettings />
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Changing card in round end:</h5>
-              <SwitcherSettings />
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Is timer needed:</h5>
-              <SwitcherSettings />
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Score type:</h5>
-              <select className={styles.select}>
-                <option>aaaaaaaaaaaaaaa</option>
-                <option>sssssssssss</option>
-                <option>gggggggggg</option>
-              </select>
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Score type (Short):</h5>
-              <select className={styles.select}>
-                <option>aaaaaaaaaaaaaaa</option>
-                <option>sssssssssss</option>
-                <option>gggggggggg</option>
-              </select>
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Round time:</h5>
-              <Timer minutes={2} seconds={30} />
-            </div>
-
-            <div className={styles.itemSettings}>
-              <h5 className={styles.setting}>Add card values:</h5>
-            </div>
-          </div>
+          <Settings />
         </div>
       </div>
       {sideBar ? (

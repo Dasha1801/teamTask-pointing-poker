@@ -106,44 +106,11 @@ $font: var(--second-font);
 .containerSettings {
   padding: 2% 0;
 }
-.settingsList {
-  display: flex;
-  width: 50%;
-  flex-direction: column;
-  text-align: start;
-}
-.itemSettings {
-  display: flex;
-  margin-bottom: 1%;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-}
-.setting {
-  font-family: $font;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.select {
-  border: 1px solid #2b3a67;
-  box-sizing: border-box;
-  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 0px 0px 0px 10px;
-  width: 35%;
-}
 
 @media (max-width: 1080px) {
   .btnStart,
   .btnCancel {
     width: 20%;
-  }
-
-  .settingsList {
-    width: 65%;
-  }
-  .setting {
-    font-size: 16px;
   }
 }
 
@@ -188,12 +155,6 @@ $font: var(--second-font);
   .btnCancel {
     font-size: 14px;
     width: 25%;
-  }
-  .settingsList {
-    width: 85%;
-  }
-  .setting {
-    font-size: 14px;
   }
 }
 
@@ -249,9 +210,6 @@ $font: var(--second-font);
   .card {
     min-width: 100%;
   }
-  .select {
-    width: 45%;
-  }
 }
 
 @media (max-width: 425px) {
@@ -263,8 +221,5 @@ $font: var(--second-font);
   .btnStart,
   .btnCancel {
     font-size: 8px;
-  }
-  .setting {
-    font-size: 12px;
   }
 }

@@ -1,12 +1,9 @@
 import {
-  GameSettings,
   Issue,
   Message,
-  TCardScoreSpecialValue,
-  TCardType,
-  TRoundResult,
+  TCardScoreSpecialValue, TRoundResult,
   TUserRole,
-  User,
+  User
 } from '../redux/types';
 import { TStatusCode } from './constants';
 
@@ -243,10 +240,10 @@ export const mockMessages = [
 ];
 
 
-export const mockGameSettings = new GameSettings({
-  canDealerPlay: true,
-  autoAdmit: false,
-  autoFlipCards: true,
-  canScoreAfterFlip: false,
-  cardType: TCardType.custom,
-}).toObject();
+// export const mockGameSettings = new GameSettings({
+//   canDealerPlay: true,
+//   autoAdmit: false,
+//   autoFlipCards: true,
+//   canScoreAfterFlip: false,
+//   cardType: TCardType.custom,
+// }).toObject();
