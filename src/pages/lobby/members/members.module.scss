@@ -1,5 +1,6 @@
+$font: var(--second-font);
 .container {
-  padding: 2% 0 10%;
+  padding: 2% 0;
   color: gray;
 }
 .btnWrapper {
@@ -8,9 +9,11 @@
 }
 
 .h2 {
-  font-size: 22px;
   color: black;
-  margin-bottom: 5%;
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 700;
+  font-family: $font;
 }
 
 .playersContainer {
@@ -40,13 +43,16 @@
     font-size: 11px;
   }
   .h2 {
-    font-size: 19px;
+    font-size: 17px;
   }
 }
 
 @media (max-width: 810px) {
   .playersContainer {
     font-size: 13px;
+  }
+  .h2 {
+    font-size: 15px;
   }
 }
 

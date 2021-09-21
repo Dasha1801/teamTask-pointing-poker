@@ -7,6 +7,7 @@ import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
 import styles from './app.module.scss';
 import { GamePage } from './game/game-page-player/game-page';
+import DealerLobby from './lobby/dealer-lobby/dealer-lobby';
 import PlayerLobby from './lobby/player-lobby';
 import Footer from './shared/footer/footer';
 import Header from './shared/header/header';
@@ -38,7 +39,7 @@ function App(): JSX.Element {
                 </Route>
                 <Route path="/lobby/:gameId">
                   {currentUser.role === TUserRole.dealer ? (
-                    <div>Lobby page dealer</div>
+                    <DealerLobby />
                   ) : (
                     <PlayerLobby />
                   )}

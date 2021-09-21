@@ -13,16 +13,18 @@ export interface IGameSettings {
   autoFlipCards: boolean;
   canScoreAfterFlip: boolean;
   cardType: TCardType;
+  showTimer: boolean;
 }
 
 export class GameSettings {
   timer?: ITimer;
   cardBackImage?: string;
-  canDealerPlay = true;
-  autoAdmit = true;
-  autoFlipCards = true;
+  canDealerPlay = false;
+  autoAdmit = false;
+  autoFlipCards = false;
   canScoreAfterFlip = false;
   cardType = TCardType.fib;
+  showTimer= false;
 
   constructor(settings?: Partial<IGameSettings>) {
     Object.assign(this, settings);
@@ -37,6 +39,7 @@ export class GameSettings {
       autoFlipCards: this.autoFlipCards,
       canScoreAfterFlip: this.canScoreAfterFlip,
       cardType: this.cardType,
+      showTimer: this.showTimer
     };
   }
 }

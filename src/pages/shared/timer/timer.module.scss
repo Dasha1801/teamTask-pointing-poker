@@ -4,7 +4,7 @@ $font: var(--second-font);
 .timer {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 40%;
   border-radius: 4px;
   box-shadow: $shadow;
   font-family: $font;
@@ -31,13 +31,13 @@ $font: var(--second-font);
 }
 
 .input {
-  width: 74px;
-  height: 60px;
+  width: 40%;
+  height: 50px;
   background: transparent;
   border: none;
   border-radius: 6px;
   color: #000;
-  font-size: 64px;
+  font-size: 3em;
   text-align: right;
   -moz-appearance: textfield;
 }
@@ -51,4 +51,49 @@ $font: var(--second-font);
 .input:focus {
   box-shadow: 0px 4px 4px 0px #0000002e inset;
   outline: none;
+}
+
+@media (max-width: 980px) {
+  .input {
+    height: 40px;
+    font-size: 2.5em;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .input {
+    height: 35px;
+    font-size: 1.8em;
+    width: 30%;
+  }
+  .legend {
+    font-size: 10px;
+    line-height: 13px;
+  }
+}
+
+@media (max-width: 530px) {
+  .timer{
+    width: 50%;
+  }
+  .input {
+    height: 30px;
+    font-size: 1.6em;
+  }
+  .legend {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .colon{
+    font-size: 21px;
+    line-height: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .input {
+    height: 20px;
+    font-size: 1.2em;
+  }
 }

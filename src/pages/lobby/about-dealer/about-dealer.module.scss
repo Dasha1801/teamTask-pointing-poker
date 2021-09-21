@@ -1,53 +1,33 @@
 .container {
-  padding: 2% 0 10%;
+  padding: 2% 0 1%;
   color: gray;
 }
-  .title {
-    margin-bottom: 2%;
-    color: black;
-    font-size: 22px;
-  }
-  .issues {
-    font-size: 16px;
-  }
-  .role {
-    font-size: 12px;
-    text-align: start;
-  }
-  .playersContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    font-size: 17px;
-  }
+.role {
+  font-size: 12px;
+  text-align: start;
+}
+.playersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 17px;
+}
 
-@media (max-width: 1200px){
-  .playersContainer{
+@media (max-width: 1200px) {
+  .playersContainer {
     font-size: 15px;
   }
 }
-@media (max-width: 940px) {
-
-    .title {
-      font-size: 19px;
-    }
-    .issues {
-      font-size: 14px;
-    }
-  
-}
-@media (max-width: 810px){
-  .playersContainer{
+@media (max-width: 810px) {
+  .playersContainer {
     font-size: 13px;
   }
 }
 @media (max-width: 530px) {
-  
-    .role {
-      margin-left: 10%;
-    }
-    .playersContainer {
-      justify-content: space-evenly;
-    }
+  .role {
+    margin-left: 10%;
   }
-
+  .playersContainer {
+    justify-content: space-evenly;
+  }
+}
