@@ -6,6 +6,7 @@
   margin: 0 auto;
   font-size: 22px;
   font-weight: 700;
+  position: relative;
 }
 
 .titlePopup {
@@ -42,7 +43,10 @@
 
 .warning {
   color: red;
-  font-size: 0.7em;
+  font-size: 0.6em;
+  position: absolute;
+  top: 95%;
+  left: 10%;
 }
 
 @media (max-width: 765px) {

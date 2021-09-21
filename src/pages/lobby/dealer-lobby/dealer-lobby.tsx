@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,8 +30,8 @@ const DealerLobby = (): JSX.Element => {
   const issues = useSelector(gameSelectors.selectIssues);
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
+  const gameId = useSelector(gameSelectors.selectGame).id;
 
-  const [link, setLink] = useState('');
 
   const clientHeight = window.screen.height;
   const handleCancel = async () => {
@@ -63,12 +63,13 @@ const DealerLobby = (): JSX.Element => {
                 type="url"
                 placeholder="http://pockerplanning....."
                 className={styles.input}
-                onChange={(event) => setLink(event.target.value)}
+                value={gameId}
+                onChange={() => null}
               />
               <Button
                 type="button"
                 className={styles.btn}
-                onClick={() => navigator.clipboard.writeText(link)}
+                onClick={() => navigator.clipboard.writeText(gameId)}
               >
                 Copy
               </Button>

@@ -5,7 +5,7 @@ $font: var(--main-font);
 $bg-overlay: var(--bg-overlay);
 
 .overlay {
-  position: absolute;
+  position: fixed;
   z-index: $overlay-z-index;
   top: 0;
   bottom: 0;
