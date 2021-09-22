@@ -9,6 +9,8 @@ export enum TIssuePriority {
   medium = 'medium',
   high = 'high',
 }
+
+
 export interface IIssue {
   id: string;
   title: string;

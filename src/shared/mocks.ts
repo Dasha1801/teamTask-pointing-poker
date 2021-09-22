@@ -1,5 +1,6 @@
 import {
   Issue,
+  Message,
   TCardScoreSpecialValue,
   TRoundResult,
   TUserRole,
@@ -119,7 +120,7 @@ export const mockCurrentUser = new User({
   role: TUserRole.dealer,
   firstName: 'Simon',
   lastName: 'Pit',
-  id: '2',
+  id: '22',
 }).toObject();
 
 export const mockCurrentUser1 = new User({
@@ -129,7 +130,7 @@ export const mockCurrentUser1 = new User({
   image:
     'https://likeyou.io/wp-content/uploads/2019/02/Snimok-ekrana-2019-02-15-v-16.03.56.png',
   jobPosition: 'FrontEnd Developer',
-  id: '3',
+  id: '32',
 }).toObject();
 
 export const mockDealer = new User({
@@ -137,7 +138,7 @@ export const mockDealer = new User({
   jobPosition: 'Developer',
   firstName: 'Simon',
   lastName: 'Pit',
-  id: '2',
+  id: '22',
 }).toObject();
 
 export const mockIssue = new Issue({ title: 'Planning 23' }).toObject();
@@ -181,13 +182,25 @@ export const mockLastRoundResult4: TRoundResult = {
 
 export const mockIssues = [
   new Issue({
-    id: '1',
+    id: '99',
     title: 'Planning 23',
     lastRoundResult: mockLastRoundResult,
   }).toObject(),
-  new Issue({ id: '2', title: '123456', lastRoundResult: mockLastRoundResult2 }).toObject(),
-  new Issue({ id: '3', title: '222285', lastRoundResult: mockLastRoundResult3 }).toObject(),
-  new Issue({ id: '4', title: '223385', lastRoundResult: mockLastRoundResult4 }).toObject(),
+  new Issue({
+    id: '2',
+    title: '123456',
+    lastRoundResult: mockLastRoundResult2,
+  }).toObject(),
+  new Issue({
+    id: '3',
+    title: '222285',
+    lastRoundResult: mockLastRoundResult3,
+  }).toObject(),
+  new Issue({
+    id: '4',
+    title: '223385',
+    lastRoundResult: mockLastRoundResult4,
+  }).toObject(),
 ];
 
 export const mockUsers = [
@@ -240,5 +253,28 @@ export const mockUsers = [
     image:
       'https://cdn.maximonline.ru/ec/5b/70/ec5b701b6dc90d27cbde89b6e19a0d07/728x728_1_848ca9ef388ee0fdc2c538677e5709a7@1024x1024_0xac120002_17992516771550233711.jpg',
     jobPosition: 'FrontEnd Developer',
+  }).toObject(),
+];
+
+export const mockMessages = [
+  new Message({
+    id: '7',
+    userId: '22',
+    message: 'ghkjklpkouhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '6',
+    userId: '23',
+    message: 'ghkjklpkoasdfghjytresdfghuhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '5',
+    userId: '24',
+    message: 'ghkjertyjkl,jmhngfklpkouhuvghijkl',
+  }).toObject(),
+  new Message({
+    id: '7',
+    userId: '25',
+    message: 'ghkjklpkouhuvghijkl',
   }).toObject(),
 ];

@@ -1,0 +1,52 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.iconDelete,
+.iconEdit {
+  display: block;
+}
+.iconDelete {
+  width: 19px;
+  height: 24px;
+}
+.iconEdit {
+  width: 19px;
+  height: 21px;
+}
+.name {
+  font-size: 1em;
+  margin-bottom: 0;
+  width: 70%;
+  text-align: start;
+}
+.priority {
+  text-align: start;
+  font-size: 0.5em;
+  margin-top: -1%;
+}
+
+@media (max-width: 820px) {
+  .name {
+    font-size: 0.85em;
+  }
+  .priority {
+    font-size: 0.45em;
+    margin-top: -3%;
+  }
+  .iconDelete {
+    width: 17px;
+    height: 21px;
+  }
+  .iconEdit {
+    width: 17px;
+    height: 19px;
+  }
+}
+
+@media (max-width: 530px) {
+  .priority {
+    margin-top: -2%;
+  }
+}
