@@ -6,6 +6,7 @@ import { currentUserSelectors } from '../redux/selectors';
 import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
 import styles from './app.module.scss';
+import GameResult from './game-result/game-result';
 import { GamePage } from './game/game-page-player/game-page';
 import PlayerLobby from './lobby/player-lobby';
 import Footer from './shared/footer/footer';
@@ -28,6 +29,9 @@ function App(): JSX.Element {
               <Switch>
                 <Route exact path="/">
                   <WelcomePage />
+                </Route>
+                <Route exact path="/game/result">
+                  <GameResult />
                 </Route>
                 <Route path="/game/:gameId">
                   {currentUser.role === TUserRole.dealer ? (

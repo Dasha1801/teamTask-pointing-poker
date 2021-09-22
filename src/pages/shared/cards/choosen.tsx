@@ -1,6 +1,6 @@
 import React from 'react';
 import s from './cards.module.scss';
-import choosen from '../../../../shared/assets/icons/chosen.svg';
+import choosen from '../../../shared/assets/icons/chosen.svg';
 
 function ChoosenCard(): JSX.Element {
   return (

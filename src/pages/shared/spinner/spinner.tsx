@@ -1,8 +1,8 @@
 import React from 'react';
 import loading from '../../../shared/assets/icons/loading.svg';
-import s from '../components/cards/cards.module.scss';
+import s from './spinner.module.scss';
 
-const Spinner = (): JSX.Element => {
+const LoadSpinner = (): JSX.Element => {
   return (
     <>
       <img src={loading} alt="Loading..." className={s.loading} />
@@ -10,4 +10,4 @@ const Spinner = (): JSX.Element => {
   );
 };
 
-export default Spinner;
+export default LoadSpinner;

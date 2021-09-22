@@ -21,7 +21,7 @@ function Switcher(props: React.PropsWithChildren<ISwitcherProps>): JSX.Element {
                 className={`${styles.switcher} form-check-input`}
                 type="checkbox"
                 id="isObserver"
-                {...props}
+                {...props.reg}
               />
             </label>
           </div>

@@ -1,0 +1,33 @@
+$font: var(--second-font);
+
+.pageGamResult {
+  width: 100%;
+}
+
+.headingContainer {
+  display: flex;
+  justify-content: flex-start;
+  margin: 40px 0 50px 12vw;
+}
+
+.issueStatisticBlock {
+  margin: 20px 0 30px 0;
+  display: flex;
+  column-gap: 20px;
+}
+
+.setOfIssues {
+  margin-left: 46px;
+}
+
+.groupedVotes {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+
+.percentageCard {
+  font-family: $font;
+  font-size: 24px;
+  font-weight: bold;
+}

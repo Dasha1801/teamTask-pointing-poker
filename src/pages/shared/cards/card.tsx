@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { TCardScore } from '../../../../redux/types/card';
-import breakImage from '../../../../shared/assets/icons/break.svg';
+import { TCardScore } from '../../../redux/types/card';
+import breakImage from '../../../shared/assets/icons/break.svg';
 import s from './cards.module.scss';
 import ChoosenCard from './choosen';
 

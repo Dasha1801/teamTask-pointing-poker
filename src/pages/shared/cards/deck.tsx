@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useState } from 'react';
-import { TCardType } from '../../../../redux/types/card';
+import { TCardType } from '../../../redux/types/card';
 import PlayCard from './card';
 import s from './cards.module.scss';
 import { deck } from './constants';
