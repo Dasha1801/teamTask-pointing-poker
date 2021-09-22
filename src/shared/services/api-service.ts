@@ -1,173 +1,252 @@
 import {
-  IThunkScoreIssueParameters,
-  IThunkFinishGameParameters,
-  IThunkChangeCurrentIssueParameters,
-  IThunkStartGameParameters,
-  IThunkDeleteIssueParameters,
-  IThunkUpdateIssueParameters,
-  IThunkCreateIssueParameters,
-  IThunkKickPlayerParameters,
-  IThunkKickPlayerVoteParameters,
-  IThunkPostMessageParameters,
-  IThunkCheckGameParameters,
-  IThunkStartRoundParameters,
-  IThunkLeaveGameParameters,
-  IThunkAddPlayerParameters,
-  IThunkCreateGameParameters,
+  IClientAddPlayerParameters,
+  IClientCancelGameParameters,
+  IClientChangeCurrentIssueParameters,
+  IClientCheckGameParameters,
+  IClientCreateGameParameters,
+  IClientCreateIssueParameters,
+  IClientDeleteIssueParameters,
+  IClientFinishGameParameters,
+  IClientKickPlayerParameters,
+  IClientLeaveGameParameters,
+  IClientPostMessageParameters,
+  IClientScoreIssueParameters,
+  IClientStartGameParameters,
+  IClientStartRoundParameters,
+  IClientStartVotingToKickParameters,
+  IClientUpdateIssueParameters,
+  IClientVoteToKickParameters,
 } from '../../redux/types';
+import { APP_CONSTANTS } from '../constants';
+import { socketIO } from './socket';
 import {
+  IAddPlayerResponse,
+  IChangeCurrentIssueResponse,
+  ICheckGameResponse,
   IConnectResponse,
   ICreateGameResponse,
-  IAddPlayerResponse,
-  IStartRoundResponse,
-  IPostMessageResponse,
-  IFinishGameResponse,
-  IChangeCurrentIssueResponse,
   ICreateIssueResponse,
-  IUpdateIssueResponse,
-  IDeleteIssueResponse,
-  ILeaveGameResponse,
-  IStartGameResponse,
-  ICancelGameResponse,
   IKickPlayerResponse,
-  ICheckGameResponse,
+  ILeaveGameResponse,
+  IPostMessageResponse,
+  IResponse,
+  IStartGameResponse,
+  IStartRoundResponse,
 } from './types';
-import {
-  cancelGameResponseSuccess,
-  changeCurrentIssueResponseSuccess,
-  createIssueResponseSuccess,
-  deleteIssueResponseSuccess,
-  finishGameResponseSuccess,
-  kickPlayerResponseSuccess,
-  leaveGameResponseSuccess,
-  mockAddPlayerResponseSuccess,
-  mockConnectResponseSuccess,
-  mockCreateGameResponseSuccess,
-  mockPostMessageResponseSuccess,
-  scoreIssueResponseSuccess,
-  startGameResponseSuccess,
-  startRoundResponseSuccess,
-  updateIssueResponseSuccess,
-  mockCheckGameResponseSuccess,
-} from '../mocks';
+
+async function asyncEmit<T, K>(event: string, data: T): Promise<K> {
+  return new Promise((resolve) =>
+    socketIO.emit(event, data, (response: K) => {
+      return resolve(response);
+    })
+  );
+}
 
 export class ApiService {
   static async connect(): Promise<IConnectResponse> {
-    const response: IConnectResponse = await Promise.resolve(
-      mockConnectResponseSuccess
+    const json = fetch(`${APP_CONSTANTS.SERVER_URL}/connect`).then((response) =>
+      response.json()
     );
-    return response;
+    socketIO.connect();
+    return { ...json, socketId: socketIO.id };
   }
 
-  static async createGame({}: IThunkCreateGameParameters): Promise<ICreateGameResponse> {
-    const response: ICreateGameResponse = await Promise.resolve(
-      mockCreateGameResponseSuccess
-    );
-    return response;
+  static async createGame(
+    dealerInfo: IClientCreateGameParameters
+  ): Promise<Partial<ICreateGameResponse>> {
+    const result: Partial<ICreateGameResponse> = await asyncEmit<
+      IClientCreateGameParameters,
+      Partial<ICreateGameResponse>
+    >('createGame', dealerInfo);
+    return result;
   }
 
-  static async addPlayer({}: IThunkAddPlayerParameters): Promise<IAddPlayerResponse> {
-    const response: IAddPlayerResponse = await Promise.resolve(
-      mockAddPlayerResponseSuccess
-    );
-    return response;
+  static async addPlayer({
+    addedPlayer,
+    gameId,
+  }: IClientAddPlayerParameters): Promise<Partial<IAddPlayerResponse>> {
+    const result: Partial<IAddPlayerResponse> = await asyncEmit<
+      IClientAddPlayerParameters,
+      Partial<IAddPlayerResponse>
+    >('addPlayer', { addedPlayer, gameId });
+    return result;
   }
 
-  static async checkGame({}: IThunkCheckGameParameters): Promise<ICheckGameResponse> {
-    const response: ICheckGameResponse = await Promise.resolve(
-      mockCheckGameResponseSuccess
-    );
-    return response;
+  static async checkGame({
+    gameId,
+  }: IClientCheckGameParameters): Promise<ICheckGameResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/check-game`, {
+      method: 'POST',
+      body: JSON.stringify({ gameId }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then((response) => response.json());
+    return json;
   }
 
-  static async postMessage({}: IThunkPostMessageParameters): Promise<IPostMessageResponse> {
-    const response: IPostMessageResponse = await Promise.resolve(
-      mockPostMessageResponseSuccess
-    );
-    return response;
+  static async postMessage({
+    playerId,
+    message,
+    gameId,
+  }: IClientPostMessageParameters): Promise<IPostMessageResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/post-message`, {
+      method: 'POST',
+      body: JSON.stringify({ playerId, message, gameId }),
+    }).then((response) => response.json());
+    return json;
   }
 
-  static async leaveGame({}: IThunkLeaveGameParameters): Promise<ILeaveGameResponse> {
-    const response: ILeaveGameResponse = await Promise.resolve(
-      leaveGameResponseSuccess
-    );
-    return response;
+  static async leaveGame({
+    playerId,
+    gameId,
+  }: IClientLeaveGameParameters): Promise<ILeaveGameResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/leave-message`, {
+      method: 'POST',
+      body: JSON.stringify({ playerId, gameId }),
+    }).then((response) => response.json());
+    return json;
   }
 
-  static async startRound({}: IThunkStartRoundParameters): Promise<IStartRoundResponse> {
-    const response: IStartRoundResponse = await Promise.resolve(
-      startRoundResponseSuccess
-    );
-    return response;
+  static async startRound({
+    dealerId,
+    issueId,
+    gameId,
+  }: IClientStartRoundParameters): Promise<IStartRoundResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/start-round`, {
+      method: 'POST',
+      body: JSON.stringify({ dealerId, issueId, gameId }),
+    }).then((response) => response.json());
+    return json;
   }
 
-  static async kickPlayer({}: IThunkKickPlayerParameters): Promise<IKickPlayerResponse> {
-    const response: IKickPlayerResponse = await Promise.resolve(
-      kickPlayerResponseSuccess
-    );
-    return response;
+  static async kickPlayer({
+    dealerId,
+    kickedPlayerId,
+    gameId,
+  }: IClientKickPlayerParameters): Promise<Partial<IKickPlayerResponse>> {
+    const result = await asyncEmit<
+      IClientKickPlayerParameters,
+      Partial<IKickPlayerResponse>
+    >('kickPlayer', { dealerId, kickedPlayerId, gameId });
+    return result;
   }
 
-  static async kickPlayerVote({}: IThunkKickPlayerVoteParameters): Promise<IKickPlayerResponse> {
-    const response: IKickPlayerResponse = await Promise.resolve(
-      kickPlayerResponseSuccess
-    );
-    return response;
+  static async startVotingToKick({
+    votingPlayerId,
+    kickedPlayerId,
+    gameId,
+  }: IClientStartVotingToKickParameters): Promise<IResponse> {
+    const result = await asyncEmit<
+      IClientStartVotingToKickParameters,
+      IResponse
+    >('startVotingToKick', { votingPlayerId, kickedPlayerId, gameId });
+    return result;
   }
 
-  static async createIssue({}: IThunkCreateIssueParameters): Promise<ICreateIssueResponse> {
-    const response: ICreateIssueResponse = await Promise.resolve(
-      createIssueResponseSuccess
+  static async voteToKick({
+    votingPlayerId,
+    kickedPlayerId,
+    gameId,
+    accept,
+  }: IClientVoteToKickParameters): Promise<IResponse> {
+    const result = await asyncEmit<IClientVoteToKickParameters, IResponse>(
+      'voteToKick',
+      { votingPlayerId, kickedPlayerId, gameId, accept }
     );
-    return response;
+    return result;
   }
 
-  static async updateIssue({}: IThunkUpdateIssueParameters): Promise<IUpdateIssueResponse> {
-    const response: IUpdateIssueResponse = await Promise.resolve(
-      updateIssueResponseSuccess
-    );
-    return response;
+  static async createIssue({
+    dealerId,
+    addedIssue,
+    gameId,
+  }: IClientCreateIssueParameters): Promise<Partial<ICreateIssueResponse>> {
+    const result = await asyncEmit<
+      IClientCreateIssueParameters,
+      Partial<ICreateGameResponse>
+    >('createIssue', { dealerId, addedIssue, gameId });
+    return result;
   }
 
-  static async deleteIssue({}: IThunkDeleteIssueParameters): Promise<IDeleteIssueResponse> {
-    const response: IDeleteIssueResponse = await Promise.resolve(
-      deleteIssueResponseSuccess
+  static async updateIssue({
+    dealerId,
+    updatedIssue,
+    gameId,
+  }: IClientUpdateIssueParameters): Promise<IResponse> {
+    const result = await asyncEmit<IClientUpdateIssueParameters, IResponse>(
+      'updateIssue',
+      { dealerId, updatedIssue, gameId }
     );
-    return response;
+    return result;
   }
 
-  static async startGame({}: IThunkStartGameParameters): Promise<IStartGameResponse> {
-    const response: IStartGameResponse = await Promise.resolve(
-      startGameResponseSuccess
+  static async deleteIssue({
+    dealerId,
+    deletedIssueId,
+    gameId,
+  }: IClientDeleteIssueParameters): Promise<IResponse> {
+    const result = await asyncEmit<IClientDeleteIssueParameters, IResponse>(
+      'deleteIssue',
+      { dealerId, deletedIssueId, gameId }
     );
-    return response;
+    return result;
   }
 
-  static async cancelGame({}: IThunkFinishGameParameters): Promise<ICancelGameResponse> {
-    const response: ICancelGameResponse = await Promise.resolve(
-      cancelGameResponseSuccess
-    );
-    return response;
+  static async startGame({
+    dealerId,
+    settings,
+    gameId,
+  }: IClientStartGameParameters): Promise<Partial<IStartGameResponse>> {
+    const result = await asyncEmit<
+      IClientStartGameParameters,
+      Partial<IStartGameResponse>
+    >('startGame', { dealerId, gameId, settings });
+    return result;
   }
 
-  static async scoreIssue({}: IThunkScoreIssueParameters): Promise<IStartRoundResponse> {
-    const response: IStartRoundResponse = await Promise.resolve(
-      scoreIssueResponseSuccess
+  static async cancelGame({
+    dealerId,
+    gameId,
+  }: IClientCancelGameParameters): Promise<IResponse> {
+    const result = await asyncEmit<IClientCancelGameParameters, IResponse>(
+      'cancelGame',
+      { dealerId, gameId }
     );
-    return response;
+    return result;
   }
 
-  static async finishGame({}: IThunkFinishGameParameters): Promise<IFinishGameResponse> {
-    const response: IFinishGameResponse = await Promise.resolve(
-      finishGameResponseSuccess
-    );
-    return response;
+  static async scoreIssue({
+    playerId,
+    issueId,
+    score,
+    gameId,
+  }: IClientScoreIssueParameters): Promise<IStartRoundResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/score-issue`, {
+      method: 'POST',
+      body: JSON.stringify({ playerId, issueId, score, gameId }),
+    }).then((response) => response.json());
+    return json;
   }
 
-  static async changeCurrentIssue({}: IThunkChangeCurrentIssueParameters): Promise<IChangeCurrentIssueResponse> {
-    const response: IChangeCurrentIssueResponse = await Promise.resolve(
-      changeCurrentIssueResponseSuccess
+  static async finishGame({
+    dealerId,
+    gameId,
+  }: IClientFinishGameParameters): Promise<IResponse> {
+    const result = await asyncEmit<IClientFinishGameParameters, IResponse>(
+      'finishGame',
+      { dealerId, gameId }
     );
-    return response;
+    return result;
+  }
+
+  static async changeCurrentIssue({
+    dealerId,
+    issueId,
+    gameId,
+  }: IClientChangeCurrentIssueParameters): Promise<IChangeCurrentIssueResponse> {
+    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/cancel-game`, {
+      method: 'POST',
+      body: JSON.stringify({ dealerId, issueId, gameId }),
+    }).then((response) => response.json());
+    return json;
   }
 }

@@ -3,8 +3,14 @@ import { Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
-import { TUserRole, User } from '../../../../redux/types';
+import {
+  IClientAddPlayerResult,
+  TGameStatus,
+  TUserRole,
+  User,
+} from '../../../../redux/types';
 import styles from '../connect-to-lobby.module.scss';
 import FirstName from './first-name';
 import HeadingText from './heading-text';
@@ -54,7 +60,7 @@ const FormConnectToLobby = ({
   onCancelClick,
   gameId,
 }: IFormConnectToLobby): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
 
   const {
@@ -81,9 +87,16 @@ const FormConnectToLobby = ({
       jobPosition: data.jobPosition,
       image: base64String,
     });
-    await dispatch(thunks.addPlayerThunk({ addedPlayer: currentUser }));
+    const response = await dispatch(
+      thunks.addPlayerThunk({ addedPlayer: currentUser, gameId })
+    );
+    const { gameStatus } = response.payload as IClientAddPlayerResult;
     onCancelClick();
-    history.push(`/lobby/${gameId}`);
+    if (gameStatus === TGameStatus.lobby) {
+      history.push(`/lobby/${gameId}`);
+    } else {
+      history.push(`/game/${gameId}`);
+    }
   });
 
   const handleChangeInput = handleSubmit((data) => {

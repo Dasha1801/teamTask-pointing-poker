@@ -1,13 +1,13 @@
-import { CaseReducer, PayloadAction, AnyAction } from '@reduxjs/toolkit';
+import { AnyAction, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
+  Game,
   IGame,
   IIssue,
+  IIssueScorePayload,
   IIssueUpdatePayload,
   IMessage,
   IUser,
   TGameStatus,
-  Game,
-  IIssueScorePayload,
 } from '../types';
 
 const changeId: CaseReducer<IGame, PayloadAction<string>> = (state, action) => {
@@ -15,7 +15,7 @@ const changeId: CaseReducer<IGame, PayloadAction<string>> = (state, action) => {
 };
 
 const resetGame: CaseReducer<IGame, AnyAction> = (state) => {
-  Object.assign(state, new Game({ status: TGameStatus.inactive }).toObject());
+  Object.assign(state, new Game().toObject());
 };
 
 const changeCurrentIssueId: CaseReducer<IGame, PayloadAction<string>> = (
@@ -84,7 +84,7 @@ const updateIssue: CaseReducer<IGame, PayloadAction<IIssueUpdatePayload>> = (
   );
   const updated = Object.assign(
     { ...state.issues[issueIndex] },
-    action.payload.issue
+    action.payload.updatedIssue
   );
   state.issues[issueIndex] = updated;
 };
@@ -101,6 +101,13 @@ const changeIssues: CaseReducer<IGame, PayloadAction<IIssue[]>> = (
   action
 ) => {
   state.issues = action.payload;
+};
+
+const getNextIssue: CaseReducer<IGame, AnyAction> = (state) => {
+  const currentIssueId = state.currentIssueId;
+  const index = state.issues.findIndex((issue) => issue.id === currentIssueId);
+  const nextIssue = state.issues[(index + 1) % state.issues.length];
+  state.currentIssueId = nextIssue.id;
 };
 
 const changePlayers: CaseReducer<IGame, PayloadAction<IUser[]>> = (
@@ -129,6 +136,7 @@ export const gameReducers = {
   scoreIssue,
   postMessage,
   changeIssues,
+  getNextIssue,
   changePlayers,
   changeMessages,
   resetGame,

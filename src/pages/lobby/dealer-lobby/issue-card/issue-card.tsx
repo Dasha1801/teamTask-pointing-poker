@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentUserSelectors } from '../../../../redux/selectors';
+import {
+  currentUserSelectors,
+  gameSelectors,
+} from '../../../../redux/selectors';
 import { thunks } from '../../../../redux/thunks/thunks';
 import { IIssue } from '../../../../redux/types';
 import deleteIssue from '../../../../shared/assets/icons/deleteIssue.png';
@@ -18,6 +21,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   const [showEdit, setShowEdit] = useState(false);
   const [issueFields, setIssueFields] = useState(infoIssue);
   const [warning, setWarning] = useState('');
+  const gameId = useSelector(gameSelectors.selectId);
   const dispatch = useDispatch();
   const handleClose = () => {
     setShowEdit(false);
@@ -32,6 +36,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       thunks.updateIssueThunk({
         dealerId: dealer.id,
         updatedIssue: issueFields,
+        gameId,
       })
     );
     handleClose();
@@ -50,6 +55,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       thunks.deleteIssueThunk({
         dealerId: dealer.id,
         deletedIssueId: issueFields.id,
+        gameId,
       })
     );
   };
@@ -77,8 +83,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
           buttonOkProps={{ onClick: handleSubmit }}
           buttonCancelText="No"
           buttonOkText="Yes"
-          contentProps={{className:`${styles.warning}`, }}
-        
+          contentProps={{ className: `${styles.warning}` }}
         >
           <PopupChangeIssue
             info={issueFields}

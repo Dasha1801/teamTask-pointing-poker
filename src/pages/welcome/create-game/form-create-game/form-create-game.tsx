@@ -1,21 +1,21 @@
-import styles from '../../connect-to-lobby/connect-to-lobby.module.scss';
 import React, { useRef, useState } from 'react';
-import { Form, Row, Container } from 'react-bootstrap';
+import { Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
+import { AppDispatch } from '../../../../redux/store';
+import { thunks } from '../../../../redux/thunks/thunks';
 import {
-  IThunkAddPlayerResult,
+  ICreateGameRequestResult,
   TUserRole,
   User,
 } from '../../../../redux/types';
-import { thunks } from '../../../../redux/thunks/thunks';
-import HeadingText from '../../connect-to-lobby/components/heading-text';
 import FirstName from '../../connect-to-lobby/components/first-name';
-import LastName from '../../connect-to-lobby/components/last-name';
-import JobPosition from '../../connect-to-lobby/components/job-position';
+import HeadingText from '../../connect-to-lobby/components/heading-text';
 import ImageLoader from '../../connect-to-lobby/components/image-loader';
-import { useHistory } from 'react-router';
-import { AppDispatch } from '../../../../redux/store';
+import JobPosition from '../../connect-to-lobby/components/job-position';
+import LastName from '../../connect-to-lobby/components/last-name';
+import styles from '../../connect-to-lobby/connect-to-lobby.module.scss';
 
 interface IFormCreateGame {
   onCancelClick: () => void;
@@ -83,7 +83,11 @@ const FormCreateGame = ({ onCancelClick }: IFormCreateGame): JSX.Element => {
     const response = await dispatch(
       thunks.createGameThunk({ dealerInfo: currentUser })
     );
-    const { gameId } = response.payload as IThunkAddPlayerResult;
+    const payload = response.payload as Partial<ICreateGameRequestResult>;
+    if (payload.message) {
+      throw Error(payload.message);
+    }
+    const { gameId } = response.payload as ICreateGameRequestResult;
     onCancelClick();
     history.push(`/lobby/${gameId}`);
   });

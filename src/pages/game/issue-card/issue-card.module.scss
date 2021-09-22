@@ -7,6 +7,7 @@ $shadow: var(--main-shadow);
   position: relative;
   padding: 18px 24px 18px 18px;
   width: 450px;
+  font-size: 24px;
   box-shadow: $shadow;
 }
 
@@ -17,17 +18,14 @@ $shadow: var(--main-shadow);
 }
 
 .currentStatus {
-  font: normal 700 12px $font;
+  position: absolute;
+  font: normal 700 0.375em $font;
   text-transform: uppercase;
-}
-
-.title,
-.score {
-  font: normal 300 48px $font;
 }
 
 .title {
   width: 100%;
+  padding-top: 8px;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -36,7 +34,7 @@ $shadow: var(--main-shadow);
 
 .score {
   width: 60px;
-  margin-left: auto;
+  margin-left: 25px;
   border: none;
   color: #000;
   background: transparent;
@@ -48,7 +46,7 @@ $shadow: var(--main-shadow);
 }
 
 .priority {
-  font: normal 300 10px $font;
+  font: normal 300 0.3125em $font;
 }
 
 .capitalize {
@@ -67,9 +65,5 @@ $shadow: var(--main-shadow);
 @media (max-width: 640px) {
   .issueCard {
     padding-right: 0;
-  }
-  .title,
-  .score {
-    font-size: 26px;
   }
 }

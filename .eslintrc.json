@@ -35,7 +35,7 @@
     "@typescript-eslint/lines-between-class-members": ["off"],
     "class-methods-use-this": 0,
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "off",
     "react/prop-types": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentUserSelectors } from '../../../../redux/selectors';
+import {
+  currentUserSelectors,
+  gameSelectors,
+} from '../../../../redux/selectors';
 import { thunks } from '../../../../redux/thunks/thunks';
 import { TIssuePriority } from '../../../../redux/types';
 import { BasePopup } from '../../../shared/base-popup/base-popup';
@@ -19,6 +22,7 @@ const CreateIssueCard = (): JSX.Element => {
   const [showPopup, setShowPopup] = useState(false);
   const [issueFields, setIssueFields] = useState(emptyIssue);
   const [warning, setWarning] = useState('');
+  const gameId = useSelector(gameSelectors.selectId);
   const dispatch = useDispatch();
   const handleClose = () => {
     setShowPopup(false);
@@ -32,7 +36,8 @@ const CreateIssueCard = (): JSX.Element => {
     await dispatch(
       thunks.createIssueThunk({
         dealerId: dealer.id,
-        issue: issueFields,
+        addedIssue: issueFields,
+        gameId,
       })
     );
     handleClose();
@@ -45,7 +50,7 @@ const CreateIssueCard = (): JSX.Element => {
     } else {
       setWarning('*fields in the form cannot be empty');
     }
-  }
+  };
 
   return (
     <div className={styles.cardCreateIssue}>

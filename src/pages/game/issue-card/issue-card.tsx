@@ -11,7 +11,6 @@ interface IIssueCardProps {
   isCurrent?: boolean;
   canEditScore: boolean;
   canRemove: boolean;
-  score?: number;
 }
 
 export default function IssueCard({
@@ -19,17 +18,21 @@ export default function IssueCard({
   isCurrent = false,
   canRemove,
   canEditScore,
-  score = 10,
 }: IIssueCardProps): JSX.Element {
   const dispatch = useDispatch();
+  const gameId = useSelector(gameSelectors.selectId);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const currentUserId = useSelector(currentUserSelectors.selectCurrentUser).id;
+  const defaultScore: number | string | undefined = Object.keys(
+    issue.lastRoundResult
+  ).length;
 
   const deleteIssue = async () => {
     await dispatch(
       thunks.deleteIssueThunk({
         dealerId: currentUserId,
         deletedIssueId: issue.id,
+        gameId,
       })
     );
   };
@@ -45,9 +48,10 @@ export default function IssueCard({
       </div>
       {canEditScore && (
         <input
+          key={defaultScore}
           type="text"
           maxLength={2}
-          defaultValue={score}
+          defaultValue={Object.keys(issue.lastRoundResult).length || undefined}
           className={styles.score}
         />
       )}

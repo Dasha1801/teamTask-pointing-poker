@@ -31,17 +31,24 @@ const DealerLobby = (): JSX.Element => {
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
+  const clientHeight = globalThis.screen.height;
 
-  const clientHeight = window.screen.height;
   const handleCancel = async () => {
     history.push('/');
-    await dispatch(thunks.finishGameThunk({ dealerId: dealer.id }));
+    await dispatch(thunks.cancelGameThunk({ dealerId: dealer.id, gameId }));
   };
 
   const handleStart = async () => {
-    history.push('/game/:gameId');
-    await dispatch(thunks.startGameThunk({ settings: gameSettings }));
+    history.push(`/game/${gameId}`);
+    await dispatch(
+      thunks.startGameThunk({
+        settings: gameSettings,
+        gameId,
+        dealerId: dealer.id,
+      })
+    );
   };
+
   return (
     <div className={styles.rootContainer}>
       <div className={styles.wrapper}>
@@ -68,7 +75,7 @@ const DealerLobby = (): JSX.Element => {
               <Button
                 type="button"
                 className={styles.btn}
-                onClick={() => navigator.clipboard.writeText(gameId)}
+                onClick={() => globalThis.navigator.clipboard.writeText(gameId)}
               >
                 Copy
               </Button>

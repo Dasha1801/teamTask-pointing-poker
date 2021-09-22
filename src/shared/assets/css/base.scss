@@ -3,6 +3,7 @@
 :root {
   --main-font: 'Roboto', sans-serif;
   --second-font: 'Ruda', sans-serif;
+  --bg-light-gray: #eee;
   --bg-light-green: rgba(96, 218, 191, 0.46);
   --bg-gray: rgba(0, 0, 0, 0.43);
   --bg-blue: rgb(43, 58, 103);
@@ -15,9 +16,11 @@
   --popup-z-index: 100;
   --guidelines: 1440px;
   --page-width: 1000px;
+  --page-width-sidebar: 976px;
   --bg-overlay: rgba(196, 196, 196, 0.6);
   --max-z-index: 999;
   --button-z-index: 10;
+  --sidebar-width: 468px;
 }
 
 body {

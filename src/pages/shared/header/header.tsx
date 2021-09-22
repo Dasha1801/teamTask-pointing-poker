@@ -14,10 +14,13 @@ const Header = (): JSX.Element => {
   const showSideBar = () => {
     dispatch(lobbyPageActions.toggleSideBar());
   };
+
   return (
     <header className={styles.header} data-testid="header">
-      <img src={logo} className={styles.logo} alt="logo" />
-      {gameStatus === TGameStatus.lobby ? (
+      <a href="/">
+        <img src={logo} className={styles.logo} alt="logo" />
+      </a>
+      {gameStatus !== TGameStatus.inactive ? (
         <img
           src={message}
           className={styles.message}

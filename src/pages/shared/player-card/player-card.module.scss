@@ -36,6 +36,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: none;
 }
 .remove:hover {
   transform: scale(1.2);

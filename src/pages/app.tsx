@@ -22,12 +22,15 @@ function App(): JSX.Element {
       <Router>
         <Header />
         <main className={styles.content}>
-          <TransitionGroup className="transition-group">
+          <TransitionGroup className={styles.transitionGroup}>
             <CSSTransition
               timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}
               classNames="page"
             >
               <Switch>
+                <Route path="/results">
+                  <div>Results</div>
+                </Route>
                 <Route exact path="/">
                   <WelcomePage />
                 </Route>
@@ -38,7 +41,7 @@ function App(): JSX.Element {
                   {currentUser.role === TUserRole.dealer ? (
                     <GamePage />
                   ) : (
-                    <div>Game page</div>
+                    <GamePage />
                   )}
                 </Route>
                 <Route path="/lobby/:gameId">

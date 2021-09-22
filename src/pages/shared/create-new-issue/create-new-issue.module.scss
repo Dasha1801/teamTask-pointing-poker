@@ -12,7 +12,7 @@ $shadow: var(--main-shadow);
 .title {
   width: 90%;
   text-align: left;
-  font: normal 300 48px $font;
+  font: normal 300 24px $font;
 }
 
 .priority {
@@ -33,6 +33,6 @@ $shadow: var(--main-shadow);
     padding-right: 0;
   }
   .title {
-    font-size: 26px;
+    font-size: 18px;
   }
 }

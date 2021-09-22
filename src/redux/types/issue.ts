@@ -10,7 +10,6 @@ export enum TIssuePriority {
   high = 'high',
 }
 
-
 export interface IIssue {
   id: string;
   title: string;
@@ -43,6 +42,14 @@ export class Issue implements IIssue {
     };
   }
 
+  static getRoundScore(issue: IIssue): number | string {
+    const issueScores = Object.values(issue.lastRoundResult);
+    const sum = issueScores.reduce((acc: number, cur) => {
+      return typeof cur === 'number' ? acc + cur : acc;
+    }, 0);
+    return Math.trunc(sum / (issueScores.length || 1));
+  }
+
   static getRoundResultPercentages(issue: IIssue): number[] {
     const issueScores = Object.values(issue.lastRoundResult);
     const groupedVotes = issueScores.reduce(
@@ -71,5 +78,5 @@ export interface IIssueScorePayload {
 
 export interface IIssueUpdatePayload {
   issueId: string;
-  issue: Partial<IIssue>;
+  updatedIssue: Partial<IIssue>;
 }

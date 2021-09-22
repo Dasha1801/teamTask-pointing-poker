@@ -6,8 +6,10 @@ interface ISprintHeadingProps {
   issues: IIssue[];
 }
 
-export default function SprintHeading({issues}: ISprintHeadingProps): JSX.Element {
-   const generateHeading = () => {
+export default function SprintHeading({
+  issues,
+}: ISprintHeadingProps): JSX.Element {
+  const generateHeading = () => {
     let str = '';
     issues.map((item) => {
       str += `${item.title}, `;
@@ -18,8 +20,7 @@ export default function SprintHeading({issues}: ISprintHeadingProps): JSX.Elemen
   const title = generateHeading();
   return (
     <h3 className={styles.sprintHeading}>
-        Sprint planning{' '}
-        <span className={styles.issues}>(issues: {title})</span>
+      Sprint planning <span className={styles.issues}>(issues: {title})</span>
     </h3>
   );
 }

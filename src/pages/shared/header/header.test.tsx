@@ -9,5 +9,3 @@ describe('Header component', () => {
     expect(elRoot.childElementCount).toBe(1);
   });
 });
-
-

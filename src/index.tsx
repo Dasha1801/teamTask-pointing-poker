@@ -6,6 +6,11 @@ import App from './pages/app';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './shared/serviceWorker';
+import { GameService } from './shared/services/game-service';
+import { socketIO } from './shared/services/socket';
+
+const gameService = new GameService(socketIO);
+gameService.init();
 
 ReactDOM.render(
   <React.StrictMode>

@@ -11,6 +11,7 @@ export interface IUser {
   lastName?: string;
   jobPosition?: string;
   image?: string;
+  kicked: boolean;
 }
 
 export class User implements IUser {
@@ -20,6 +21,7 @@ export class User implements IUser {
   lastName?: string;
   jobPosition?: string;
   image?: string;
+  kicked = false;
 
   constructor(userParameters?: Partial<IUser>) {
     Object.assign(this, userParameters);
@@ -33,6 +35,7 @@ export class User implements IUser {
       lastName: this.lastName,
       jobPosition: this.jobPosition,
       image: this.image,
+      kicked: this.kicked,
     };
   }
 }

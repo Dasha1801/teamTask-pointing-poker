@@ -8,7 +8,24 @@ const selectIsSideBarShown = createSelector(
   selectLobbyPage,
   (lobbyPage) => lobbyPage.isSideBarShown
 );
+const selectWasKicked = createSelector(
+  selectLobbyPage,
+  (lobbyPage) => lobbyPage.wasKicked
+);
+
+const selectGameCancelled = createSelector(
+  selectLobbyPage,
+  (lobbyPage) => lobbyPage.gameCancelled
+);
+
+const selectIsVotingInProgress = createSelector(
+  selectLobbyPage,
+  (lobbyPage) => lobbyPage.isVotingInProgress
+);
 
 export const lobbyPageSelectors = {
   selectIsSideBarShown,
+  selectWasKicked,
+  selectGameCancelled,
+  selectIsVotingInProgress,
 };

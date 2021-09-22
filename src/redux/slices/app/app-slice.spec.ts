@@ -4,7 +4,11 @@ import { IApp } from '../../types';
 import { InfoMessage } from '../../types/info-message';
 
 describe('app slice', () => {
-  const initialState: IApp = { isConnected: false, infoMessages: [] };
+  const initialState: IApp = {
+    isConnected: false,
+    infoMessages: [],
+    socketId: '',
+  };
 
   test('should handle initial state', () => {
     expect(appSlice.reducer(undefined, createAction(''))).toEqual({

@@ -1,13 +1,17 @@
+$page-width: var(--page-width);
+$page-width-sidebar: var(--page-width-sidebar);
+
 .heading {
   padding: 40px 0 45px;
 }
 .container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 .content {
   width: 70%;
+  max-width: $page-width;
   padding: 0 38px 31px 38px;
   box-shadow: 0px 4px 4px 0px #00000040;
   .main {
@@ -16,6 +20,9 @@
     row-gap: 20px;
     column-gap: 30px;
   }
+}
+.contentWithSidebar {
+  max-width: $page-width-sidebar;
 }
 .controls {
   padding: 20px 0 90px;
