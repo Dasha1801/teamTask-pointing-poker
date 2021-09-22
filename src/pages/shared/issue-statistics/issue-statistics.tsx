@@ -8,11 +8,13 @@ export function IssueStatistics({ issue }: { issue: IIssue }): JSX.Element {
       <ul className={styles.issuesList}>
         {Issue.getRoundResultPercentages(issue).map((percentage, index) => {
           return (
-            <li key={`${percentage}_${index}`}>{`${
-              percentage === Math.trunc(percentage)
-                ? percentage
-                : percentage.toFixed(1)
-            }%`}</li>
+            <li key={`${percentage}_${index}`}>
+              {`${
+                percentage === Math.trunc(percentage)
+                  ? percentage
+                  : percentage.toFixed(1)
+              }%`}
+            </li>
           );
         })}
       </ul>

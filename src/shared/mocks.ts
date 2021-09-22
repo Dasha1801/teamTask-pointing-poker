@@ -1,9 +1,10 @@
 import {
   Issue,
   Message,
-  TCardScoreSpecialValue, TRoundResult,
+  TCardScoreSpecialValue,
+  TRoundResult,
   TUserRole,
-  User
+  User,
 } from '../redux/types';
 import { TStatusCode } from './constants';
 
@@ -152,15 +153,54 @@ export const mockLastRoundResult: TRoundResult = {
   7: 20,
 };
 
+export const mockLastRoundResult2: TRoundResult = {
+  1: 5,
+  2: 5,
+  3: TCardScoreSpecialValue.break,
+  4: 5,
+  5: 20,
+  6: 8,
+  7: 20,
+};
+
+export const mockLastRoundResult3: TRoundResult = {
+  1: 3,
+  2: 3,
+  3: TCardScoreSpecialValue.unknown,
+  4: 1,
+  5: 1,
+};
+
+export const mockLastRoundResult4: TRoundResult = {
+  1: 3,
+  2: 3,
+  3: TCardScoreSpecialValue.unknown,
+  4: 3,
+  5: 1,
+  6: TCardScoreSpecialValue.break,
+};
+
 export const mockIssues = [
   new Issue({
     id: '99',
     title: 'Planning 23',
     lastRoundResult: mockLastRoundResult,
   }).toObject(),
-  new Issue({ id: '299', title: '123456' }).toObject(),
-  new Issue({ id: '499', title: '1234562222' }).toObject(),
-  new Issue({ id: '399', title: '222285' }).toObject(),
+  new Issue({
+    id: '2',
+    title: '123456',
+    lastRoundResult: mockLastRoundResult2,
+  }).toObject(),
+  new Issue({
+    id: '3',
+    title: '222285',
+    lastRoundResult: mockLastRoundResult3,
+  }).toObject(),
+  new Issue({
+    id: '4',
+    title: '223385',
+    lastRoundResult: mockLastRoundResult4,
+  }).toObject(),
 ];
 
 export const mockUsers = [
@@ -238,12 +278,3 @@ export const mockMessages = [
     message: 'ghkjklpkouhuvghijkl',
   }).toObject(),
 ];
-
-
-// export const mockGameSettings = new GameSettings({
-//   canDealerPlay: true,
-//   autoAdmit: false,
-//   autoFlipCards: true,
-//   canScoreAfterFlip: false,
-//   cardType: TCardType.custom,
-// }).toObject();
