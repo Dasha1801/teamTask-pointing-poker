@@ -26,13 +26,14 @@ const DealerLobby = (): JSX.Element => {
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
-  const messagesIds = new Set(messages.map((item) => item.id));
+  const messagesIds = new Set(messages.map((item) => item.userId));
   const issues = useSelector(gameSelectors.selectIssues);
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
   const clientHeight = globalThis.screen.height;
 
+  console.log(messagesIds);
   const handleCancel = async () => {
     history.push('/');
     await dispatch(thunks.cancelGameThunk({ dealerId: dealer.id, gameId }));
@@ -121,10 +122,8 @@ const DealerLobby = (): JSX.Element => {
       {sideBar ? (
         <div className={styles.sideBar}>
           <SideBar
-            message={{
-              messagesProps: messages,
-              users: users.filter((user) => messagesIds.has(user.id)),
-            }}
+            messages={messages}
+            users={users.filter((user) => messagesIds.has(user.id))}
           />
         </div>
       ) : null}
