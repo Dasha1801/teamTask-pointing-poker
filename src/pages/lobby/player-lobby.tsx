@@ -23,7 +23,7 @@ const PlayerLobby = (): JSX.Element => {
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
-  const messagesIds = new Set(messages.map((item) => item.userId));
+  // const messagesIds = new Set(messages.map((item) => item.userId));
   const issues = useSelector(gameSelectors.selectIssues);
   const wasKicked = useSelector(currentUserSelectors.selectCurrentUser).kicked;
   const gameCancelled = useSelector(lobbyPageSelectors.selectGameCancelled);
@@ -31,6 +31,12 @@ const PlayerLobby = (): JSX.Element => {
   const gameId = useSelector(gameSelectors.selectId);
   const votingKick = useSelector(votingKickSelectors.selectVotingKick);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+
+  const [messageUserIds, setMessageUserIds] = useState(new Set());
+
+  useEffect(() => {
+    setMessageUserIds(new Set(messages.map((item) => item.userId)));
+  }, [messages]);
 
   useEffect(() => {
     if (wasKicked) {
@@ -100,7 +106,7 @@ const PlayerLobby = (): JSX.Element => {
         <div className={styles.sideBar}>
           <SideBar
             messages={messages}
-            users={users.filter((user) => messagesIds.has(user.id))}
+            users={users.filter((user) => messageUserIds.has(user.id))}
           />
         </div>
       ) : null}
