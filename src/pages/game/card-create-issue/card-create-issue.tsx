@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  currentUserSelectors,
-  gameSelectors,
-} from '../../../../redux/selectors';
-import { thunks } from '../../../../redux/thunks/thunks';
-import { TIssuePriority } from '../../../../redux/types';
-import { BasePopup } from '../../../shared/base-popup/base-popup';
-import PopupChangeIssue from '../issue-card/popupChangeIssue/popupChangeIssue';
+import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import { thunks } from '../../../redux/thunks/thunks';
+import { TIssuePriority } from '../../../redux/types';
+import ButtonAdd from '../../shared/buttons/button-add/button-add';
+import { CreateIssuePopup } from '../../shared/create-issue-popup/create-issue-popup';
 import styles from './card-create-issue.module.scss';
 
-const CreateIssueCard = (): JSX.Element => {
+function CreateIssueCard(): JSX.Element {
   const emptyIssue = {
     id: '',
     title: '',
@@ -53,27 +50,22 @@ const CreateIssueCard = (): JSX.Element => {
   };
 
   return (
-    <div className={styles.cardCreateIssue}>
-      <div className={styles.name}>Crete new Issue</div>
-      <div className={styles.addIssue} onClick={handleShowPopUp}>
-        +
+    <div className={styles.issueCard}>
+      <div className={styles.title}>Create new Issue</div>
+      <div className={styles.buttonAddContainer}>
+        <ButtonAdd onClick={handleShowPopUp} />
       </div>
       {showPopup && (
-        <BasePopup
-          buttonCancelProps={{ onClick: handleClose }}
-          buttonOkProps={{ onClick: handleSubmit }}
-          buttonCancelText="No"
-          buttonOkText="Yes"
-        >
-          <PopupChangeIssue
-            info={issueFields}
-            setIssueFields={setIssueFields}
-            warning={warning}
-          />
-        </BasePopup>
+        <CreateIssuePopup
+          handleClose={handleClose}
+          handleSubmit={handleSubmit}
+          info={issueFields}
+          setIssueFields={setIssueFields}
+          warning={warning}
+        />
       )}
     </div>
   );
-};
+}
 
 export default CreateIssueCard;

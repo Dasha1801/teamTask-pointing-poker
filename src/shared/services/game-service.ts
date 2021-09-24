@@ -10,6 +10,7 @@ import {
   IIssue,
   IMessage,
   IUser,
+  Message,
   TCardScore,
   TGameStatus,
   TUserRole,
@@ -17,8 +18,12 @@ import {
 import {
   IAddIssueResponseWS,
   IAddPlayerResponseWS,
+  IChangeCurrentIssueResponseWS,
   IDeleteIssueResponseWS,
   IKickPlayerResponseWS,
+  ILeaveGameResponseWS,
+  IPostMessageResponseWS,
+  IScoreIssueResponseWS,
   IStartGameResponseWS,
   IStartVotingToKickResponseWS,
   IUpdateIssueResponseWS,
@@ -57,9 +62,13 @@ export class GameService {
     this.io.on('gameCancelled', this.gameCancelled);
     this.io.on('gameStarted', this.gameStarted);
     this.io.on('gameFinished', this.gameFinished);
+    this.io.on('playerLeft', this.playerLeft);
     this.io.on('playerKicked', this.playerKicked);
     this.io.on('playerKickedByVote', this.playerKickedByVote);
     this.io.on('votingToKickStarted', this.votingToKickStarted);
+    this.io.on('messagePosted', this.messagePosted);
+    this.io.on('currentIssueChanged', this.currentIssueChanged);
+    this.io.on('issueScored', this.issueScored);
   }
 
   playerAdded({ addedPlayer }: IAddPlayerResponseWS): void {
@@ -78,6 +87,8 @@ export class GameService {
 
   issueCreated({ addedIssue }: IAddIssueResponseWS): void {
     const issues = store.getState().game.issues;
+    console.log('added issue', addedIssue);
+
     store.dispatch(gameActions.changeIssues(issues.concat(addedIssue)));
   }
 
@@ -97,6 +108,10 @@ export class GameService {
 
   gameFinished(): void {
     store.dispatch(gameActions.resetGame());
+  }
+
+  playerLeft({ playerId }: ILeaveGameResponseWS): void {
+    store.dispatch(gameActions.deletePlayer(playerId));
   }
 
   votingToKickStarted({
@@ -134,5 +149,23 @@ export class GameService {
     } else {
       store.dispatch(gameActions.deletePlayer(kickedPlayerId));
     }
+  }
+
+  messagePosted({ message, messageId, userId }: IPostMessageResponseWS): void {
+    store.dispatch(
+      gameActions.postMessage(new Message({ id: messageId, userId, message }))
+    );
+  }
+
+  currentIssueChanged({ issueId }: IChangeCurrentIssueResponseWS): void {
+    console.log('issue changed', issueId);
+
+    store.dispatch(gameActions.changeCurrentIssueId(issueId));
+  }
+
+  issueScored({ issueId, userId, score }: IScoreIssueResponseWS): void {
+    store.dispatch(
+      gameActions.scoreIssue({ issueId, playerId: userId, score })
+    );
   }
 }

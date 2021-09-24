@@ -15,7 +15,7 @@ import SideBar from '../../shared/side-bar/side-bar';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import AboutDealer from '../about-dealer/about-dealer';
 import Members from '../members/members';
-import CreateIssueCard from './card-create-issue/card-create-issue';
+import CreateIssueCard from '../card-create-issue/card-create-issue';
 import styles from './dealer-lobby.module.scss';
 import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
@@ -70,7 +70,7 @@ const DealerLobby = (): JSX.Element => {
                 placeholder="http://pockerplanning....."
                 className={styles.input}
                 value={gameId}
-                onChange={() => null}
+                // onChange={() => null}
               />
               <Button
                 type="button"

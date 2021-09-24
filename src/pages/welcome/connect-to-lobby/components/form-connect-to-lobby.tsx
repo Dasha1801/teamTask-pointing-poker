@@ -90,6 +90,7 @@ const FormConnectToLobby = ({
     const response = await dispatch(
       thunks.addPlayerThunk({ addedPlayer: currentUser, gameId })
     );
+    // !handle error
     const { gameStatus } = response.payload as IClientAddPlayerResult;
     onCancelClick();
     if (gameStatus === TGameStatus.lobby) {

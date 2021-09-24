@@ -1,11 +1,11 @@
-import styles from './header.module.scss';
 import React from 'react';
-import logo from '../../../shared/assets/icons/logo-header.svg';
-import message from '../../../shared/assets/icons/message.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { TGameStatus } from '../../../redux/types';
 import { gameSelectors } from '../../../redux/selectors';
 import { lobbyPageActions } from '../../../redux/slices/lobby-page/lobby-page';
+import { TGameStatus } from '../../../redux/types';
+import logo from '../../../shared/assets/icons/logo-header.svg';
+import message from '../../../shared/assets/icons/message.svg';
+import styles from './header.module.scss';
 
 const Header = (): JSX.Element => {
   const dispatch = useDispatch();

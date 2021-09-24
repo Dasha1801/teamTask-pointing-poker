@@ -30,7 +30,14 @@ export default function GameControls(): JSX.Element {
   };
 
   const handleNextIssue = async () => {
-    dispatch(gameActions.getNextIssue());
+    if (currentIssue?.id) {
+      dispatch(
+        thunks.getNextIssueThunk({
+          dealerId: currentUser.id,
+          gameId,
+        })
+      );
+    }
   };
 
   const handleStart = async () => {

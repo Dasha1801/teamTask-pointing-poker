@@ -9,10 +9,10 @@ export class Message implements IMessage {
   userId: string;
   message: string;
 
-  constructor({ id, userId, message }: IMessage) {
-    this.id = id;
-    this.userId = userId;
-    this.message = message;
+  constructor({ id, userId, message }: Partial<IMessage>) {
+    this.id = id || '';
+    this.userId = userId || '';
+    this.message = message || '';
   }
 
   toObject(): IMessage {
