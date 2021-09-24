@@ -83,6 +83,7 @@ const FormCreateGame = ({ onCancelClick }: IFormCreateGame): JSX.Element => {
     const response = await dispatch(
       thunks.createGameThunk({ dealerInfo: currentUser })
     );
+    // !handle error
     const payload = response.payload as Partial<ICreateGameRequestResult>;
     if (payload.message) {
       throw Error(payload.message);

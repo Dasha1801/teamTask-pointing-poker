@@ -26,11 +26,11 @@ export interface ICreateGameRequestResult extends IRequestResult {
   gameId: string;
 }
 
-export interface IClientPostMessageResult {
+export interface IClientPostMessageResult extends IRequestResult {
   postedMessage: IMessage;
 }
 
-export interface IClientCreateIssueResult {
+export interface IClientCreateIssueResult extends IRequestResult {
   createdIssue: IIssue;
 }
 
@@ -44,13 +44,16 @@ export interface IClientCreateGameParameters {
 }
 
 export interface IClientPostMessageParameters extends IRequestParameters {
-  playerId: string;
   message: IMessage;
 }
 
 export interface IClientCreateIssueParameters extends IRequestParameters {
   dealerId: string;
   addedIssue: IIssue;
+}
+
+export interface IClientGetNextIssueParameters extends IRequestParameters {
+  dealerId: string;
 }
 
 export interface IClientUpdateIssueParameters extends IRequestParameters {

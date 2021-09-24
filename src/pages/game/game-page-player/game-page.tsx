@@ -10,7 +10,6 @@ import {
 import { gamePageActions } from '../../../redux/slices/game-page/game-page';
 import { gameActions } from '../../../redux/slices/game/game-slice';
 import { IUser, TGameStatus, TUserRole } from '../../../redux/types';
-import { BasePopup } from '../../shared/base-popup/base-popup';
 import DealerSection from '../../shared/dealer-section/dealer-section';
 import { IssueStatistics } from '../../shared/issue-statistics/issue-statistics';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
@@ -24,11 +23,9 @@ export function GamePage(): JSX.Element {
   const dispatch = useDispatch();
   const isSidebarShown = true;
   const [isStatisticsShown] = useState(false);
-  const [createIssue, setCreateIssue] = useState(false);
   const issues = useSelector(gameSelectors.selectIssues);
   const dealer = useSelector(gameSelectors.selectDealer) as IUser;
   const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
-  const isDealer = useSelector(currentUserSelectors.selectIsDealer);
   const timer = useSelector(gamePageSelectors.selectTimer);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameStatus = useSelector(gameSelectors.selectStatus);
@@ -59,14 +56,6 @@ export function GamePage(): JSX.Element {
     }
   }, [gameStatus]);
 
-  const handleCreateClick = () => {
-    setCreateIssue(true);
-  };
-
-  const handleCloseCreateIssueClick = () => {
-    setCreateIssue(false);
-  };
-
   return (
     <div className={styles.container}>
       {gameStatus !== TGameStatus.inactive && (
@@ -84,13 +73,7 @@ export function GamePage(): JSX.Element {
           </div>
           <h4 className={styles.issuesHeading}>Issues</h4>
           <div className={styles.main}>
-            <IssuesList
-              issues={issues}
-              canEditScore={isDealer}
-              canRemove={isDealer}
-              canAdd={isDealer}
-              handleCreateClick={handleCreateClick}
-            />
+            <IssuesList issues={issues} />
             {isStatisticsShown && currentIssue && (
               <div className={styles.statisticsSection}>
                 <h4 className={styles.statisticsHeading}>Statistics:</h4>
@@ -102,15 +85,6 @@ export function GamePage(): JSX.Element {
         </div>
       )}
       {isSidebarShown && <SideBar />}
-      {createIssue && (
-        <BasePopup
-          buttonOkText="Yes"
-          buttonCancelText="No"
-          buttonCancelProps={{ onClick: handleCloseCreateIssueClick }}
-        >
-          Create issue
-        </BasePopup>
-      )}
     </div>
   );
 }

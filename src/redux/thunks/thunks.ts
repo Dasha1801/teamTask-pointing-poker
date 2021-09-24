@@ -2,10 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ApiService } from '../../shared/services/api-service';
 import {
   IAddPlayerResponse,
-  IChangeCurrentIssueResponse,
   ICheckGameResponse,
   IConnectResponse,
   ICreateGameResponse,
+  IPostMessageResponse,
 } from '../../shared/services/types';
 import { appActions } from '../slices/app/app-slice';
 import { currentUserActions } from '../slices/current-user/current-user-slice';
@@ -21,6 +21,7 @@ import {
   IClientCreateIssueParameters,
   IClientDeleteIssueParameters,
   IClientFinishGameParameters,
+  IClientGetNextIssueParameters,
   IClientKickPlayerParameters,
   IClientKickPlayerVoteParameters,
   IClientLeaveGameParameters,
@@ -31,6 +32,7 @@ import {
   IClientUpdateIssueParameters,
   IClientVoteToKickParameters,
   ICreateGameRequestResult,
+  IRequestResult,
   Issue,
   IUser,
   Message,
@@ -55,11 +57,11 @@ export const createGameThunk = createAsyncThunk<
   Partial<ICreateGameRequestResult>,
   IClientCreateGameParameters
 >('game/createGameThunk', async ({ dealerInfo }, thunkApi) => {
-  const result = await ApiService.createGame({ dealerInfo });
-  if (result.message) {
-    return result;
+  const response = await ApiService.createGame({ dealerInfo });
+  if (response.message) {
+    return response;
   }
-  const { gameId, dealerId } = result as ICreateGameResponse;
+  const { gameId, dealerId } = response as ICreateGameResponse;
   const dealer = new User({
     ...dealerInfo,
     id: dealerId,
@@ -76,14 +78,14 @@ export const addPlayerThunk = createAsyncThunk<
   Partial<IClientAddPlayerResult>,
   IClientAddPlayerParameters
 >('game/addPlayerThunk', async ({ addedPlayer, gameId }, thunkApi) => {
-  const result = (await ApiService.addPlayer({
+  const response = (await ApiService.addPlayer({
     addedPlayer,
     gameId,
   })) as IAddPlayerResponse;
-  if (result.message) {
-    return result;
+  if (response.message) {
+    return response;
   }
-  const { playerId, dealer, messages, issues, players, gameStatus } = result;
+  const { playerId, dealer, messages, issues, players, gameStatus } = response;
   const player = new User({ ...addedPlayer, id: playerId }).toObject();
   thunkApi.dispatch(gameActions.changeMessages(messages));
   thunkApi.dispatch(gameActions.changeIssues(issues));
@@ -107,143 +109,206 @@ export const checkGameThunk = createAsyncThunk<
 });
 
 export const postMessageThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientPostMessageParameters
->('game/postMessageThunk', async ({ playerId, message, gameId }, thunkApi) => {
-  const { messageId } = await ApiService.postMessage({
-    playerId,
+>('game/postMessageThunk', async ({ message, gameId }, thunkApi) => {
+  const response = await ApiService.postMessage({
     message,
     gameId,
   });
+  if (response.message) {
+    return response;
+  }
+  const { messageId } = response as IPostMessageResponse;
   const postedMessage = new Message({ ...message, id: messageId }).toObject();
   thunkApi.dispatch(gameActions.postMessage(postedMessage));
+  return {};
 });
 
 export const createIssueThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientCreateIssueParameters
 >(
   'game/createIssueThunk',
   async ({ dealerId, addedIssue, gameId }, thunkApi) => {
-    const { issueId } = await ApiService.createIssue({
+    const response = await ApiService.createIssue({
       dealerId,
       addedIssue,
       gameId,
     });
-    const createdIssue = new Issue({ ...addedIssue, id: issueId }).toObject();
+    if (response.message) {
+      return response;
+    }
+    const createdIssue = new Issue({
+      ...addedIssue,
+      id: response.issueId,
+    }).toObject();
     thunkApi.dispatch(gameActions.createIssue(createdIssue));
+    return {};
   }
 );
 
 export const updateIssueThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientUpdateIssueParameters
 >(
   'game/updateIssueThunk',
   async ({ dealerId, updatedIssue, gameId }, thunkApi) => {
-    await ApiService.updateIssue({ dealerId, updatedIssue, gameId });
+    const response = await ApiService.updateIssue({
+      dealerId,
+      updatedIssue,
+      gameId,
+    });
+    if (response.message) {
+      return response;
+    }
     thunkApi.dispatch(
       gameActions.updateIssue({
         issueId: updatedIssue.id,
         updatedIssue: updatedIssue,
       })
     );
+    return {};
   }
 );
 
 export const deleteIssueThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientDeleteIssueParameters
 >(
   'game/deleteIssueThunk',
   async ({ dealerId, deletedIssueId, gameId }, thunkApi) => {
-    await ApiService.deleteIssue({ dealerId, deletedIssueId, gameId });
+    const response = await ApiService.deleteIssue({
+      dealerId,
+      deletedIssueId,
+      gameId,
+    });
+    if (response.message) {
+      return response;
+    }
     thunkApi.dispatch(gameActions.deleteIssue(deletedIssueId));
+    return {};
   }
 );
 
 export const startGameThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientStartGameParameters
 >('game/startGameThunk', async ({ dealerId, settings, gameId }, thunkApi) => {
-  await ApiService.startGame({ dealerId, settings, gameId });
+  const response = await ApiService.startGame({ dealerId, settings, gameId });
+  if (response.message) {
+    return response;
+  }
   thunkApi.dispatch(gameSettingsActions.changeSettings(settings));
   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
+  return {};
 });
 
 export const startVotingToKickThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientKickPlayerVoteParameters
 >(
   'game/startVotingToKickThunk',
   async ({ votingPlayerId, kickedPlayerId, gameId }) => {
-    await ApiService.startVotingToKick({
+    const response = await ApiService.startVotingToKick({
       votingPlayerId,
       kickedPlayerId,
       gameId,
     });
+    return response;
   }
 );
 
 export const voteToKickThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientVoteToKickParameters
 >(
   'game/voteToKickThunk',
   async ({ votingPlayerId, kickedPlayerId, gameId, accept }) => {
-    await ApiService.voteToKick({
+    const response = await ApiService.voteToKick({
       votingPlayerId,
       kickedPlayerId,
       gameId,
       accept,
     });
+    return response;
   }
 );
 
 export const kickPlayerThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientKickPlayerParameters
 >(
   'game/kickPlayerThunk',
   async ({ dealerId, kickedPlayerId, gameId }, thunkApi) => {
-    await ApiService.kickPlayer({
+    const response = await ApiService.kickPlayer({
       dealerId,
       kickedPlayerId,
       gameId,
     });
+    if (response.message) {
+      return response;
+    }
     thunkApi.dispatch(gameActions.deletePlayer(kickedPlayerId));
+    return {};
   }
 );
 
 export const cancelGameThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientCancelGameParameters
 >('game/cancelGameThunk', async ({ dealerId, gameId }, thunkApi) => {
-  await ApiService.cancelGame({ dealerId, gameId });
+  const response = await ApiService.cancelGame({ dealerId, gameId });
+  if (response.message) {
+    return response;
+  }
   thunkApi.dispatch(currentUserActions.changeCurrentUser({ id: '' }));
   thunkApi.dispatch(gameSettingsActions.resetSettings());
   thunkApi.dispatch(gameActions.resetGame());
+  return {};
 });
 
 export const scoreIssueThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientScoreIssueParameters
 >('game/scoreIssueThunk', async ({ playerId, issueId, score, gameId }) => {
-  await ApiService.scoreIssue({ playerId, issueId, score, gameId });
+  const response = await ApiService.scoreIssue({
+    playerId,
+    issueId,
+    score,
+    gameId,
+  });
+  return response;
 });
 
 export const finishGameThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientFinishGameParameters
 >('game/finishGameThunk', async ({ dealerId, gameId }, thunkApi) => {
-  await ApiService.finishGame({ dealerId, gameId });
+  const response = await ApiService.finishGame({ dealerId, gameId });
+  if (response.message) {
+    return response;
+  }
   thunkApi.dispatch(currentUserActions.changeCurrentUser({ id: '' }));
   thunkApi.dispatch(gameSettingsActions.resetSettings());
   thunkApi.dispatch(gameActions.resetGame());
+  return {};
+});
+
+export const getNextIssueThunk = createAsyncThunk<
+  Partial<IRequestResult>,
+  IClientGetNextIssueParameters
+>('game/changeCurrentIssueThunk', async ({ dealerId, gameId }) => {
+  const response = await ApiService.getNextIssue({ dealerId, gameId });
+  if (response.message) {
+    return response;
+  }
+  // thunkApi.dispatch(gameActions.changeCurrentIssueId(response.issueId));
+  return {};
 });
 
 export const changeCurrentIssueThunk = createAsyncThunk<
-  IChangeCurrentIssueResponse,
+  Partial<IRequestResult>,
   IClientChangeCurrentIssueParameters
 >(
   'game/changeCurrentIssueThunk',
@@ -253,32 +318,42 @@ export const changeCurrentIssueThunk = createAsyncThunk<
       issueId,
       gameId,
     });
+    if (response.message) {
+      return response;
+    }
     thunkApi.dispatch(gameActions.changeCurrentIssueId(issueId));
-    return response;
+    return {};
   }
 );
 
 export const startRoundThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientStartRoundParameters
 >('game/startRoundThunk', async ({ dealerId, issueId, gameId }, thunkApi) => {
-  await ApiService.startRound({
+  const response = await ApiService.startRound({
     dealerId,
     issueId,
     gameId,
   });
+  if (response) {
+    return response;
+  }
   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.roundInProgress));
+  return {};
 });
 
 export const leaveGameThunk = createAsyncThunk<
-  void,
+  Partial<IRequestResult>,
   IClientLeaveGameParameters,
   { state: IUser }
 >('game/leaveGameThunk', async ({ playerId, gameId }, thunkApi) => {
-  await ApiService.leaveGame({
+  const response = await ApiService.leaveGame({
     playerId,
     gameId,
   });
+  if (response.message) {
+    return response;
+  }
   thunkApi.dispatch(gameActions.resetGame());
   thunkApi.dispatch(gameSettingsActions.resetSettings());
   thunkApi.dispatch(
@@ -286,6 +361,7 @@ export const leaveGameThunk = createAsyncThunk<
       id: '',
     })
   );
+  return {};
 });
 
 export const thunks = {
@@ -305,7 +381,7 @@ export const thunks = {
   voteToKickThunk,
   startVotingToKickThunk,
   kickPlayerThunk,
-
+  getNextIssueThunk,
   startRoundThunk,
   leaveGameThunk,
 };

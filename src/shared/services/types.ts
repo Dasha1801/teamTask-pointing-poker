@@ -5,6 +5,7 @@ import {
   IIssue,
   IGameSettings,
   TGameStatus,
+  TCardScore,
 } from '../../redux/types';
 
 export interface IResponse {
@@ -52,6 +53,10 @@ export interface IStartGameResponseWS {
   settings: IGameSettings;
 }
 
+export interface ILeaveGameResponseWS {
+  playerId: string;
+}
+
 export interface IKickPlayerResponseWS {
   kickedPlayerId: string;
 }
@@ -69,6 +74,22 @@ export interface IVoteToKickResponseWS {
 
 export interface IDeleteIssueResponseWS {
   deletedIssueId: string;
+}
+
+export interface IPostMessageResponseWS {
+  userId: string;
+  messageId: string;
+  message: string;
+}
+
+export interface IChangeCurrentIssueResponseWS {
+  issueId: string;
+}
+
+export interface IScoreIssueResponseWS {
+  issueId: string;
+  userId: string;
+  score: TCardScore;
 }
 
 export interface IPostMessageResponse extends IResponse {
@@ -97,6 +118,10 @@ export interface IChangeCurrentIssueResponse extends IResponse {
 
 export interface ICreateIssueResponse extends IResponse {
   gameId: string;
+  issueId: string;
+}
+
+export interface IGetNextIssueResponse extends IResponse {
   issueId: string;
 }
 

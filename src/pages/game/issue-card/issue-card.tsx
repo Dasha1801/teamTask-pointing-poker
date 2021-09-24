@@ -36,7 +36,6 @@ export default function IssueCard({
       })
     );
   };
-
   return (
     <div className={`${styles.issueCard} ${isCurrent ? styles.current : ''}`}>
       <div className={styles.issueInfo}>

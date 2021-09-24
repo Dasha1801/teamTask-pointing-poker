@@ -7,6 +7,7 @@ import {
   IClientCreateIssueParameters,
   IClientDeleteIssueParameters,
   IClientFinishGameParameters,
+  IClientGetNextIssueParameters,
   IClientKickPlayerParameters,
   IClientLeaveGameParameters,
   IClientPostMessageParameters,
@@ -26,6 +27,7 @@ import {
   IConnectResponse,
   ICreateGameResponse,
   ICreateIssueResponse,
+  IGetNextIssueResponse,
   IKickPlayerResponse,
   ILeaveGameResponse,
   IPostMessageResponse,
@@ -54,22 +56,22 @@ export class ApiService {
   static async createGame(
     dealerInfo: IClientCreateGameParameters
   ): Promise<Partial<ICreateGameResponse>> {
-    const result: Partial<ICreateGameResponse> = await asyncEmit<
+    const response: Partial<ICreateGameResponse> = await asyncEmit<
       IClientCreateGameParameters,
       Partial<ICreateGameResponse>
     >('createGame', dealerInfo);
-    return result;
+    return response;
   }
 
   static async addPlayer({
     addedPlayer,
     gameId,
   }: IClientAddPlayerParameters): Promise<Partial<IAddPlayerResponse>> {
-    const result: Partial<IAddPlayerResponse> = await asyncEmit<
+    const response: Partial<IAddPlayerResponse> = await asyncEmit<
       IClientAddPlayerParameters,
       Partial<IAddPlayerResponse>
     >('addPlayer', { addedPlayer, gameId });
-    return result;
+    return response;
   }
 
   static async checkGame({
@@ -84,38 +86,37 @@ export class ApiService {
   }
 
   static async postMessage({
-    playerId,
     message,
     gameId,
-  }: IClientPostMessageParameters): Promise<IPostMessageResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/post-message`, {
-      method: 'POST',
-      body: JSON.stringify({ playerId, message, gameId }),
-    }).then((response) => response.json());
-    return json;
+  }: IClientPostMessageParameters): Promise<Partial<IPostMessageResponse>> {
+    const response = await asyncEmit<
+      IClientPostMessageParameters,
+      Partial<IPostMessageResponse>
+    >('postMessage', { message, gameId });
+    return response;
   }
 
   static async leaveGame({
     playerId,
     gameId,
-  }: IClientLeaveGameParameters): Promise<ILeaveGameResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/leave-message`, {
-      method: 'POST',
-      body: JSON.stringify({ playerId, gameId }),
-    }).then((response) => response.json());
-    return json;
+  }: IClientLeaveGameParameters): Promise<Partial<ILeaveGameResponse>> {
+    const response = await asyncEmit<
+      IClientLeaveGameParameters,
+      Partial<ILeaveGameResponse>
+    >('leaveGame', { playerId, gameId });
+    return response;
   }
 
   static async startRound({
     dealerId,
     issueId,
     gameId,
-  }: IClientStartRoundParameters): Promise<IStartRoundResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/start-round`, {
-      method: 'POST',
-      body: JSON.stringify({ dealerId, issueId, gameId }),
-    }).then((response) => response.json());
-    return json;
+  }: IClientStartRoundParameters): Promise<Partial<IStartRoundResponse>> {
+    const response = await asyncEmit<
+      IClientStartRoundParameters,
+      Partial<IStartRoundResponse>
+    >('startRound', { dealerId, issueId, gameId });
+    return response;
   }
 
   static async kickPlayer({
@@ -123,11 +124,11 @@ export class ApiService {
     kickedPlayerId,
     gameId,
   }: IClientKickPlayerParameters): Promise<Partial<IKickPlayerResponse>> {
-    const result = await asyncEmit<
+    const response = await asyncEmit<
       IClientKickPlayerParameters,
       Partial<IKickPlayerResponse>
     >('kickPlayer', { dealerId, kickedPlayerId, gameId });
-    return result;
+    return response;
   }
 
   static async startVotingToKick({
@@ -135,11 +136,11 @@ export class ApiService {
     kickedPlayerId,
     gameId,
   }: IClientStartVotingToKickParameters): Promise<IResponse> {
-    const result = await asyncEmit<
+    const response = await asyncEmit<
       IClientStartVotingToKickParameters,
       IResponse
     >('startVotingToKick', { votingPlayerId, kickedPlayerId, gameId });
-    return result;
+    return response;
   }
 
   static async voteToKick({
@@ -148,11 +149,22 @@ export class ApiService {
     gameId,
     accept,
   }: IClientVoteToKickParameters): Promise<IResponse> {
-    const result = await asyncEmit<IClientVoteToKickParameters, IResponse>(
+    const response = await asyncEmit<IClientVoteToKickParameters, IResponse>(
       'voteToKick',
       { votingPlayerId, kickedPlayerId, gameId, accept }
     );
-    return result;
+    return response;
+  }
+
+  static async getNextIssue({
+    dealerId,
+    gameId,
+  }: IClientGetNextIssueParameters): Promise<Partial<IGetNextIssueResponse>> {
+    const response = await asyncEmit<
+      IClientGetNextIssueParameters,
+      Partial<IGetNextIssueResponse>
+    >('getNextIssue', { dealerId, gameId });
+    return response;
   }
 
   static async createIssue({
@@ -160,11 +172,11 @@ export class ApiService {
     addedIssue,
     gameId,
   }: IClientCreateIssueParameters): Promise<Partial<ICreateIssueResponse>> {
-    const result = await asyncEmit<
+    const response = await asyncEmit<
       IClientCreateIssueParameters,
       Partial<ICreateGameResponse>
     >('createIssue', { dealerId, addedIssue, gameId });
-    return result;
+    return response;
   }
 
   static async updateIssue({
@@ -172,11 +184,11 @@ export class ApiService {
     updatedIssue,
     gameId,
   }: IClientUpdateIssueParameters): Promise<IResponse> {
-    const result = await asyncEmit<IClientUpdateIssueParameters, IResponse>(
+    const response = await asyncEmit<IClientUpdateIssueParameters, IResponse>(
       'updateIssue',
       { dealerId, updatedIssue, gameId }
     );
-    return result;
+    return response;
   }
 
   static async deleteIssue({
@@ -184,11 +196,11 @@ export class ApiService {
     deletedIssueId,
     gameId,
   }: IClientDeleteIssueParameters): Promise<IResponse> {
-    const result = await asyncEmit<IClientDeleteIssueParameters, IResponse>(
+    const response = await asyncEmit<IClientDeleteIssueParameters, IResponse>(
       'deleteIssue',
       { dealerId, deletedIssueId, gameId }
     );
-    return result;
+    return response;
   }
 
   static async startGame({
@@ -196,22 +208,22 @@ export class ApiService {
     settings,
     gameId,
   }: IClientStartGameParameters): Promise<Partial<IStartGameResponse>> {
-    const result = await asyncEmit<
+    const response = await asyncEmit<
       IClientStartGameParameters,
       Partial<IStartGameResponse>
     >('startGame', { dealerId, gameId, settings });
-    return result;
+    return response;
   }
 
   static async cancelGame({
     dealerId,
     gameId,
   }: IClientCancelGameParameters): Promise<IResponse> {
-    const result = await asyncEmit<IClientCancelGameParameters, IResponse>(
+    const response = await asyncEmit<IClientCancelGameParameters, IResponse>(
       'cancelGame',
       { dealerId, gameId }
     );
-    return result;
+    return response;
   }
 
   static async scoreIssue({
@@ -219,34 +231,36 @@ export class ApiService {
     issueId,
     score,
     gameId,
-  }: IClientScoreIssueParameters): Promise<IStartRoundResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/score-issue`, {
-      method: 'POST',
-      body: JSON.stringify({ playerId, issueId, score, gameId }),
-    }).then((response) => response.json());
-    return json;
+  }: IClientScoreIssueParameters): Promise<Partial<IStartRoundResponse>> {
+    const response = await asyncEmit<
+      IClientScoreIssueParameters,
+      Partial<IStartRoundResponse>
+    >('scoreIssue', { playerId, issueId, gameId, score });
+    return response;
   }
 
   static async finishGame({
     dealerId,
     gameId,
   }: IClientFinishGameParameters): Promise<IResponse> {
-    const result = await asyncEmit<IClientFinishGameParameters, IResponse>(
+    const response = await asyncEmit<IClientFinishGameParameters, IResponse>(
       'finishGame',
       { dealerId, gameId }
     );
-    return result;
+    return response;
   }
 
   static async changeCurrentIssue({
     dealerId,
     issueId,
     gameId,
-  }: IClientChangeCurrentIssueParameters): Promise<IChangeCurrentIssueResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/cancel-game`, {
-      method: 'POST',
-      body: JSON.stringify({ dealerId, issueId, gameId }),
-    }).then((response) => response.json());
-    return json;
+  }: IClientChangeCurrentIssueParameters): Promise<
+    Partial<IChangeCurrentIssueResponse>
+  > {
+    const response = await asyncEmit<
+      IClientChangeCurrentIssueParameters,
+      Partial<IChangeCurrentIssueResponse>
+    >('changeCurrentIssue', { dealerId, issueId, gameId });
+    return response;
   }
 }
