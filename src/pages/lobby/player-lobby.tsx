@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import {
@@ -7,8 +8,10 @@ import {
   votingKickSelectors,
 } from '../../redux/selectors';
 import { lobbyPageSelectors } from '../../redux/selectors/lobby-page-selectors';
+import { appActions } from '../../redux/slices/app/app-slice';
 import { thunks } from '../../redux/thunks/thunks';
 import { TGameStatus } from '../../redux/types';
+import { InfoMessage } from '../../redux/types/info-message';
 import { BasePopup } from '../shared/base-popup/base-popup';
 import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
@@ -23,7 +26,6 @@ const PlayerLobby = (): JSX.Element => {
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
-  // const messagesIds = new Set(messages.map((item) => item.userId));
   const issues = useSelector(gameSelectors.selectIssues);
   const wasKicked = useSelector(currentUserSelectors.selectCurrentUser).kicked;
   const gameCancelled = useSelector(lobbyPageSelectors.selectGameCancelled);
@@ -62,6 +64,13 @@ const PlayerLobby = (): JSX.Element => {
     }
   }, [votingKick.kickedPlayerId]);
 
+  const handleExit = async () => {
+    history.push('/');
+    await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
+    dispatch(
+      appActions.changeInfoMessages([new InfoMessage('You have left the game')])
+    );
+  };
   const declineKickVote = async () => {
     await dispatch(
       thunks.voteToKickThunk({
@@ -100,6 +109,11 @@ const PlayerLobby = (): JSX.Element => {
       <div className={styles.wrapper}>
         <SprintHeading issues={issues} />
         <AboutDealer />
+        <div className={styles.btnExitContainer}>
+          <Button type="button" className={styles.btnExit} onClick={handleExit}>
+            Exit
+          </Button>
+        </div>
         <Members users={users} />
       </div>
       {sideBar ? (

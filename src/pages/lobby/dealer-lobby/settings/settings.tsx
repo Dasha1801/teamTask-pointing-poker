@@ -21,7 +21,6 @@ const GameSettings = (): JSX.Element => {
     gameSettingsSelectors.selectSettings
   ).canScoreAfterFlip;
   const cardType = useSelector(gameSettingsSelectors.selectSettings).cardType;
-  const showTimer = useSelector(gameSettingsSelectors.selectSettings).showTimer;
 
   return (
     <div className={styles.settingsList}>
@@ -106,28 +105,34 @@ const GameSettings = (): JSX.Element => {
             <FormControl
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
-              onChange={() =>
-                dispatch(
-                  gameSettingsActions.changeSettings({
-                    showTimer: !showTimer,
-                  })
-                )
-              }
+              onChange={() => {
+                if (timer) {
+                  dispatch(
+                    gameSettingsActions.changeSettings({
+                      timer: undefined,
+                    })
+                  );
+                } else {
+                  dispatch(
+                    gameSettingsActions.changeSettings({
+                      timer: { minutes: 2, seconds: 30 },
+                    })
+                  );
+                }
+              }}
             />
           </div>
         </Col>
       </div>
 
-      {showTimer && (
+      {timer && (
         <div className={styles.itemSettings}>
           <h5 className={styles.setting}>Round time:</h5>
-          {timer && (
-            <Timer
-              minutes={timer.minutes}
-              seconds={timer.seconds}
-              disabled={false}
-            />
-          )}
+          <Timer
+            minutes={timer.minutes}
+            seconds={timer.seconds}
+            disabled={false}
+          />
         </div>
       )}
 

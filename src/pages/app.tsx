@@ -8,6 +8,7 @@ import { APP_CONSTANTS } from '../shared/constants';
 import styles from './app.module.scss';
 import GameResult from './game-result/game-result';
 import { GamePage } from './game/game-page-player/game-page';
+import IssuesList from './game/issues-list/issues-list';
 import DealerLobby from './lobby/dealer-lobby/dealer-lobby';
 import PlayerLobby from './lobby/player-lobby';
 import Footer from './shared/footer/footer';
@@ -22,6 +23,7 @@ function App(): JSX.Element {
       <Router>
         <Header />
         <main className={styles.content}>
+          <IssuesList />
           <TransitionGroup className={styles.transitionGroup}>
             <CSSTransition
               timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}

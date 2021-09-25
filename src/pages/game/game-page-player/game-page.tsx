@@ -5,7 +5,7 @@ import {
   currentUserSelectors,
   gamePageSelectors,
   gameSelectors,
-  gameSettingsSelectors,
+  gameSettingsSelectors
 } from '../../../redux/selectors';
 import { gamePageActions } from '../../../redux/slices/game-page/game-page';
 import { gameActions } from '../../../redux/slices/game/game-slice';
@@ -14,7 +14,6 @@ import DealerSection from '../../shared/dealer-section/dealer-section';
 import { IssueStatistics } from '../../shared/issue-statistics/issue-statistics';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import GameControls from '../game-controls/game-controls';
-import IssuesList from '../issues-list/issues-list';
 import SideBar from '../side-bar/side-bar';
 import styles from './game-page.module.scss';
 
@@ -73,7 +72,6 @@ export function GamePage(): JSX.Element {
           </div>
           <h4 className={styles.issuesHeading}>Issues</h4>
           <div className={styles.main}>
-            <IssuesList issues={issues} />
             {isStatisticsShown && currentIssue && (
               <div className={styles.statisticsSection}>
                 <h4 className={styles.statisticsHeading}>Statistics:</h4>

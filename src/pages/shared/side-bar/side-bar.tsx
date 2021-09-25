@@ -45,14 +45,14 @@ const SideBar = ({ messages, users }: ISideBarProps): JSX.Element => {
               <div className={styles.cardItem} key={item.message.id}>
                 <div className={styles.message}>{item.message.message}</div>
                 <div className={styles.author}>
-                  {item.user && (
+                  {item.user? (
                     <Player
                       key={item.user.id}
                       user={item.user}
                       isCurrentUser={item.user.id === currentUserId}
                       isPlayer={false}
                     />
-                  )}
+                  ): <div className={styles.cardKickUser}>User left</div>}
                 </div>
               </div>
             </>

@@ -15,6 +15,17 @@
   font-size: 11px;
 }
 
+.cardKickUser {
+  text-align: center;
+  color: red;
+  min-width: 30%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 0.5% 1%;
+  font-style: var(--second-font);
+  margin-bottom: 2%;
+  font-size: 12px;
+}
+
 .message {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   text-align: start;
@@ -49,7 +60,8 @@
     font-size: 9px;
   }
   .message,
-  .textarea {
+  .textarea,
+  .cardKickUser {
     font-size: 10px;
   }
 }
@@ -59,14 +71,16 @@
     font-size: 7px;
   }
   .message,
-  .textarea {
+  .textarea,
+  .cardKickUser {
     font-size: 8px;
   }
 }
 
 @media (max-width: 780px) {
   .message,
-  .textarea {
+  .textarea,
+  .cardKickUser {
     font-size: 7px;
   }
   .author {
@@ -76,7 +90,8 @@
 
 @media (max-width: 620px) {
   .message,
-  .textarea {
+  .textarea,
+  .cardKickUser {
     font-size: 6px;
   }
   .author {
