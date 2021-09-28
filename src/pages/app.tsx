@@ -2,28 +2,29 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { currentUserSelectors } from '../redux/selectors';
+import { appSelectors, currentUserSelectors } from '../redux/selectors';
 import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
 import styles from './app.module.scss';
 import GameResult from './game-result/game-result';
 import { GamePage } from './game/game-page-player/game-page';
-import IssuesList from './game/issues-list/issues-list';
 import DealerLobby from './lobby/dealer-lobby/dealer-lobby';
 import PlayerLobby from './lobby/player-lobby';
 import Footer from './shared/footer/footer';
 import Header from './shared/header/header';
+import InfoMessageList from './shared/info-message-list/info-message-list';
 import WelcomePage from './welcome/welcome';
 
 function App(): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+  const listMessages = useSelector(appSelectors.selectInfoMessages);
 
   return (
     <div className={styles.app}>
       <Router>
         <Header />
         <main className={styles.content}>
-          <IssuesList />
+          <InfoMessageList messages={listMessages} />
           <TransitionGroup className={styles.transitionGroup}>
             <CSSTransition
               timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}

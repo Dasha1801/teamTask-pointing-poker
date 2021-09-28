@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
 import { thunks } from '../../../redux/thunks/thunks';
-import { TIssuePriority } from '../../../redux/types';
+import { IIssue, TIssuePriority } from '../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
+import downloadIcon from '../../../shared/assets/icons/downloadIcon.png';
+import { APP_CONSTANTS } from '../../../shared/constants';
 import { CreateIssuePopup } from '../../shared/create-issue-popup/create-issue-popup';
 import styles from './card-create-issue.module.scss';
 
@@ -20,6 +27,7 @@ function CreateIssueCard(): JSX.Element {
   const [warning, setWarning] = useState('');
   const gameId = useSelector(gameSelectors.selectId);
   const dispatch = useDispatch();
+
   const handleClose = () => {
     setShowPopup(false);
   };
@@ -40,6 +48,40 @@ function CreateIssueCard(): JSX.Element {
     setIssueFields(emptyIssue);
   };
 
+  const handleFile = async (e: any) => {
+    const content = JSON.parse(e.target.result);
+    const { issues } = content;
+    await issues.map((item: IIssue) => {
+      dispatch(
+        thunks.createIssueThunk({
+          dealerId: dealer.id,
+          addedIssue: item,
+          gameId,
+        })
+      );
+    });
+  };
+
+  const handleChangeFile = (e: any) => {
+    const file = e.target.files[0];
+    const fileData = new FileReader();
+    const fileSizeKb = file.size / 1000;
+
+    if (fileSizeKb <= APP_CONSTANTS.MAX_FILE_SIZE) {
+      fileData.onload = handleFile;
+      fileData.readAsText(file);
+    } else {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(
+            'The size of the files to download is limited to 1mb',
+            TInfoMessageType.error
+          )
+        )
+      );
+    }
+  };
+
   const handleSubmit = () => {
     if (issueFields.link !== '' && issueFields.title !== '') {
       handleCreateIssue();
@@ -51,8 +93,27 @@ function CreateIssueCard(): JSX.Element {
   return (
     <div className={styles.cardCreateIssue}>
       <div className={styles.name}>Create new Issue</div>
-      <div className={styles.addIssue} onClick={handleShowPopUp}>
-        +
+      <div className={styles.containerBtn}>
+        <div className={styles.form__inputFile}>
+          <label htmlFor="file">
+            <img
+              src={downloadIcon}
+              alt="icon download file"
+              className={styles.downloadIcon}
+            />
+          </label>
+          <input
+            className={styles.visuallyHidden}
+            type="file"
+            id="file"
+            onChange={handleChangeFile}
+            value=""
+            accept=".json"
+          />
+        </div>
+        <span className={styles.addedIssue} onClick={handleShowPopUp}>
+          +
+        </span>
       </div>
       {showPopup && (
         <CreateIssuePopup
