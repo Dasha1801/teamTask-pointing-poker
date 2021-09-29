@@ -43,6 +43,14 @@ export interface IClientCreateGameParameters {
   dealerInfo: IUser;
 }
 
+export interface IClientAdmitPlayerParameters extends IRequestParameters {
+  gameId: string;
+}
+
+export interface IClientRejectPlayerParameters extends IRequestParameters {
+  gameId: string;
+}
+
 export interface IClientPostMessageParameters extends IRequestParameters {
   message: IMessage;
 }

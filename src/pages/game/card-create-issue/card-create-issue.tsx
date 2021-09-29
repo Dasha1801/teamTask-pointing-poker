@@ -14,6 +14,7 @@ function CreateIssueCard(): JSX.Element {
     priority: TIssuePriority.medium,
     link: '',
     lastRoundResult: {},
+    score: 0,
   };
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const [showPopup, setShowPopup] = useState(false);

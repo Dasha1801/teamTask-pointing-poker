@@ -2,12 +2,10 @@ import React, { useRef, useState } from 'react';
 import { Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
 import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
 import {
   IClientAddPlayerResult,
-  TGameStatus,
   TUserRole,
   User,
 } from '../../../../redux/types';
@@ -21,7 +19,7 @@ import Switcher from './switcher/switcher';
 
 interface IFormConnectToLobby {
   gameId: string;
-  onCancelClick: () => void;
+  handleCancelClick: () => void;
 }
 
 export type FormData = {
@@ -57,12 +55,10 @@ function toBase64String(
 }
 
 const FormConnectToLobby = ({
-  onCancelClick,
+  handleCancelClick,
   gameId,
 }: IFormConnectToLobby): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
-  const history = useHistory();
-
   const {
     register,
     handleSubmit,
@@ -87,17 +83,15 @@ const FormConnectToLobby = ({
       jobPosition: data.jobPosition,
       image: base64String,
     });
+    handleCancelClick();
     const response = await dispatch(
       thunks.addPlayerThunk({ addedPlayer: currentUser, gameId })
     );
-    // !handle error
-    const { gameStatus } = response.payload as IClientAddPlayerResult;
-    onCancelClick();
-    if (gameStatus === TGameStatus.lobby) {
-      history.push(`/lobby/${gameId}`);
-    } else {
-      history.push(`/game/${gameId}`);
+    const { message } = response.payload as IClientAddPlayerResult;
+    if (message) {
+      throw Error(`addPlayer: something wrong - ${message}`);
     }
+    // !handle error
   });
 
   const handleChangeInput = handleSubmit((data) => {

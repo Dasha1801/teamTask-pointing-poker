@@ -24,20 +24,21 @@ function App(): JSX.Element {
       <Router>
         <Header />
         <main className={styles.content}>
+<<<<<<< HEAD
           <InfoMessageList messages={listMessages} />
+=======
+          <InfoMessageList />
+>>>>>>> feat: implement admit/reject window
           <TransitionGroup className={styles.transitionGroup}>
             <CSSTransition
               timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}
               classNames="page"
             >
               <Switch>
-                <Route path="/results">
-                  <div>Results</div>
-                </Route>
                 <Route exact path="/">
                   <WelcomePage />
                 </Route>
-                <Route exact path="/game/result">
+                <Route path="/game-result/">
                   <GameResult />
                 </Route>
                 <Route path="/game/:gameId">

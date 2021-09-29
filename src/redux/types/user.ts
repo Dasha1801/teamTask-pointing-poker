@@ -27,6 +27,10 @@ export class User implements IUser {
     Object.assign(this, userParameters);
   }
 
+  static getFullName(firstName: string, lastName?: string): string {
+    return `${firstName}${lastName ? ' ' + lastName : ''}`;
+  }
+
   toObject(): IUser {
     return {
       id: this.id,

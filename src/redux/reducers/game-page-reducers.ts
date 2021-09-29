@@ -1,4 +1,4 @@
-import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import { AnyAction, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { ITimer } from '../types';
 import { IGamePage } from '../types/game-page';
 
@@ -9,6 +9,11 @@ const changeTimer: CaseReducer<IGamePage, PayloadAction<ITimer>> = (
   state.timer = action.payload;
 };
 
+const toggleSideBar: CaseReducer<IGamePage, AnyAction> = (state) => {
+  state.isSideBarShown = !state.isSideBarShown;
+};
+
 export const gamePageReducers = {
   changeTimer,
+  toggleSideBar,
 };

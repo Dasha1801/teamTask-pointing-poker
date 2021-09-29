@@ -4,24 +4,27 @@ import FormConnectToLobby from './components/form-connect-to-lobby';
 
 interface IConnectToLobbyProps {
   gameId: string;
-  onCancelClick: () => void;
+  handleCancelClick: () => void;
 }
 
 const ConnectToLobby = ({
-  onCancelClick,
+  handleCancelClick,
   gameId,
 }: IConnectToLobbyProps): JSX.Element => {
   return (
     <BasePopup
       buttonOkText="Confirm"
       buttonCancelText="Cancel"
-      buttonCancelProps={{ onClick: onCancelClick }}
+      buttonCancelProps={{ onClick: handleCancelClick }}
       buttonOkProps={{
         form: 'textId',
         type: 'submit',
       }}
     >
-      <FormConnectToLobby gameId={gameId} onCancelClick={onCancelClick} />
+      <FormConnectToLobby
+        gameId={gameId}
+        handleCancelClick={handleCancelClick}
+      />
     </BasePopup>
   );
 };

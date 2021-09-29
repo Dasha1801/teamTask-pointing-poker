@@ -6,17 +6,19 @@ export function IssueStatistics({ issue }: { issue: IIssue }): JSX.Element {
   return (
     <div className={styles.container}>
       <ul className={styles.issuesList}>
-        {Issue.getRoundResultPercentages(issue).map((percentage, index) => {
-          return (
-            <li key={`${percentage}_${index}`}>
-              {`${
-                percentage === Math.trunc(percentage)
-                  ? percentage
-                  : percentage.toFixed(1)
-              }%`}
-            </li>
-          );
-        })}
+        {Object.entries(Issue.calculateStatistics(issue)).map(
+          ([score, percentage]) => {
+            return (
+              <li key={`${score}`}>
+                {`${
+                  percentage === Math.trunc(percentage as number)
+                    ? percentage
+                    : (percentage as number).toFixed(1)
+                }%`}
+              </li>
+            );
+          }
+        )}
       </ul>
     </div>
   );

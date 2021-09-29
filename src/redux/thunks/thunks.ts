@@ -14,6 +14,7 @@ import { gameActions } from '../slices/game/game-slice';
 import {
   IClientAddPlayerParameters,
   IClientAddPlayerResult,
+  IClientAdmitPlayerParameters,
   IClientCancelGameParameters,
   IClientChangeCurrentIssueParameters,
   IClientCheckGameParameters,
@@ -26,6 +27,7 @@ import {
   IClientKickPlayerVoteParameters,
   IClientLeaveGameParameters,
   IClientPostMessageParameters,
+  IClientRejectPlayerParameters,
   IClientScoreIssueParameters,
   IClientStartGameParameters,
   IClientStartRoundParameters,
@@ -49,6 +51,25 @@ export const connectThunk = createAsyncThunk<IConnectResponse, void>(
       appActions.changeConnectionStatus(response.connectionStatus)
     );
     thunkApi.dispatch(appActions.changeSocketId(response.socketId));
+    return response;
+  }
+);
+
+export const admitPlayerThunk = createAsyncThunk<
+  Partial<IRequestResult>,
+  IClientAdmitPlayerParameters
+>('game/admitPlayerThunk', async ({ gameId }: IClientAdmitPlayerParameters) => {
+  const response = await ApiService.admitPlayer({ gameId });
+  return response;
+});
+
+export const rejectPlayerThunk = createAsyncThunk<
+  Partial<IRequestResult>,
+  IClientRejectPlayerParameters
+>(
+  'game/rejectPlayerThunk',
+  async ({ gameId }: IClientRejectPlayerParameters) => {
+    const response = await ApiService.rejectPlayer({ gameId });
     return response;
   }
 );
@@ -78,26 +99,37 @@ export const addPlayerThunk = createAsyncThunk<
   Partial<IClientAddPlayerResult>,
   IClientAddPlayerParameters
 >('game/addPlayerThunk', async ({ addedPlayer, gameId }, thunkApi) => {
+  thunkApi.dispatch(currentUserActions.changeCurrentUser(addedPlayer));
   const response = (await ApiService.addPlayer({
     addedPlayer,
     gameId,
   })) as IAddPlayerResponse;
-  if (response.message) {
-    return response;
-  }
-  const { playerId, dealer, messages, issues, players, gameStatus } = response;
-  const player = new User({ ...addedPlayer, id: playerId }).toObject();
-  thunkApi.dispatch(gameActions.changeMessages(messages));
-  thunkApi.dispatch(gameActions.changeIssues(issues));
-  thunkApi.dispatch(gameActions.changePlayers(players.concat(player)));
-  thunkApi.dispatch(currentUserActions.changeCurrentUser(player));
-  thunkApi.dispatch(gameActions.changeId(gameId));
-  if (gameStatus === TGameStatus.lobby) {
-    thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
-  } else {
-    thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
-  }
-  return { gameId, dealer, player, gameStatus };
+  // if (response.message) {
+  //   return response;
+  // }
+  return response;
+  // const {
+  //   playerId,
+  //   dealer,
+  //   messages,
+  //   issues,
+  //   players,
+  //   gameStatus,
+  //   currentIssueId,
+  // } = response;
+  // const player = new User({ ...addedPlayer, id: playerId }).toObject();
+  // thunkApi.dispatch(gameActions.changeMessages(messages));
+  // thunkApi.dispatch(gameActions.changeIssues(issues));
+  // thunkApi.dispatch(gameActions.changePlayers(players.concat(player)));
+  // thunkApi.dispatch(currentUserActions.changeCurrentUser(player));
+  // thunkApi.dispatch(gameActions.changeId(gameId));
+  // thunkApi.dispatch(gameActions.changeCurrentIssueId(currentIssueId));
+  // if (gameStatus === TGameStatus.lobby) {
+  //   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
+  // } else {
+  //   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
+  // }
+  // return { gameId, dealer, player, gameStatus };
 });
 
 export const checkGameThunk = createAsyncThunk<
@@ -195,6 +227,8 @@ export const startGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientStartGameParameters
 >('game/startGameThunk', async ({ dealerId, settings, gameId }, thunkApi) => {
+  console.log('start game thunk');
+
   const response = await ApiService.startGame({ dealerId, settings, gameId });
   if (response.message) {
     return response;
@@ -384,4 +418,6 @@ export const thunks = {
   getNextIssueThunk,
   startRoundThunk,
   leaveGameThunk,
+  admitPlayerThunk,
+  rejectPlayerThunk,
 };

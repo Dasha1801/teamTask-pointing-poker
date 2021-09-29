@@ -8,6 +8,7 @@ const selectIsSideBarShown = createSelector(
   selectLobbyPage,
   (lobbyPage) => lobbyPage.isSideBarShown
 );
+
 const selectWasKicked = createSelector(
   selectLobbyPage,
   (lobbyPage) => lobbyPage.wasKicked

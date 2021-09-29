@@ -1,5 +1,9 @@
 import { Socket } from 'socket.io-client';
+import { gameSelectors } from '../../redux/selectors';
+import { appActions } from '../../redux/slices/app/app-slice';
 import { currentUserActions } from '../../redux/slices/current-user/current-user-slice';
+import { entryRequestActions } from '../../redux/slices/entry-request/entry-request';
+import { gamePageActions } from '../../redux/slices/game-page/game-page';
 import { gameSettingsActions } from '../../redux/slices/game-settings/game-settings-slice';
 import { gameActions } from '../../redux/slices/game/game-slice';
 import { lobbyPageActions } from '../../redux/slices/lobby-page/lobby-page';
@@ -14,16 +18,21 @@ import {
   TCardScore,
   TGameStatus,
   TUserRole,
+  User,
 } from '../../redux/types';
+import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
 import {
   IAddIssueResponseWS,
   IAddPlayerResponseWS,
+  IAdmitPlayerResponseWS,
   IChangeCurrentIssueResponseWS,
   IDeleteIssueResponseWS,
+  IEntryRequestResponseWS,
+  IFinishGameResponseWS,
   IKickPlayerResponseWS,
   ILeaveGameResponseWS,
   IPostMessageResponseWS,
-  IScoreIssueResponseWS,
+  IRejectPlayerResponseWS,
   IStartGameResponseWS,
   IStartVotingToKickResponseWS,
   IUpdateIssueResponseWS,
@@ -48,32 +57,170 @@ export interface IGameService {
   issueScored: (issueId: string, playerId: string, score: TCardScore) => void;
 }
 
+enum SocketResponseEvents {
+  roundFinished = 'roundFinished',
+  roundStarted = 'roundStarted',
+  gameFinished = 'gameFinished',
+  playerAdded = 'playerAdded',
+  issueCreated = 'issueCreated',
+  currentIssueChanged = 'currentIssueChanged',
+  issueDeleted = 'issueDeleted',
+  issueUpdated = 'issueUpdated',
+  gameCancelled = 'gameCancelled',
+  gameStarted = 'gameStarted',
+  playerLeft = 'playerLeft',
+  playerKicked = 'playerKicked',
+  playerKickedByVote = 'playerKickedByVote',
+  votingToKickStarted = 'votingToKickStarted',
+  messagePosted = 'messagePosted',
+  playerAdmitted = 'playerAdmitted',
+  playerRejected = 'playerRejected',
+  entryRequested = 'entryRequested',
+}
+
 export class GameService {
-  constructor(private io: Socket) {}
+  constructor(private io: Socket, private ioDealer: Socket) {}
 
   init(): void {
     this.io.on('connection', () => {
       console.log('server connect');
     });
-    this.io.on('playerAdded', this.playerAdded);
-    this.io.on('issueUpdated', this.issueUpdated);
-    this.io.on('issueCreated', this.issueCreated);
-    this.io.on('issueDeleted', this.issueDeleted);
-    this.io.on('gameCancelled', this.gameCancelled);
-    this.io.on('gameStarted', this.gameStarted);
-    this.io.on('gameFinished', this.gameFinished);
-    this.io.on('playerLeft', this.playerLeft);
-    this.io.on('playerKicked', this.playerKicked);
-    this.io.on('playerKickedByVote', this.playerKickedByVote);
-    this.io.on('votingToKickStarted', this.votingToKickStarted);
-    this.io.on('messagePosted', this.messagePosted);
-    this.io.on('currentIssueChanged', this.currentIssueChanged);
-    this.io.on('issueScored', this.issueScored);
+    this.io.on('test', () => console.log('hey client'));
+    this.ioDealer.on('test', () => console.log('hey dealer'));
+
+    this.io.on(SocketResponseEvents.playerAdded, this.playerAdded);
+    this.io.on(SocketResponseEvents.issueUpdated, this.issueUpdated);
+    this.io.on(SocketResponseEvents.issueCreated, this.issueCreated);
+    this.io.on(SocketResponseEvents.issueDeleted, this.issueDeleted);
+    this.io.on(SocketResponseEvents.gameCancelled, this.gameCancelled);
+    this.io.on(SocketResponseEvents.gameStarted, this.gameStarted);
+    this.io.on(SocketResponseEvents.gameFinished, this.gameFinished);
+    this.io.on(SocketResponseEvents.playerLeft, this.playerLeft);
+    this.io.on(SocketResponseEvents.playerLeft, this.playerKicked);
+    this.io.on(
+      SocketResponseEvents.playerKickedByVote,
+      this.playerKickedByVote
+    );
+    this.io.on(
+      SocketResponseEvents.votingToKickStarted,
+      this.votingToKickStarted
+    );
+    this.io.on(SocketResponseEvents.messagePosted, this.messagePosted);
+    this.io.on(
+      SocketResponseEvents.currentIssueChanged,
+      this.currentIssueChanged
+    );
+    // this.io.on(SocketResponseEvents.issueScored, this.issueScored);
+    this.io.on(SocketResponseEvents.roundStarted, this.roundStarted);
+    this.io.on(SocketResponseEvents.roundFinished, this.roundFinished);
+    this.io.on(SocketResponseEvents.entryRequested, this.entryRequested);
+    this.io.on(SocketResponseEvents.playerAdmitted, this.playerAdmitted);
+    this.io.on(SocketResponseEvents.playerRejected, this.playerRejected);
+  }
+
+  playerAdmitted({
+    playerId,
+    messages,
+    issues,
+    players,
+    gameStatus,
+    currentIssueId,
+    gameId,
+  }: IAdmitPlayerResponseWS): void {
+    console.log('player admitted', gameId);
+    store.dispatch(gameActions.changeId(gameId));
+    store.dispatch(gameActions.changeMessages(messages));
+    store.dispatch(gameActions.changeIssues(issues));
+    store.dispatch(gameActions.changePlayers(players));
+    store.dispatch(currentUserActions.changeCurrentUser({ id: playerId }));
+    store.dispatch(gameActions.changeCurrentIssueId(currentIssueId));
+    if (gameStatus === TGameStatus.lobby) {
+      store.dispatch(gameActions.changeStatus(TGameStatus.lobby));
+    } else {
+      store.dispatch(gameActions.changeStatus(TGameStatus.started));
+    }
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage('You have joined the game'))
+    );
+  }
+
+  playerRejected({}: IRejectPlayerResponseWS): void {
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(
+          'Dealer has rejected your request =(',
+          TInfoMessageType.error
+        )
+      )
+    );
+  }
+
+  entryRequested({
+    playerId,
+    firstName,
+    lastName,
+    role,
+    jobPosition,
+  }: IEntryRequestResponseWS): void {
+    console.log('entry requested');
+    store.dispatch(entryRequestActions.changeIsEntryRequested(true));
+    store.dispatch(
+      entryRequestActions.changePlayerInfo(
+        new User({
+          id: playerId,
+          firstName,
+          lastName,
+          role,
+          jobPosition,
+        })
+      )
+    );
+  }
+
+  roundStarted(): void {
+    const timer = store.getState().gameSettings.timer;
+    if (timer) {
+      store.dispatch(gamePageActions.changeTimer(timer));
+    }
+    store.dispatch(gameActions.changeStatus(TGameStatus.roundInProgress));
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage('Round started'))
+    );
+  }
+
+  roundFinished({ roundResult, totalScore }: IFinishGameResponseWS): void {
+    const currentIssue = gameSelectors.selectCurrentIssue(store.getState());
+    if (currentIssue) {
+      store.dispatch(
+        gameActions.updateIssue({
+          issueId: currentIssue.id,
+          updatedIssue: {
+            ...currentIssue,
+            lastRoundResult: roundResult,
+            score: totalScore,
+          },
+        })
+      );
+    }
+    store.dispatch(gameActions.changeStatus(TGameStatus.started));
+    store.dispatch(gamePageActions.changeTimer({ minutes: 0, seconds: 0 }));
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage('Round finished'))
+    );
   }
 
   playerAdded({ addedPlayer }: IAddPlayerResponseWS): void {
     const players = store.getState().game.players;
     store.dispatch(gameActions.changePlayers(players.concat(addedPlayer)));
+    const playerName = User.getFullName(
+      addedPlayer.firstName,
+      addedPlayer.lastName
+    );
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Player ${playerName} added`)
+      )
+    );
   }
 
   issueUpdated({ updatedIssue }: IUpdateIssueResponseWS): void {
@@ -83,35 +230,70 @@ export class GameService {
         updatedIssue: updatedIssue,
       })
     );
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Issue ${updatedIssue.title} updated`)
+      )
+    );
   }
 
   issueCreated({ addedIssue }: IAddIssueResponseWS): void {
     const issues = store.getState().game.issues;
-    console.log('added issue', addedIssue);
-
     store.dispatch(gameActions.changeIssues(issues.concat(addedIssue)));
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage('Issue added'))
+    );
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Issue ${addedIssue.title} created`)
+      )
+    );
   }
 
-  issueDeleted({ deletedIssueId }: IDeleteIssueResponseWS): void {
+  issueDeleted({ deletedIssueId, title }: IDeleteIssueResponseWS): void {
     store.dispatch(gameActions.deleteIssue(deletedIssueId));
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage(`Issue ${title} deleted`))
+    );
   }
 
   gameCancelled(): void {
     store.dispatch(lobbyPageActions.toggleGameCancelled());
     store.dispatch(gameActions.resetGame());
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Dealer has cancelled the game`)
+      )
+    );
   }
 
   gameStarted({ settings }: IStartGameResponseWS): void {
+    console.log('game started');
+
     store.dispatch(gameSettingsActions.changeSettings(settings));
     store.dispatch(gameActions.changeStatus(TGameStatus.started));
+    store.dispatch(
+      appActions.addOneInfoMessage(new InfoMessage('Game started'))
+    );
   }
 
   gameFinished(): void {
     store.dispatch(gameActions.resetGame());
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Game finished, thanks for playing`)
+      )
+    );
   }
 
-  playerLeft({ playerId }: ILeaveGameResponseWS): void {
+  playerLeft({ playerId, firstName, lastName }: ILeaveGameResponseWS): void {
     store.dispatch(gameActions.deletePlayer(playerId));
+    const playerName = User.getFullName(firstName, lastName);
+    store.dispatch(
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Player ${playerName} has left`)
+      )
+    );
   }
 
   votingToKickStarted({
@@ -129,25 +311,57 @@ export class GameService {
     }
   }
 
-  playerKickedByVote({ kickedPlayerId }: IVoteToKickResponseWS): void {
+  playerKickedByVote({
+    kickedPlayerId,
+    firstName,
+    lastName,
+  }: IVoteToKickResponseWS): void {
     const currentUser = store.getState().currentUser;
     if (currentUser.id === kickedPlayerId) {
       store.dispatch(currentUserActions.changeCurrentUser({ kicked: true }));
       store.dispatch(gameActions.resetGame());
       store.dispatch(votingKickActions.resetVotingKick());
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage('You have been kicked from the game by vote =(')
+        )
+      );
     } else {
       store.dispatch(gameActions.deletePlayer(kickedPlayerId));
+      const playerName = User.getFullName(firstName, lastName);
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(
+            `Player ${playerName} has been kicked from the game by vote`
+          )
+        )
+      );
     }
   }
 
-  playerKicked({ kickedPlayerId }: IKickPlayerResponseWS): void {
+  playerKicked({
+    kickedPlayerId,
+    firstName,
+    lastName,
+  }: IKickPlayerResponseWS): void {
     const currentUserId = store.getState().currentUser.id;
     if (currentUserId !== kickedPlayerId) {
       store.dispatch(currentUserActions.changeCurrentUser({ kicked: true }));
       store.dispatch(gameActions.resetGame());
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(`You have been kicked from the game =(`)
+        )
+      );
       // store.dispatch(currentUserActions.changeCurrentUser({kicked: false}));
     } else {
       store.dispatch(gameActions.deletePlayer(kickedPlayerId));
+      const playerName = User.getFullName(firstName, lastName);
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(`Player ${playerName} has been kicked from the game`)
+        )
+      );
     }
   }
 
@@ -163,9 +377,9 @@ export class GameService {
     store.dispatch(gameActions.changeCurrentIssueId(issueId));
   }
 
-  issueScored({ issueId, userId, score }: IScoreIssueResponseWS): void {
-    store.dispatch(
-      gameActions.scoreIssue({ issueId, playerId: userId, score })
-    );
-  }
+  // issueScored({ issueId, userId, score }: IScoreIssueResponseWS): void {
+  //   store.dispatch(
+  //     gameActions.scoreIssue({ issueId, playerId: userId, score })
+  //   );
+  // }
 }

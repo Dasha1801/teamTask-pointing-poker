@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FormEvent, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
 import { thunks } from '../../../redux/thunks/thunks';
@@ -23,9 +23,7 @@ export default function IssueCard({
   const gameId = useSelector(gameSelectors.selectId);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const currentUserId = useSelector(currentUserSelectors.selectCurrentUser).id;
-  const defaultScore: number | string | undefined = Object.keys(
-    issue.lastRoundResult
-  ).length;
+  const [showScoreInput, setShowScoreInput] = useState(false);
 
   const deleteIssue = async () => {
     await dispatch(
@@ -36,6 +34,47 @@ export default function IssueCard({
       })
     );
   };
+
+  const getIssueScore = (): string => {
+    return Object.keys(issue.lastRoundResult).length
+      ? String(issue.score)
+      : '⸺';
+  };
+
+  const handleScoreInputChange = async (newValue: string) => {
+    const numberValue = Number(newValue);
+    if (numberValue && numberValue > 0) {
+      await dispatch(
+        thunks.updateIssueThunk({
+          dealerId: currentUserId,
+          gameId,
+          updatedIssue: {
+            ...issue,
+            score: numberValue,
+          },
+        })
+      );
+    }
+    setShowScoreInput(false);
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    const target = event.target as typeof event.target & {
+      scoreInput: { value: string };
+    };
+    console.log('target', target);
+
+    await handleScoreInputChange(target.scoreInput.value);
+  };
+
+  const handleChange = async (event: SyntheticEvent<HTMLInputElement>) => {
+    // const lastValue = issue.lastRoundResult;
+    console.log('change', event);
+    const input = event.target as HTMLInputElement;
+    await handleScoreInputChange(input.value);
+  };
+
   return (
     <div className={`${styles.issueCard} ${isCurrent ? styles.current : ''}`}>
       <div className={styles.issueInfo}>
@@ -45,14 +84,24 @@ export default function IssueCard({
           <span className={styles.capitalize}>{issue.priority}</span> priority
         </div>
       </div>
-      {canEditScore && (
-        <input
-          key={defaultScore}
-          type="text"
-          maxLength={2}
-          defaultValue={Object.keys(issue.lastRoundResult).length || undefined}
+      {!showScoreInput ? (
+        <span
+          onClick={canEditScore ? () => setShowScoreInput(true) : undefined}
           className={styles.score}
-        />
+        >
+          {getIssueScore()}
+        </span>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="scoreInput"
+            maxLength={2}
+            autoFocus
+            onBlur={handleChange}
+            className={styles.score}
+          />
+        </form>
       )}
       {canRemove && gameStatus !== TGameStatus.roundInProgress && (
         <div className={styles.buttonCloseContainer}>

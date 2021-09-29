@@ -64,12 +64,12 @@ export default function GameControls(): JSX.Element {
     }
   };
 
-  const handleStopRound = async () => {
+  const handleFinishRound = async () => {
     console.log('stop round');
   };
 
-  const handleFinish = async () => {
-    history.push('/results');
+  const handleFinishGame = async () => {
+    history.push('/game-result');
     await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
     );
@@ -77,11 +77,7 @@ export default function GameControls(): JSX.Element {
 
   return (
     <div className={styles.gameControls}>
-      {settings.timer && (
-        <div className={styles.timer}>
-          <Timer />
-        </div>
-      )}
+      {settings.timer && <Timer />}
       <div className={styles.buttons}>
         {currentUser.role === TUserRole.dealer ? (
           <>
@@ -96,7 +92,7 @@ export default function GameControls(): JSX.Element {
               <BaseButton
                 disabled={gameStatus !== TGameStatus.started}
                 className={styles.button}
-                onClick={handleFinish}
+                onClick={handleFinishGame}
               >
                 Finish Game
               </BaseButton>
@@ -127,7 +123,7 @@ export default function GameControls(): JSX.Element {
               <ButtonBlue
                 disabled={gameStatus !== TGameStatus.roundInProgress}
                 className={styles.button}
-                onClick={handleStopRound}
+                onClick={handleFinishRound}
               >
                 Stop round
               </ButtonBlue>

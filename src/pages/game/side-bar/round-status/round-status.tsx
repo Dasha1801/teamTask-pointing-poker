@@ -10,9 +10,12 @@ export default function RoundStatus(): JSX.Element {
 
   return (
     <div className={styles.roundStatus}>
-      <div className={styles.scoreItem}>
+      <div className={styles.scoreItemWide}>
         <div className={styles.heading}>Scores:</div>
         <div className={styles.heading}>Players:</div>
+      </div>
+      <div className={styles.scoreItemNarrow}>
+        <div className={styles.heading}>Scores/players:</div>
       </div>
 
       {players.map((player) => {

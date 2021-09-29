@@ -33,6 +33,10 @@ $shadow: var(--main-shadow);
 }
 
 .score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   width: 60px;
   margin-left: 25px;
   border: none;
