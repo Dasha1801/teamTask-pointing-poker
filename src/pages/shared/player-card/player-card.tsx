@@ -83,7 +83,11 @@ const Player = ({ user }: IPlayerProps): JSX.Element => {
           buttonCancelProps={{ onClick: handleCloseKickPopup }}
         >
           <div className={styles.dealerKickPopup}>
-            {`Kick ${user.firstName} ${user.lastName} from the game?`}
+            Kick
+            <span className={styles.nameKickPlayer}>{`
+              ${user.firstName} ${user.lastName} `}
+            </span>
+            from the game?
           </div>
         </BasePopup>
       )}
@@ -96,7 +100,11 @@ const Player = ({ user }: IPlayerProps): JSX.Element => {
           buttonCancelProps={{ onClick: handleCloseKickPopup }}
         >
           <div className={styles.dealerKickPopup}>
-            {`Vote to kick ${user.firstName} ${user.lastName} from the game?`}
+          Kick
+            <span className={styles.nameKickPlayer}>{`
+              ${user.firstName} ${user.lastName} `}
+            </span>
+            from the game?
           </div>
         </BasePopup>
       )}

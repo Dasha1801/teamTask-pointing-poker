@@ -33,6 +33,9 @@ const PlayerLobby = (): JSX.Element => {
   const gameId = useSelector(gameSelectors.selectId);
   const votingKick = useSelector(votingKickSelectors.selectVotingKick);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+  const kickPlayer = users.find(
+    (user) => user.id === votingKick.kickedPlayerId
+  );
 
   const [messageUserIds, setMessageUserIds] = useState(new Set());
 
@@ -104,7 +107,15 @@ const PlayerLobby = (): JSX.Element => {
           buttonCancelText="No"
           buttonOkProps={{ onClick: acceptKickVote }}
           buttonCancelProps={{ onClick: declineKickVote }}
-        ></BasePopup>
+        >
+          <div className={styles.dealerKickPopup}>
+            Kick
+            <span className={styles.nameKickPlayer}>
+              {` ${kickPlayer?.firstName} ${kickPlayer?.lastName} `}
+            </span>
+            from the game?
+          </div>
+        </BasePopup>
       )}
       <div className={styles.wrapper}>
         <SprintHeading issues={issues} />

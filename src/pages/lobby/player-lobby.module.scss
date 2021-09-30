@@ -28,6 +28,13 @@ $btn-background: var(--bg-blue);
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.dealerKickPopup{
+  margin: 0 auto;
+}
+.nameKickPlayer{
+  color: #66999b;
+  font-weight: 500;
+}
 @media (max-width: 1080px) {
   .btnExit {
     width: 20%;
