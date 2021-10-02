@@ -1,3 +1,6 @@
+import { TCardScore } from '.';
+import { deck } from '../../pages/lobby/dealer-lobby/cards/constants';
+
 import { TCardType } from './card';
 
 export interface ITimer {
@@ -13,6 +16,7 @@ export interface IGameSettings {
   autoFlipCards: boolean;
   canScoreAfterFlip: boolean;
   cardType: TCardType;
+  cardValues: TCardScore[];
   showTimer: boolean;
 }
 
@@ -23,6 +27,7 @@ export class GameSettings {
   autoAdmit = false;
   autoFlipCards = false;
   canScoreAfterFlip = false;
+  cardValues = deck.fib.slice(0, 5);
   cardType = TCardType.fib;
   showTimer = false;
 
@@ -38,6 +43,7 @@ export class GameSettings {
       autoAdmit: this.autoAdmit,
       autoFlipCards: this.autoFlipCards,
       canScoreAfterFlip: this.canScoreAfterFlip,
+      cardValues: this.cardValues,
       cardType: this.cardType,
       showTimer: this.showTimer,
     };

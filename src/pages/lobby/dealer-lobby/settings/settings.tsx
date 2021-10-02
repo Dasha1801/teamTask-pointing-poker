@@ -5,23 +5,48 @@ import { gameSettingsSelectors } from '../../../../redux/selectors';
 import { gameSettingsActions } from '../../../../redux/slices/game-settings/game-settings-slice';
 import { TCardType } from '../../../../redux/types';
 import Timer from '../../../shared/timer/timer';
+import { deck } from '../cards/constants';
+import Deck from '../cards/deck';
 import styles from './settings.module.scss';
 
 const GameSettings = (): JSX.Element => {
   const timer = useSelector(gameSettingsSelectors.selectSettings).timer;
   const dispatch = useDispatch();
-  const canDealerPlay = useSelector(
-    gameSettingsSelectors.selectSettings
-  ).canDealerPlay;
+  const { canDealerPlay } = useSelector(gameSettingsSelectors.selectSettings);
   const autoAdmit = useSelector(gameSettingsSelectors.selectSettings).autoAdmit;
-  const autoFlipCards = useSelector(
+  const { autoFlipCards } = useSelector(gameSettingsSelectors.selectSettings);
+  const { canScoreAfterFlip } = useSelector(
     gameSettingsSelectors.selectSettings
-  ).autoFlipCards;
-  const canScoreAfterFlip = useSelector(
-    gameSettingsSelectors.selectSettings
-  ).canScoreAfterFlip;
-  const cardType = useSelector(gameSettingsSelectors.selectSettings).cardType;
+  );
+  const { cardType } = useSelector(gameSettingsSelectors.selectSettings);
 
+  const handleCardType = (event: any) => {
+    const value = event.target.value as TCardType;
+    dispatch(
+      gameSettingsActions.changeSettings({
+        cardType: value,
+      })
+    );
+    if (value === 'fib') {
+      dispatch(
+        gameSettingsActions.changeSettings({ cardValues: deck.fib.slice(0, 5) })
+      );
+    }
+    if (value === 'powersOfTwo') {
+      dispatch(
+        gameSettingsActions.changeSettings({
+          cardValues: deck.powersOfTwo.slice(0, 5),
+        })
+      );
+    }
+    if (value === 'custom') {
+      dispatch(
+        gameSettingsActions.changeSettings({
+          cardValues: deck.custom,
+        })
+      );
+    }
+  };
   return (
     <div className={styles.settingsList}>
       <div className={styles.itemSettings}>
@@ -141,13 +166,7 @@ const GameSettings = (): JSX.Element => {
         <select
           className={styles.select}
           value={cardType}
-          onChange={(event) =>
-            dispatch(
-              gameSettingsActions.changeSettings({
-                cardType: event.target.value as TCardType,
-              })
-            )
-          }
+          onChange={handleCardType}
         >
           <option>{TCardType.custom}</option>
           <option>{TCardType.fib}</option>
@@ -155,8 +174,11 @@ const GameSettings = (): JSX.Element => {
         </select>
       </div>
 
-      <div className={styles.itemSettings}>
+      <div className={styles.settingsCard}>
         <h5 className={styles.setting}>Add card values:</h5>
+        <div className={styles.playCards}>
+          <Deck />
+        </div>
       </div>
     </div>
   );
