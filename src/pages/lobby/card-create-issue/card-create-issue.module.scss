@@ -47,7 +47,11 @@ $font: var(--second-font);
   width: 70%;
   text-align: start;
 }
-
+@media (max-width: 1050px) {
+  .name {
+    font-size: 0.9em;
+  }
+}
 @media (max-width: 980px) {
   .cardCreateIssue {
     width: 46%;

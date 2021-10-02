@@ -97,6 +97,13 @@ function CreateIssueCard(): JSX.Element {
         <div className={styles.form__inputFile}>
           <label htmlFor="file">
             <img
+              title='Add file with issue: {
+              "issues": [
+                  {"title": ..., "priority": ...},
+                  ...
+                ]
+            }
+            }'
               src={downloadIcon}
               alt="icon download file"
               className={styles.downloadIcon}
@@ -111,7 +118,11 @@ function CreateIssueCard(): JSX.Element {
             accept=".json"
           />
         </div>
-        <span className={styles.addedIssue} onClick={handleShowPopUp}>
+        <span
+          className={styles.addedIssue}
+          onClick={handleShowPopUp}
+          title="Add issue"
+        >
           +
         </span>
       </div>
