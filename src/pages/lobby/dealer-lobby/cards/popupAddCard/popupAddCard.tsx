@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { gameSettingsSelectors } from '../../../../../redux/selectors';
 import { TCardScore } from '../../../../../redux/types';
@@ -15,8 +15,8 @@ const PopupAddCard = ({ setValues, cardValues }: IPropsCard): JSX.Element => {
   const deck = chosenDeck[cardType];
   const newCardValues = deck.filter((item) => !cardValues.includes(item));
 
-  const handleSetValues = (e: any) => {
-    const value = +e.target.value;
+  const handleSetValues = (e: SyntheticEvent) => {
+    const value = +(e.target as HTMLSelectElement).value;
     setValues([...cardValues, value]);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
 import { appActions } from '../../../redux/slices/app/app-slice';
@@ -48,8 +48,8 @@ function CreateIssueCard(): JSX.Element {
     setIssueFields(emptyIssue);
   };
 
-  const handleFile = async (e: any) => {
-    const content = JSON.parse(e.target.result);
+  const handleFile = async (e: ProgressEvent<FileReader>) => {
+    const content = JSON.parse((e.target as FileReader).result as string);
     const { issues } = content;
     await issues.map((item: IIssue) => {
       dispatch(
@@ -62,8 +62,11 @@ function CreateIssueCard(): JSX.Element {
     });
   };
 
-  const handleChangeFile = (e: any) => {
-    const file = e.target.files[0];
+  const handleChangeFile = (e: SyntheticEvent) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) {
+      return;
+    }
     const fileData = new FileReader();
     const fileSizeKb = file.size / 1000;
 

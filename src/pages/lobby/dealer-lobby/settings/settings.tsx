@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Col, FormControl } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { gameSettingsSelectors } from '../../../../redux/selectors';
@@ -20,8 +20,8 @@ const GameSettings = (): JSX.Element => {
   );
   const { cardType } = useSelector(gameSettingsSelectors.selectSettings);
 
-  const handleCardType = (event: any) => {
-    const value = event.target.value as TCardType;
+  const handleCardType = (event: SyntheticEvent) => {
+    const value = (event.target as HTMLSelectElement).value as TCardType;
     dispatch(
       gameSettingsActions.changeSettings({
         cardType: value,
