@@ -17,7 +17,7 @@ $page-width-sidebar: var(--page-width-sidebar);
   .main {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 20px;
+    row-gap: 50px;
     column-gap: 30px;
   }
 }
@@ -27,7 +27,17 @@ $page-width-sidebar: var(--page-width-sidebar);
 .controls {
   padding: 20px 0 90px;
 }
+.issues {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .issuesHeading {
+  text-align: left;
+  padding-left: 40px;
+}
+
+.statisticsHeading {
   text-align: left;
   padding-left: 40px;
 }
@@ -41,8 +51,8 @@ $page-width-sidebar: var(--page-width-sidebar);
 .statisticsSection::-webkit-scrollbar {
   display: none;
 }
-.statisticsHeading {
-  text-align: center;
+.deck {
+  padding-top: 40px;
 }
 
 @media (max-width: 1000px) {

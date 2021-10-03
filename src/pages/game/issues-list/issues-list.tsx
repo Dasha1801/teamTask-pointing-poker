@@ -8,14 +8,12 @@ import styles from './issues-list.module.scss';
 export default function IssuesList(): JSX.Element {
   const issues = useSelector(gameSelectors.selectIssues);
   const isDealer = useSelector(currentUserSelectors.selectIsDealer);
-  const currentIssueId = useSelector(gameSelectors.selectCurrentIssueId);
   return (
     <ul className={styles.issuesList}>
       {issues.map((issue) => (
         <li key={issue.id} className={styles.listItem}>
           <IssueCard
             issue={issue}
-            isCurrent={issue.id === currentIssueId}
             canEditScore={isDealer}
             canRemove={isDealer}
           />

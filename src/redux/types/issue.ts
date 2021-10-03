@@ -53,28 +53,26 @@ export class Issue implements IIssue {
     return Math.trunc(sum / (issueScores.length || 1));
   }
 
-  static calculateStatistics(issue: IIssue): TIssueScoreStatistics {
+  static calculateStatistics(issue: IIssue): Array<[TCardScore, number]> {
     const issueScores = Object.values(issue.lastRoundResult);
-    const groupedVotes = issueScores.reduce(
-      (acc: TIssueScoreStatistics, cur: TCardScore) => {
-        const score = acc[cur];
-        if (score !== undefined) {
-          acc[cur] = score + 1;
+    const groupedVotes: TIssueScoreStatistics = issueScores.reduce(
+      (acc: TIssueScoreStatistics, score) => {
+        const currentScore = acc[score];
+        if (currentScore) {
+          acc[score] = currentScore + 1;
         } else {
-          acc[cur] = 1;
+          acc[score] = 1;
         }
         return acc;
       },
       {}
     );
-    Object.keys(groupedVotes).forEach((numberOfVotes) => {
-      const key = parseInt(numberOfVotes);
-      groupedVotes[key] = ((key || 0) / issueScores.length) * 100;
+    return Object.entries(groupedVotes).map(([score, numberOfVotes]) => {
+      return [
+        score as TCardScore,
+        ((numberOfVotes as number) / issueScores.length) * 100,
+      ];
     });
-    return groupedVotes;
-    // return Object.values(groupedVotes).map(
-    //   (numberOfVotes) => ((numberOfVotes || 0) / issueScores.length) * 100
-    // );
   }
 }
 

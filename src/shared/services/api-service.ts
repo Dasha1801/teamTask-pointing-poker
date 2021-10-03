@@ -8,6 +8,7 @@ import {
   IClientCreateIssueParameters,
   IClientDeleteIssueParameters,
   IClientFinishGameParameters,
+  IClientFinishRoundParameters,
   IClientGetNextIssueParameters,
   IClientKickPlayerParameters,
   IClientLeaveGameParameters,
@@ -139,6 +140,17 @@ export class ApiService {
       IClientStartRoundParameters,
       Partial<IStartRoundResponse>
     >('startRound', { dealerId, issueId, gameId });
+    return response;
+  }
+
+  static async finishRound({
+    dealerId,
+    gameId,
+  }: IClientFinishRoundParameters): Promise<Partial<IResponse>> {
+    const response = await asyncEmit<
+      IClientFinishRoundParameters,
+      Partial<IResponse>
+    >('finishRound', { dealerId, gameId });
     return response;
   }
 

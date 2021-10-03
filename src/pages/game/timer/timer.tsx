@@ -16,15 +16,36 @@ export default function Timer(): JSX.Element {
   const timer = useSelector(gamePageSelectors.selectTimer);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const intervalHandle = useRef<NodeJS.Timer | null>(null);
+  const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
   const [lastGameStatus, setLastGameStatus] = useState(gameStatus);
+
+  useEffect(() => {
+    dispatch(
+      gamePageActions.changeTimer({
+        minutes: gameSettings?.timer?.minutes || 0,
+        seconds: gameSettings?.timer?.seconds || 0,
+      })
+    );
+  }, [currentIssue]);
 
   useEffect(() => {
     let innerTimer = { ...timer };
     if (
       gameStatus === TGameStatus.roundInProgress &&
-      (innerTimer.minutes || innerTimer.seconds)
+      lastGameStatus === TGameStatus.started
     ) {
       setLastGameStatus(gameStatus);
+      dispatch(
+        gamePageActions.changeTimer({
+          minutes: gameSettings?.timer?.minutes || 0,
+          seconds: gameSettings?.timer?.seconds || 0,
+        })
+      );
+    }
+    if (
+      gameStatus === TGameStatus.roundInProgress &&
+      (innerTimer.minutes || innerTimer.seconds)
+    ) {
       intervalHandle.current = setInterval(() => {
         let minutes = innerTimer.minutes;
         if (innerTimer.seconds === 0) {
@@ -51,12 +72,6 @@ export default function Timer(): JSX.Element {
     ) {
       setLastGameStatus(gameStatus);
       clearInterval(Number(intervalHandle.current) || undefined);
-      dispatch(
-        gamePageActions.changeTimer({
-          minutes: gameSettings?.timer?.minutes || 0,
-          seconds: gameSettings?.timer?.seconds || 0,
-        })
-      );
     }
   }, [gameStatus]);
 

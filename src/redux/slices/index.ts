@@ -1,6 +1,6 @@
 import { appSlice } from './app/app-slice';
 import { currentUserSlice } from './current-user/current-user-slice';
-import { entryRequestSlice } from './entry-request/entry-request';
+import { entryRequestsSlice } from './entry-requests/entry-requests';
 import { gamePageSlice } from './game-page/game-page';
 import { gameSettingsSlice } from './game-settings/game-settings-slice';
 import { gameSlice } from './game/game-slice';
@@ -15,5 +15,5 @@ export const rootReducer = {
   lobbyPage: lobbyPageSlice.reducer,
   gamePage: gamePageSlice.reducer,
   votingKick: votingKickSlice.reducer,
-  entryRequest: entryRequestSlice.reducer,
+  entryRequests: entryRequestsSlice.reducer,
 };

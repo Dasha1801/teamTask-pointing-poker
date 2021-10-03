@@ -1,6 +1,5 @@
 import { IUser } from '.';
 
-export interface IEntryRequest {
-  isEntryRequested: boolean;
-  playerInfo: Partial<IUser>;
+export interface IEntryRequests {
+  entryRequests: Partial<IUser>[];
 }

@@ -19,6 +19,8 @@ import Members from '../members/members';
 import styles from './dealer-lobby.module.scss';
 import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
+import { TGameStatus } from '../../../redux/types';
+import { APP_CONSTANTS } from '../../../shared/constants';
 
 const DealerLobby = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ const DealerLobby = (): JSX.Element => {
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
+  const gameStatus = useSelector(gameSelectors.selectStatus);
   const clientHeight = globalThis.screen.height;
   const [messageUserIds, setMessageUserIds] = useState(new Set());
 
@@ -37,13 +40,20 @@ const DealerLobby = (): JSX.Element => {
     setMessageUserIds(new Set(messages.map((item) => item.userId)));
   }, [messages]);
 
+  const [gameURL] = useState(`${APP_CONSTANTS.URL}/lobby/${gameId}`);
+
+  useEffect(() => {
+    if (gameStatus === TGameStatus.inactive) {
+      history.replace('/');
+    }
+  }, [gameStatus]);
+
   const handleCancel = async () => {
-    history.push('/');
     await dispatch(thunks.cancelGameThunk({ dealerId: dealer.id, gameId }));
   };
 
   const handleStart = async () => {
-    history.push(`/game/${gameId}`);
+    history.replace(`/game/${gameId}`);
     await dispatch(
       thunks.startGameThunk({
         settings: gameSettings,
@@ -71,14 +81,16 @@ const DealerLobby = (): JSX.Element => {
             <Form.Group>
               <Form.Control
                 type="url"
-                placeholder="http://pockerplanning....."
                 className={styles.input}
-                value={gameId}
+                value={gameURL}
+                readOnly={true}
               />
               <Button
                 type="button"
                 className={styles.btn}
-                onClick={() => globalThis.navigator.clipboard.writeText(gameId)}
+                onClick={() =>
+                  globalThis.navigator.clipboard.writeText(gameURL)
+                }
               >
                 Copy
               </Button>

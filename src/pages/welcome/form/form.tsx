@@ -20,7 +20,7 @@ import {
 } from '../../../redux/types/info-message';
 
 const FormWelcome = (): JSX.Element => {
-  const [url, setUrl] = useState('http://www.poker.ru/lobby/123');
+  const [url, setUrl] = useState('');
   const [gameId, setGameId] = useState('');
   const [isLobbyConnect, setLobbyConnect] = useState(false);
   const [isNewGame, setNewGame] = useState(false);
@@ -30,11 +30,11 @@ const FormWelcome = (): JSX.Element => {
 
   useEffect(() => {
     if (gameStatus === TGameStatus.lobby) {
-      history.push(`/lobby/${gameId}`);
+      history.replace(`/lobby/${gameId}`);
     } else if (
       [TGameStatus.started, TGameStatus.roundInProgress].includes(gameStatus)
     ) {
-      history.push(`/game/${gameId}`);
+      history.replace(`/game/${gameId}`);
     }
   }, [gameStatus]);
 
@@ -49,7 +49,7 @@ const FormWelcome = (): JSX.Element => {
     if (!test) {
       dispatch(
         appActions.addOneInfoMessage(
-          new InfoMessage(`Incorrect url!`, TInfoMessageType.error)
+          new InfoMessage(`Incorrect url!`, TInfoMessageType.error).toObject()
         )
       );
       return false;
@@ -77,7 +77,7 @@ const FormWelcome = (): JSX.Element => {
             new InfoMessage(
               `Game with id '${gameId}' is not found`,
               TInfoMessageType.error
-            )
+            ).toObject()
           )
         );
       } else {

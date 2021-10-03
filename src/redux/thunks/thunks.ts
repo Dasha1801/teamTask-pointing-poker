@@ -22,6 +22,7 @@ import {
   IClientCreateIssueParameters,
   IClientDeleteIssueParameters,
   IClientFinishGameParameters,
+  IClientFinishRoundParameters,
   IClientGetNextIssueParameters,
   IClientKickPlayerParameters,
   IClientKickPlayerVoteParameters,
@@ -42,6 +43,7 @@ import {
   TUserRole,
   User,
 } from '../types';
+import { InfoMessage } from '../types/info-message';
 
 export const connectThunk = createAsyncThunk<IConnectResponse, void>(
   'app/connectThunk',
@@ -92,6 +94,9 @@ export const createGameThunk = createAsyncThunk<
   thunkApi.dispatch(gameActions.changeId(gameId));
   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
   thunkApi.dispatch(gameActions.changePlayers([dealer]));
+  thunkApi.dispatch(
+    appActions.addOneInfoMessage(new InfoMessage('Game created').toObject())
+  );
   return { dealer, gameId };
 });
 
@@ -104,32 +109,7 @@ export const addPlayerThunk = createAsyncThunk<
     addedPlayer,
     gameId,
   })) as IAddPlayerResponse;
-  // if (response.message) {
-  //   return response;
-  // }
   return response;
-  // const {
-  //   playerId,
-  //   dealer,
-  //   messages,
-  //   issues,
-  //   players,
-  //   gameStatus,
-  //   currentIssueId,
-  // } = response;
-  // const player = new User({ ...addedPlayer, id: playerId }).toObject();
-  // thunkApi.dispatch(gameActions.changeMessages(messages));
-  // thunkApi.dispatch(gameActions.changeIssues(issues));
-  // thunkApi.dispatch(gameActions.changePlayers(players.concat(player)));
-  // thunkApi.dispatch(currentUserActions.changeCurrentUser(player));
-  // thunkApi.dispatch(gameActions.changeId(gameId));
-  // thunkApi.dispatch(gameActions.changeCurrentIssueId(currentIssueId));
-  // if (gameStatus === TGameStatus.lobby) {
-  //   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.lobby));
-  // } else {
-  //   thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
-  // }
-  // return { gameId, dealer, player, gameStatus };
 });
 
 export const checkGameThunk = createAsyncThunk<
@@ -272,21 +252,17 @@ export const voteToKickThunk = createAsyncThunk<
 export const kickPlayerThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientKickPlayerParameters
->(
-  'game/kickPlayerThunk',
-  async ({ dealerId, kickedPlayerId, gameId }, thunkApi) => {
-    const response = await ApiService.kickPlayer({
-      dealerId,
-      kickedPlayerId,
-      gameId,
-    });
-    if (response.message) {
-      return response;
-    }
-    thunkApi.dispatch(gameActions.deletePlayer(kickedPlayerId));
-    return {};
+>('game/kickPlayerThunk', async ({ dealerId, kickedPlayerId, gameId }) => {
+  const response = await ApiService.kickPlayer({
+    dealerId,
+    kickedPlayerId,
+    gameId,
+  });
+  if (response.message) {
+    return response;
   }
-);
+  return {};
+});
 
 export const cancelGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
@@ -337,7 +313,6 @@ export const getNextIssueThunk = createAsyncThunk<
   if (response.message) {
     return response;
   }
-  // thunkApi.dispatch(gameActions.changeCurrentIssueId(response.issueId));
   return {};
 });
 
@@ -376,11 +351,22 @@ export const startRoundThunk = createAsyncThunk<
   return {};
 });
 
+export const finishRoundThunk = createAsyncThunk<
+  Partial<IRequestResult>,
+  IClientFinishRoundParameters
+>('game/finishRoundThunk', async ({ dealerId, gameId }) => {
+  const response = await ApiService.finishRound({
+    dealerId,
+    gameId,
+  });
+  return response;
+});
+
 export const leaveGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientLeaveGameParameters,
   { state: IUser }
->('game/leaveGameThunk', async ({ playerId, gameId }, thunkApi) => {
+>('game/leaveGameThunk', async ({ playerId, gameId }) => {
   const response = await ApiService.leaveGame({
     playerId,
     gameId,
@@ -388,13 +374,6 @@ export const leaveGameThunk = createAsyncThunk<
   if (response.message) {
     return response;
   }
-  thunkApi.dispatch(gameActions.resetGame());
-  thunkApi.dispatch(gameSettingsActions.resetSettings());
-  thunkApi.dispatch(
-    currentUserActions.changeCurrentUser({
-      id: '',
-    })
-  );
   return {};
 });
 
@@ -420,4 +399,5 @@ export const thunks = {
   leaveGameThunk,
   admitPlayerThunk,
   rejectPlayerThunk,
+  finishRoundThunk,
 };

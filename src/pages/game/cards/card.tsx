@@ -7,6 +7,7 @@ interface IPlayCardProps {
   mode: string;
   cardValue: TCardScore;
   isSelected: boolean;
+  customClass?: string;
   handleClick(): void;
 }
 
@@ -15,10 +16,11 @@ function PlayCard({
   mode,
   isSelected,
   handleClick,
+  customClass,
 }: React.PropsWithChildren<IPlayCardProps>): JSX.Element {
   return (
     <section
-      className={styles.playCard}
+      className={`${styles.playCard} ${customClass || ''}`}
       data-rank={cardValue}
       data-mode={mode}
       onClick={handleClick}

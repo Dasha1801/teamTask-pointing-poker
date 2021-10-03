@@ -1,17 +1,16 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { IUser } from '../types';
-import { IEntryRequest } from '../types/entry-request';
+import { IEntryRequests } from '../types/entry-request';
 
-const selectRequest = (state: RootState): IEntryRequest => state.entryRequest;
+const selectRequests = (state: RootState): IEntryRequests =>
+  state.entryRequests;
 
-const selectEntryRequested = (state: RootState): boolean =>
-  state.entryRequest.isEntryRequested;
-
-const selectPlayerInfo = (state: RootState): Partial<IUser> =>
-  state.entryRequest.playerInfo;
+const selectFirstRequest = createSelector(
+  selectRequests,
+  (state) => state.entryRequests[0]
+);
 
 export const entryRequestSelectors = {
-  selectRequest,
-  selectEntryRequested,
-  selectPlayerInfo,
+  selectRequests,
+  selectFirstRequest,
 };

@@ -12,7 +12,7 @@ export interface IPlayerCardProps {
   customClass?: string;
 }
 
-const PlayerCard = ({ user }: IPlayerCardProps): JSX.Element => {
+const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
   const MIN_NUMBER_OF_PLAYERS_TO_VOTE = 3;
   const dispatch = useDispatch();
   const gameId = useSelector(gameSelectors.selectId);
@@ -73,7 +73,7 @@ const PlayerCard = ({ user }: IPlayerCardProps): JSX.Element => {
   };
 
   return (
-    <div className={`${styles.card}`}>
+    <div className={`${styles.card} ${customClass || ''}`}>
       {showDealerKickPopup && (
         <BasePopup
           headingText="Kick player"
@@ -103,18 +103,20 @@ const PlayerCard = ({ user }: IPlayerCardProps): JSX.Element => {
       {user?.image ? (
         <img className={styles.img} src={user?.image}></img>
       ) : (
-        <div className={styles.avatar}>
-          {getName(user.firstName, user?.lastName)}
+        <div className={styles.avatarContainer}>
+          <div className={styles.avatar}>
+            {getName(user.firstName, user?.lastName)}
+          </div>
         </div>
       )}
-      <div className={styles.name}>
+      <div className={styles.info}>
         {currentUser.id === user.id && (
-          <h6 className={styles.currentUser}>It`s you</h6>
+          <div className={styles.currentUser}>It`s you</div>
         )}
-        <h5 className={styles.h5}>
+        <div className={styles.name}>
           {user?.firstName} {user?.lastName}
-        </h5>
-        <h6 className={styles.h6}>{user?.jobPosition}</h6>
+        </div>
+        <div className={styles.jobPosition}>{user?.jobPosition}</div>
       </div>
       {canKick && (
         <button className={styles.remove} onClick={handleClickKick}>

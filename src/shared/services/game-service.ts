@@ -2,7 +2,7 @@ import { Socket } from 'socket.io-client';
 import { gameSelectors } from '../../redux/selectors';
 import { appActions } from '../../redux/slices/app/app-slice';
 import { currentUserActions } from '../../redux/slices/current-user/current-user-slice';
-import { entryRequestActions } from '../../redux/slices/entry-request/entry-request';
+import { entryRequestsActions } from '../../redux/slices/entry-requests/entry-requests';
 import { gamePageActions } from '../../redux/slices/game-page/game-page';
 import { gameSettingsActions } from '../../redux/slices/game-settings/game-settings-slice';
 import { gameActions } from '../../redux/slices/game/game-slice';
@@ -29,6 +29,7 @@ import {
   IDeleteIssueResponseWS,
   IEntryRequestResponseWS,
   IFinishGameResponseWS,
+  IIssueScoreUpdatedResponseWS,
   IKickPlayerResponseWS,
   ILeaveGameResponseWS,
   IPostMessageResponseWS,
@@ -76,6 +77,7 @@ enum SocketResponseEvents {
   playerAdmitted = 'playerAdmitted',
   playerRejected = 'playerRejected',
   entryRequested = 'entryRequested',
+  issueScoreUpdated = 'issueScoreUpdated',
 }
 
 export class GameService {
@@ -96,7 +98,7 @@ export class GameService {
     this.io.on(SocketResponseEvents.gameStarted, this.gameStarted);
     this.io.on(SocketResponseEvents.gameFinished, this.gameFinished);
     this.io.on(SocketResponseEvents.playerLeft, this.playerLeft);
-    this.io.on(SocketResponseEvents.playerLeft, this.playerKicked);
+    this.io.on(SocketResponseEvents.playerKicked, this.playerKicked);
     this.io.on(
       SocketResponseEvents.playerKickedByVote,
       this.playerKickedByVote
@@ -110,12 +112,26 @@ export class GameService {
       SocketResponseEvents.currentIssueChanged,
       this.currentIssueChanged
     );
-    // this.io.on(SocketResponseEvents.issueScored, this.issueScored);
     this.io.on(SocketResponseEvents.roundStarted, this.roundStarted);
     this.io.on(SocketResponseEvents.roundFinished, this.roundFinished);
     this.io.on(SocketResponseEvents.entryRequested, this.entryRequested);
     this.io.on(SocketResponseEvents.playerAdmitted, this.playerAdmitted);
     this.io.on(SocketResponseEvents.playerRejected, this.playerRejected);
+    this.io.on(SocketResponseEvents.issueScoreUpdated, this.issueScoreUpdated);
+  }
+
+  issueScoreUpdated({
+    issueId,
+    roundResult,
+    totalScore,
+  }: IIssueScoreUpdatedResponseWS): void {
+    console.debug('score updated');
+    store.dispatch(
+      gameActions.updateIssue({
+        issueId,
+        updatedIssue: { lastRoundResult: roundResult, score: totalScore },
+      })
+    );
   }
 
   playerAdmitted({
@@ -126,21 +142,22 @@ export class GameService {
     gameStatus,
     currentIssueId,
     gameId,
+    gameSettings,
   }: IAdmitPlayerResponseWS): void {
-    console.log('player admitted', gameId);
+    console.log('player admitted', gameId, gameStatus);
     store.dispatch(gameActions.changeId(gameId));
     store.dispatch(gameActions.changeMessages(messages));
     store.dispatch(gameActions.changeIssues(issues));
     store.dispatch(gameActions.changePlayers(players));
     store.dispatch(currentUserActions.changeCurrentUser({ id: playerId }));
     store.dispatch(gameActions.changeCurrentIssueId(currentIssueId));
-    if (gameStatus === TGameStatus.lobby) {
-      store.dispatch(gameActions.changeStatus(TGameStatus.lobby));
-    } else {
-      store.dispatch(gameActions.changeStatus(TGameStatus.started));
-    }
+    store.dispatch(gameSettingsActions.changeSettings(gameSettings));
+    store.dispatch(gameActions.changeStatus(gameStatus));
+
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage('You have joined the game'))
+      appActions.addOneInfoMessage(
+        new InfoMessage('You have joined the game').toObject()
+      )
     );
   }
 
@@ -150,7 +167,7 @@ export class GameService {
         new InfoMessage(
           'Dealer has rejected your request =(',
           TInfoMessageType.error
-        )
+        ).toObject()
       )
     );
   }
@@ -163,16 +180,15 @@ export class GameService {
     jobPosition,
   }: IEntryRequestResponseWS): void {
     console.log('entry requested');
-    store.dispatch(entryRequestActions.changeIsEntryRequested(true));
     store.dispatch(
-      entryRequestActions.changePlayerInfo(
+      entryRequestsActions.pushEntryRequest(
         new User({
           id: playerId,
           firstName,
           lastName,
           role,
           jobPosition,
-        })
+        }).toObject()
       )
     );
   }
@@ -184,7 +200,7 @@ export class GameService {
     }
     store.dispatch(gameActions.changeStatus(TGameStatus.roundInProgress));
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage('Round started'))
+      appActions.addOneInfoMessage(new InfoMessage('Round started').toObject())
     );
   }
 
@@ -205,7 +221,7 @@ export class GameService {
     store.dispatch(gameActions.changeStatus(TGameStatus.started));
     store.dispatch(gamePageActions.changeTimer({ minutes: 0, seconds: 0 }));
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage('Round finished'))
+      appActions.addOneInfoMessage(new InfoMessage('Round finished').toObject())
     );
   }
 
@@ -218,7 +234,7 @@ export class GameService {
     );
     store.dispatch(
       appActions.addOneInfoMessage(
-        new InfoMessage(`Player ${playerName} added`)
+        new InfoMessage(`Player ${playerName} has joined the game`).toObject()
       )
     );
   }
@@ -232,7 +248,7 @@ export class GameService {
     );
     store.dispatch(
       appActions.addOneInfoMessage(
-        new InfoMessage(`Issue ${updatedIssue.title} updated`)
+        new InfoMessage(`Issue ${updatedIssue.title} updated`).toObject()
       )
     );
   }
@@ -241,11 +257,11 @@ export class GameService {
     const issues = store.getState().game.issues;
     store.dispatch(gameActions.changeIssues(issues.concat(addedIssue)));
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage('Issue added'))
+      appActions.addOneInfoMessage(new InfoMessage('Issue added').toObject())
     );
     store.dispatch(
       appActions.addOneInfoMessage(
-        new InfoMessage(`Issue ${addedIssue.title} created`)
+        new InfoMessage(`Issue ${addedIssue.title} created`).toObject()
       )
     );
   }
@@ -253,16 +269,20 @@ export class GameService {
   issueDeleted({ deletedIssueId, title }: IDeleteIssueResponseWS): void {
     store.dispatch(gameActions.deleteIssue(deletedIssueId));
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage(`Issue ${title} deleted`))
+      appActions.addOneInfoMessage(
+        new InfoMessage(`Issue ${title} deleted`).toObject()
+      )
     );
   }
 
   gameCancelled(): void {
+    console.log('game cancelled');
+
     store.dispatch(lobbyPageActions.toggleGameCancelled());
     store.dispatch(gameActions.resetGame());
     store.dispatch(
       appActions.addOneInfoMessage(
-        new InfoMessage(`Dealer has cancelled the game`)
+        new InfoMessage(`Dealer has cancelled the game`).toObject()
       )
     );
   }
@@ -273,7 +293,7 @@ export class GameService {
     store.dispatch(gameSettingsActions.changeSettings(settings));
     store.dispatch(gameActions.changeStatus(TGameStatus.started));
     store.dispatch(
-      appActions.addOneInfoMessage(new InfoMessage('Game started'))
+      appActions.addOneInfoMessage(new InfoMessage('Game started').toObject())
     );
   }
 
@@ -281,30 +301,52 @@ export class GameService {
     store.dispatch(gameActions.resetGame());
     store.dispatch(
       appActions.addOneInfoMessage(
-        new InfoMessage(`Game finished, thanks for playing`)
+        new InfoMessage(`Game finished, thanks for playing`).toObject()
       )
     );
   }
 
   playerLeft({ playerId, firstName, lastName }: ILeaveGameResponseWS): void {
-    store.dispatch(gameActions.deletePlayer(playerId));
-    const playerName = User.getFullName(firstName, lastName);
-    store.dispatch(
-      appActions.addOneInfoMessage(
-        new InfoMessage(`Player ${playerName} has left`)
-      )
-    );
+    console.log('player left', playerId);
+
+    const currentUser = store.getState().currentUser;
+    if (currentUser.id === playerId) {
+      store.dispatch(gameActions.resetGame());
+      store.dispatch(gameSettingsActions.resetSettings());
+      store.dispatch(
+        currentUserActions.changeCurrentUser({
+          id: '',
+        })
+      );
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(`You have left the game`).toObject()
+        )
+      );
+    } else {
+      store.dispatch(gameActions.deletePlayer(playerId));
+      const playerName = User.getFullName(firstName, lastName);
+      store.dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(`Player ${playerName} has left the game`).toObject()
+        )
+      );
+    }
   }
 
   votingToKickStarted({
     kickedPlayerId,
     votingPlayerId,
   }: IStartVotingToKickResponseWS): void {
+    console.log('voting start');
+
     const currentUser = store.getState().currentUser;
     if (
       currentUser.id !== kickedPlayerId &&
       currentUser.role !== TUserRole.dealer
     ) {
+      console.log('dispatch popup');
+
       store.dispatch(
         votingKickActions.changeVotingKick({ kickedPlayerId, votingPlayerId })
       );
@@ -323,7 +365,9 @@ export class GameService {
       store.dispatch(votingKickActions.resetVotingKick());
       store.dispatch(
         appActions.addOneInfoMessage(
-          new InfoMessage('You have been kicked from the game by vote =(')
+          new InfoMessage(
+            'You have been kicked from the game by vote =('
+          ).toObject()
         )
       );
     } else {
@@ -333,7 +377,7 @@ export class GameService {
         appActions.addOneInfoMessage(
           new InfoMessage(
             `Player ${playerName} has been kicked from the game by vote`
-          )
+          ).toObject()
         )
       );
     }
@@ -345,21 +389,22 @@ export class GameService {
     lastName,
   }: IKickPlayerResponseWS): void {
     const currentUserId = store.getState().currentUser.id;
-    if (currentUserId !== kickedPlayerId) {
+    if (currentUserId === kickedPlayerId) {
       store.dispatch(currentUserActions.changeCurrentUser({ kicked: true }));
       store.dispatch(gameActions.resetGame());
       store.dispatch(
         appActions.addOneInfoMessage(
-          new InfoMessage(`You have been kicked from the game =(`)
+          new InfoMessage(`You have been kicked from the game =(`).toObject()
         )
       );
-      // store.dispatch(currentUserActions.changeCurrentUser({kicked: false}));
     } else {
       store.dispatch(gameActions.deletePlayer(kickedPlayerId));
       const playerName = User.getFullName(firstName, lastName);
       store.dispatch(
         appActions.addOneInfoMessage(
-          new InfoMessage(`Player ${playerName} has been kicked from the game`)
+          new InfoMessage(
+            `Player ${playerName} has been kicked from the game`
+          ).toObject()
         )
       );
     }
@@ -373,13 +418,6 @@ export class GameService {
 
   currentIssueChanged({ issueId }: IChangeCurrentIssueResponseWS): void {
     console.log('issue changed', issueId);
-
     store.dispatch(gameActions.changeCurrentIssueId(issueId));
   }
-
-  // issueScored({ issueId, userId, score }: IScoreIssueResponseWS): void {
-  //   store.dispatch(
-  //     gameActions.scoreIssue({ issueId, playerId: userId, score })
-  //   );
-  // }
 }

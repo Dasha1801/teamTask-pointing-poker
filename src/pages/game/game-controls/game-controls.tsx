@@ -25,7 +25,6 @@ export default function GameControls(): JSX.Element {
   const dispatch = useDispatch();
 
   const handleExit = async () => {
-    history.push('/');
     await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
   };
 
@@ -41,6 +40,8 @@ export default function GameControls(): JSX.Element {
   };
 
   const handleStart = async () => {
+    console.log('handlestart');
+
     if (currentIssue) {
       await dispatch(
         thunks.startRoundThunk({
@@ -65,11 +66,19 @@ export default function GameControls(): JSX.Element {
   };
 
   const handleFinishRound = async () => {
-    console.log('stop round');
+    await dispatch(
+      thunks.finishRoundThunk({ dealerId: currentUser.id, gameId })
+    );
+  };
+
+  const handleCancelGame = async () => {
+    await dispatch(
+      thunks.cancelGameThunk({ dealerId: currentUser.id, gameId })
+    );
   };
 
   const handleFinishGame = async () => {
-    history.push('/game-result');
+    history.replace('/game-result', { issues });
     await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
     );
@@ -85,7 +94,7 @@ export default function GameControls(): JSX.Element {
               <BaseButton
                 disabled={gameStatus !== TGameStatus.started}
                 className={styles.button}
-                onClick={handleExit}
+                onClick={handleCancelGame}
               >
                 Stop Game
               </BaseButton>

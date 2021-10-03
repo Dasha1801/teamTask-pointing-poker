@@ -133,6 +133,10 @@ export interface IClientStartRoundParameters extends IRequestParameters {
   issueId: string;
 }
 
+export interface IClientFinishRoundParameters extends IRequestParameters {
+  dealerId: string;
+}
+
 export interface IClientLeaveGameParameters extends IRequestParameters {
   playerId: string;
 }

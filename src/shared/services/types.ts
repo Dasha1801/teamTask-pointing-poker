@@ -1,14 +1,14 @@
-import { TStatusCode } from '../constants';
 import {
-  IUser,
-  IMessage,
-  IIssue,
   IGameSettings,
-  TGameStatus,
+  IIssue,
+  IMessage,
+  IUser,
   TCardScore,
+  TGameStatus,
   TRoundResult,
   TUserRole,
 } from '../../redux/types';
+import { TStatusCode } from '../constants';
 
 export interface IResponse {
   statusCode: TStatusCode;
@@ -57,6 +57,12 @@ export interface IEntryRequestResponseWS {
   jobPosition: string;
 }
 
+export interface IIssueScoreUpdatedResponseWS {
+  issueId: string;
+  roundResult: TRoundResult;
+  totalScore: number;
+}
+
 export interface IAdmitPlayerResponseWS {
   playerId: string;
   messages: IMessage[];
@@ -65,6 +71,7 @@ export interface IAdmitPlayerResponseWS {
   gameStatus: TGameStatus;
   currentIssueId: string;
   gameId: string;
+  gameSettings: IGameSettings;
 }
 
 export interface IRejectPlayerResponseWS {

@@ -1,29 +1,25 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
-import { IUser, User } from '../types';
-import { IEntryRequest } from '../types/entry-request';
+import { IUser } from '../types';
+import { IEntryRequests } from '../types/entry-request';
 
-const changeIsEntryRequested: CaseReducer<
-  IEntryRequest,
-  PayloadAction<boolean>
-> = (state) => {
-  state.isEntryRequested = !state.isEntryRequested;
-};
-
-const changePlayerInfo: CaseReducer<
-  IEntryRequest,
+const pushEntryRequest: CaseReducer<
+  IEntryRequests,
   PayloadAction<Partial<IUser>>
 > = (state, action) => {
-  Object.assign(state.playerInfo, action.payload);
+  state.entryRequests = state.entryRequests.concat(action.payload);
 };
 
-const resetEntryRequest: CaseReducer<IEntryRequest, AnyAction> = (state) => {
-  state.isEntryRequested = false;
-  state.playerInfo = new User().toObject();
+const popEntryRequest: CaseReducer<IEntryRequests, AnyAction> = (state) => {
+  state.entryRequests = state.entryRequests.slice(1);
 };
 
-export const entryRequestReducers = {
-  changeIsEntryRequested,
-  changePlayerInfo,
-  resetEntryRequest,
+const resetEntryRequests: CaseReducer<IEntryRequests, AnyAction> = (state) => {
+  state.entryRequests = [];
+};
+
+export const entryRequestsReducers = {
+  pushEntryRequest,
+  popEntryRequest,
+  resetEntryRequests,
 };

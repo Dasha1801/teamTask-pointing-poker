@@ -3,16 +3,17 @@ $guidelines-width: var(--guidelines);
 $bg-highlight: var(--bg-light-gray);
 $sidebar-width: var(--sidebar-width);
 $shadow: var(--main-shadow);
+$z-index: var(--sidebar-z-index);
 
 .container {
   flex-shrink: 0;
+  z-index: $z-index;
   width: $sidebar-width;
   display: flex;
   padding: 40px 17px;
   justify-content: space-between;
   flex-direction: column;
   box-shadow: $shadow;
-  clip-path: inset(0px -5px 0px 1px);
 }
 
 .cardItem {
@@ -83,7 +84,7 @@ $shadow: var(--main-shadow);
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 499px) {
   .container {
     position: fixed;
     align-items: center;

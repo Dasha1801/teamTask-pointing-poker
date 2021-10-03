@@ -6,8 +6,10 @@ import {
   IIssueScorePayload,
   IIssueUpdatePayload,
   IMessage,
+  Issue,
   IUser,
   TGameStatus,
+  User,
 } from '../types';
 
 const changeId: CaseReducer<IGame, PayloadAction<string>> = (state, action) => {
@@ -100,7 +102,7 @@ const changeIssues: CaseReducer<IGame, PayloadAction<IIssue[]>> = (
   state,
   action
 ) => {
-  state.issues = action.payload;
+  state.issues = action.payload.map((issue) => new Issue(issue).toObject());
 };
 
 const getNextIssue: CaseReducer<IGame, AnyAction> = (state) => {
@@ -114,7 +116,7 @@ const changePlayers: CaseReducer<IGame, PayloadAction<IUser[]>> = (
   state,
   action
 ) => {
-  state.players = action.payload;
+  state.players = action.payload.map((player) => new User(player).toObject());
 };
 
 const changeMessages: CaseReducer<IGame, PayloadAction<IMessage[]>> = (

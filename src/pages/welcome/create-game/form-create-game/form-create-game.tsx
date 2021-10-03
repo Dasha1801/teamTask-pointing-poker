@@ -52,7 +52,7 @@ function toBase64String(
   return base64String;
 }
 
-const FormCreateGame = ({ onCancelClick }: IFormCreateGame): JSX.Element => {
+const FormCreateGame = ({}: IFormCreateGame): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
 
@@ -89,8 +89,7 @@ const FormCreateGame = ({ onCancelClick }: IFormCreateGame): JSX.Element => {
       throw Error(payload.message);
     }
     const { gameId } = response.payload as ICreateGameRequestResult;
-    onCancelClick();
-    history.push(`/lobby/${gameId}`);
+    history.replace(`/lobby/${gameId}`);
   });
 
   const handleChangeInput = handleSubmit((data) => {
