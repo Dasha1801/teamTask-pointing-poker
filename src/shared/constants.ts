@@ -7,6 +7,7 @@ export enum TStatusCode {
 }
 
 const SERVER_URL = process.env.REACT_SERVER_URL || 'http://localhost:4000';
+const MAX_FILE_SIZE = parseInt(process.env.REACT_APP_MAX_FILE_SIZE || '10');
 const OPACITY_REDUCTION_VALUE = 0.1;
 const INFO_MESSAGE_TIMEOUT = 5 * 1000;
 const INFO_MESSAGE_INTERVAL = 550;
@@ -23,4 +24,5 @@ export const APP_CONSTANTS = {
   OPACITY_REDUCTION_VALUE,
   GAME_URL_REGEXP,
   ROUTER_TRANSITION_TIMEOUT,
+  MAX_FILE_SIZE,
 };

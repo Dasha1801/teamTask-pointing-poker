@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import {
@@ -7,8 +8,10 @@ import {
   votingKickSelectors,
 } from '../../redux/selectors';
 import { lobbyPageSelectors } from '../../redux/selectors/lobby-page-selectors';
+import { appActions } from '../../redux/slices/app/app-slice';
 import { thunks } from '../../redux/thunks/thunks';
 import { TGameStatus } from '../../redux/types';
+import { InfoMessage } from '../../redux/types/info-message';
 import { BasePopup } from '../shared/base-popup/base-popup';
 import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
@@ -23,7 +26,6 @@ const PlayerLobby = (): JSX.Element => {
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
-  const messagesIds = new Set(messages.map((item) => item.id));
   const issues = useSelector(gameSelectors.selectIssues);
   const wasKicked = useSelector(currentUserSelectors.selectCurrentUser).kicked;
   const gameCancelled = useSelector(lobbyPageSelectors.selectGameCancelled);
@@ -31,6 +33,15 @@ const PlayerLobby = (): JSX.Element => {
   const gameId = useSelector(gameSelectors.selectId);
   const votingKick = useSelector(votingKickSelectors.selectVotingKick);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+  const kickPlayer = users.find(
+    (user) => user.id === votingKick.kickedPlayerId
+  );
+
+  const [messageUserIds, setMessageUserIds] = useState(new Set());
+
+  useEffect(() => {
+    setMessageUserIds(new Set(messages.map((item) => item.userId)));
+  }, [messages]);
 
   useEffect(() => {
     if (wasKicked) {
@@ -56,6 +67,13 @@ const PlayerLobby = (): JSX.Element => {
     }
   }, [votingKick.kickedPlayerId]);
 
+  const handleExit = async () => {
+    history.push('/');
+    await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
+    dispatch(
+      appActions.changeInfoMessages([new InfoMessage('You have left the game')])
+    );
+  };
   const declineKickVote = async () => {
     await dispatch(
       thunks.voteToKickThunk({
@@ -89,20 +107,31 @@ const PlayerLobby = (): JSX.Element => {
           buttonCancelText="No"
           buttonOkProps={{ onClick: acceptKickVote }}
           buttonCancelProps={{ onClick: declineKickVote }}
-        ></BasePopup>
+        >
+          <div className={styles.dealerKickPopup}>
+            Kick
+            <span className={styles.nameKickPlayer}>
+              {` ${kickPlayer?.firstName} ${kickPlayer?.lastName} `}
+            </span>
+            from the game?
+          </div>
+        </BasePopup>
       )}
       <div className={styles.wrapper}>
         <SprintHeading issues={issues} />
         <AboutDealer />
+        <div className={styles.btnExitContainer}>
+          <Button type="button" className={styles.btnExit} onClick={handleExit}>
+            Exit
+          </Button>
+        </div>
         <Members users={users} />
       </div>
       {sideBar ? (
         <div className={styles.sideBar}>
           <SideBar
-            message={{
-              messagesProps: messages,
-              users: users.filter((user) => messagesIds.has(user.id)),
-            }}
+            messages={messages}
+            users={users.filter((user) => messageUserIds.has(user.id))}
           />
         </div>
       ) : null}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +14,8 @@ import editIssue from '../../../shared/assets/icons/edit-issue.svg';
 import SideBar from '../../shared/side-bar/side-bar';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import AboutDealer from '../about-dealer/about-dealer';
-import Members from '../members/members';
 import CreateIssueCard from '../card-create-issue/card-create-issue';
+import Members from '../members/members';
 import styles from './dealer-lobby.module.scss';
 import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
@@ -26,12 +26,16 @@ const DealerLobby = (): JSX.Element => {
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
   const messages = useSelector(gameSelectors.selectGame).messages;
-  const messagesIds = new Set(messages.map((item) => item.id));
   const issues = useSelector(gameSelectors.selectIssues);
   const dealer = useSelector(currentUserSelectors.selectCurrentUser);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
   const clientHeight = globalThis.screen.height;
+  const [messageUserIds, setMessageUserIds] = useState(new Set());
+
+  useEffect(() => {
+    setMessageUserIds(new Set(messages.map((item) => item.userId)));
+  }, [messages]);
 
   const handleCancel = async () => {
     history.push('/');
@@ -70,7 +74,6 @@ const DealerLobby = (): JSX.Element => {
                 placeholder="http://pockerplanning....."
                 className={styles.input}
                 value={gameId}
-                // onChange={() => null}
               />
               <Button
                 type="button"
@@ -121,10 +124,8 @@ const DealerLobby = (): JSX.Element => {
       {sideBar ? (
         <div className={styles.sideBar}>
           <SideBar
-            message={{
-              messagesProps: messages,
-              users: users.filter((user) => messagesIds.has(user.id)),
-            }}
+            messages={messages}
+            users={users.filter((user) => messageUserIds.has(user.id))}
           />
         </div>
       ) : null}

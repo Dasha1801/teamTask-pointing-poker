@@ -9,9 +9,7 @@ import styles from './game-result.module.scss';
 
 const GameResult = (): JSX.Element => {
   const issues = useSelector(gameSelectors.selectIssues);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function getRoundResult(issue: IIssue): any {
+  function getRoundResult(issue: IIssue): Array<[string, number | undefined]> {
     const issueScores = Object.values(issue.lastRoundResult);
     const groupedVotes = issueScores.reduce(
       (acc: TIssueScoreStatistics, cur: TCardScore) => {
@@ -46,7 +44,10 @@ const GameResult = (): JSX.Element => {
 
               <div className={styles.issueStatisticBlock} key={issue.id}>
                 {getRoundResult(issue).map(
-                  (groupedVotes: TCardScore[], index: number) => {
+                  (
+                    groupedVotes: [string, number | undefined],
+                    index: number
+                  ) => {
                     return (
                       <div
                         className={styles.groupedVotes}
@@ -54,13 +55,13 @@ const GameResult = (): JSX.Element => {
                       >
                         <PlayCard
                           key={`${groupedVotes}_${index}`}
-                          cardValue={groupedVotes[0]}
+                          cardValue={groupedVotes[0] as TCardScore}
                           mode="single"
                           selectedCard={''}
                         />
                         <div className={styles.percentageCard}>
                           {(
-                            (+groupedVotes[1] /
+                            (+(groupedVotes[1] || 0) /
                               Object.values(issue.lastRoundResult).length) *
                             100
                           ).toFixed(1) + '%'}

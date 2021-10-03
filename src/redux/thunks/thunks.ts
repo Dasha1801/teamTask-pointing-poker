@@ -120,9 +120,9 @@ export const postMessageThunk = createAsyncThunk<
     return response;
   }
   const { messageId } = response as IPostMessageResponse;
-  const postedMessage = new Message({ ...message, id: messageId }).toObject();
+  const postedMessage = new Message({ ...message, id: messageId });
   thunkApi.dispatch(gameActions.postMessage(postedMessage));
-  return {};
+  return { messageId };
 });
 
 export const createIssueThunk = createAsyncThunk<

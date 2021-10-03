@@ -22,6 +22,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   const [issueFields, setIssueFields] = useState(infoIssue);
   const [warning, setWarning] = useState('');
   const gameId = useSelector(gameSelectors.selectId);
+  const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
   const handleClose = () => {
     setShowEdit(false);
@@ -31,6 +32,13 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
     setShowEdit(true);
   };
 
+  const showInfoIssue = () => {
+    setShowInfo(true);
+  };
+
+  const hideInfoIssue = () => {
+    setShowInfo(false);
+  };
   const handleUpdateIssue = async () => {
     await dispatch(
       thunks.updateIssueThunk({
@@ -63,7 +71,11 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   return (
     <>
       <div className={styles.main}>
-        <div className={styles.name}>{infoIssue.title}</div>
+        <div
+          className={styles.name}
+          onMouseOver={showInfoIssue}
+          onMouseOut={hideInfoIssue}
+        >{`${infoIssue.title.slice(0, 13)}...`}</div>
         <img
           src={editIssue}
           className={styles.iconEdit}
@@ -91,6 +103,17 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
             warning={warning}
           />
         </BasePopup>
+      )}
+      {showInfo && (
+        <div className={styles.info}>
+          <div className={styles.infoTitle}>
+            <span className={styles.nameInfo}>Title:</span> {infoIssue.title}
+          </div>
+          <div className={styles.infoPriority}>
+            <span className={styles.nameInfo}>Priority:</span>{' '}
+            {infoIssue.priority}
+          </div>
+        </div>
       )}
     </>
   );
