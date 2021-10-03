@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import {
+  currentUserSelectors,
+  gameSelectors,
+  gameSettingsSelectors,
+} from '../../../redux/selectors';
 import { thunks } from '../../../redux/thunks/thunks';
-import { TCardScore, TCardType } from '../../../redux/types/card';
+import { TCardScore } from '../../../redux/types/card';
 import PlayCard from './card';
-import { deck } from './constants';
 import styles from './deck.module.scss';
 
-interface IDeckProps {
-  typeOfDeck: TCardType;
-  numberOfCards?: number;
-}
-
-function Deck({ typeOfDeck, numberOfCards = 8 }: IDeckProps): JSX.Element {
+function Deck(): JSX.Element {
   const dispatch = useDispatch();
   const gameId = useSelector(gameSelectors.selectId);
   const currentIssueId = useSelector(gameSelectors.selectCurrentIssueId);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
-  const currentDeck = [...deck[typeOfDeck].slice(0, numberOfCards)];
+  const cards = useSelector(gameSettingsSelectors.selectSettings).cardValues;
   const [selectedCard, setSelectedCard] = useState<TCardScore>(-1);
 
   async function handleClick(cardValue: TCardScore) {
@@ -34,7 +32,7 @@ function Deck({ typeOfDeck, numberOfCards = 8 }: IDeckProps): JSX.Element {
   return (
     <>
       <div className={styles.deck}>
-        {currentDeck.map((cardValue, i) =>
+        {cards.map((cardValue, i) =>
           i === 0 ? (
             <PlayCard
               key={cardValue}

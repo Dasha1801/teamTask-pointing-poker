@@ -17,7 +17,7 @@ export default function Timer(): JSX.Element {
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const intervalHandle = useRef<NodeJS.Timer | null>(null);
   const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
-  const [lastGameStatus, setLastGameStatus] = useState(gameStatus);
+  const [lastGameStatus, setLastGameStatus] = useState(TGameStatus.started);
 
   useEffect(() => {
     dispatch(
@@ -34,7 +34,7 @@ export default function Timer(): JSX.Element {
       gameStatus === TGameStatus.roundInProgress &&
       lastGameStatus === TGameStatus.started
     ) {
-      setLastGameStatus(gameStatus);
+      setLastGameStatus(TGameStatus.roundInProgress);
       dispatch(
         gamePageActions.changeTimer({
           minutes: gameSettings?.timer?.minutes || 0,
@@ -62,17 +62,19 @@ export default function Timer(): JSX.Element {
         }
         dispatch(gamePageActions.changeTimer({ minutes, seconds }));
         innerTimer = { minutes, seconds };
-        return () => {
-          clearInterval(Number(intervalHandle.current) || undefined);
-        };
       }, 1000);
     } else if (
       gameStatus === TGameStatus.started &&
-      lastGameStatus == TGameStatus.roundInProgress
+      lastGameStatus === TGameStatus.roundInProgress
     ) {
-      setLastGameStatus(gameStatus);
+      console.log('clearing interval');
+
+      setLastGameStatus(TGameStatus.started);
       clearInterval(Number(intervalHandle.current) || undefined);
     }
+    return () => {
+      clearInterval(Number(intervalHandle.current) || undefined);
+    };
   }, [gameStatus]);
 
   return (

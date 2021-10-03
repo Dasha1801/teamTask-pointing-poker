@@ -6,6 +6,7 @@ export enum TStatusCode {
   INTERNAL_SERVER_ERROR = 500,
 }
 
+const DECK_SIZE = parseInt(process.env.REACT_APP_DECK_SIZE || '5');
 const MAX_FILE_SIZE = parseInt(process.env.REACT_APP_MAX_FILE_SIZE || '10');
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000';
 const URL = process.env.REACT_APP_URL || 'http://localhost:3000';
@@ -26,5 +27,6 @@ export const APP_CONSTANTS = {
   OPACITY_REDUCTION_VALUE,
   GAME_URL_REGEXP,
   ROUTER_TRANSITION_TIMEOUT,
+  DECK_SIZE,
   MAX_FILE_SIZE,
 };

@@ -17,6 +17,7 @@ import DealerSection from '../../shared/dealer-section/dealer-section';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import Deck from '../cards/deck';
 import GameControls from '../game-controls/game-controls';
+import IssuesList from '../issues-list/issues-list';
 import SideBar from '../side-bar/side-bar';
 import IssueStatistics from '../statistics/issue-statistics';
 import styles from './game-page.module.scss';
@@ -161,6 +162,10 @@ export function GamePage(): JSX.Element {
             <GameControls />
           </div>
           <div className={styles.main}>
+            <div className={styles.issues}>
+              <h4 className={styles.issuesHeading}>Issues</h4>
+              <IssuesList />
+            </div>
             {showRoundResult && currentIssue?.lastRoundResult && (
               <div className={styles.statistics}>
                 <h4 className={styles.statisticsHeading}>Statistics</h4>
@@ -168,7 +173,6 @@ export function GamePage(): JSX.Element {
               </div>
             )}
           </div>
-
           <div className={styles.deck}>
             {((gameSettings.canScoreAfterFlip &&
               Object.keys(currentIssue?.lastRoundResult || {}).length > 0) ||
@@ -176,7 +180,7 @@ export function GamePage(): JSX.Element {
                 !(
                   currentUser.role === TUserRole.dealer &&
                   !gameSettings.canDealerPlay
-                ))) && <Deck typeOfDeck={gameSettings.cardType} />}
+                ))) && <Deck />}
           </div>
         </div>
       )}
