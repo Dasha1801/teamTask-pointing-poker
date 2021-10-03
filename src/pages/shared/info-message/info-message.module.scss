@@ -9,10 +9,10 @@ $text-dark: rgba(79, 79, 79, 1);
 
 .messageContainer {
   position: relative;
+  z-index: $max-z-index;
 }
 .message {
   position: relative;
-  z-index: $max-z-index;
   top: 0;
   width: 100%;
   padding: 0.75rem 1.25rem;
@@ -42,7 +42,6 @@ $text-dark: rgba(79, 79, 79, 1);
   height: 40px;
   background: transparent;
   border: none;
-  z-index: $max-z-index;
   cursor: pointer;
 }
 .buttonClose:hover {
@@ -53,11 +52,11 @@ $text-dark: rgba(79, 79, 79, 1);
   content: '';
   position: absolute;
   background: $text-dark;
+  z-index: calc(#{$max-z-index} + 1);
   width: 50%;
   height: 3px;
   left: 50%;
   top: 50%;
-  z-index: calc(#{$max-z-index} + 1);
 }
 .buttonClose::before {
   transform: translate(-50%, -50%) rotate(45deg);

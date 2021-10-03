@@ -10,7 +10,7 @@ describe('Dealer info component', () => {
     role: TUserRole.dealer,
   });
   test('Should render component', () => {
-    render(<DealerInfo dealer={dealer} isCurrentUser={false} />, {
+    render(<DealerInfo dealer={dealer} />, {
       preloadedState: {
         ...store.getState(),
         currentUser: dealer,
@@ -18,15 +18,12 @@ describe('Dealer info component', () => {
     });
   });
   test('Should render additional info if current user is dealer', () => {
-    const { getByText } = render(
-      <DealerInfo dealer={dealer} isCurrentUser={true} />,
-      {
-        preloadedState: {
-          ...store.getState(),
-          currentUser: dealer,
-        },
-      }
-    );
+    const { getByText } = render(<DealerInfo dealer={dealer} />, {
+      preloadedState: {
+        ...store.getState(),
+        currentUser: dealer,
+      },
+    });
     getByText(/it\`s you/i);
   });
 });

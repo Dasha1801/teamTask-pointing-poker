@@ -1,28 +1,45 @@
 import styles from './form.module.scss';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import logoGame from '../../../shared/assets/icons/logo.svg';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { APP_CONSTANTS } from '../../../shared/constants';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { thunks } from '../../../redux/thunks/thunks';
 import { AppDispatch } from '../../../redux/store';
 import ConnectToLobby from '../connect-to-lobby/connect-to-lobby';
 import { ICheckGameResponse } from '../../../shared/services/types';
 import CreateGame from '../create-game/create-game';
+import { gameSelectors } from '../../../redux/selectors';
+import { TGameStatus } from '../../../redux/types';
+import { useHistory } from 'react-router';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 
 const FormWelcome = (): JSX.Element => {
-  const [warn, setWarn] = useState('');
-  const [url, setUrl] = useState('http://www.poker.ru/lobby/123');
+  const [url, setUrl] = useState('');
   const [gameId, setGameId] = useState('');
   const [isLobbyConnect, setLobbyConnect] = useState(false);
   const [isNewGame, setNewGame] = useState(false);
+  const gameStatus = useSelector(gameSelectors.selectStatus);
+  const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    if (gameStatus === TGameStatus.lobby) {
+      history.replace(`/lobby/${gameId}`);
+    } else if (
+      [TGameStatus.started, TGameStatus.roundInProgress].includes(gameStatus)
+    ) {
+      history.replace(`/game/${gameId}`);
+    }
+  }, [gameStatus]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setUrl(value);
-    setWarn('');
+    setUrl(e.target.value);
   };
 
   const testUrl = (urlToTest: string): boolean => {
@@ -30,7 +47,11 @@ const FormWelcome = (): JSX.Element => {
     const gameUrlQuery = new RegExp(APP_CONSTANTS.GAME_URL_REGEXP);
     const test = urlQuery.test(urlToTest) && gameUrlQuery.test(urlToTest);
     if (!test) {
-      setWarn('*incorrect URL!');
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(`Incorrect url!`, TInfoMessageType.error).toObject()
+        )
+      );
       return false;
     }
     return true;
@@ -42,8 +63,8 @@ const FormWelcome = (): JSX.Element => {
   };
 
   const handleClickConnect = async () => {
-    const validUrl = testUrl(url);
-    if (validUrl) {
+    const isUrlValid = testUrl(url);
+    if (isUrlValid) {
       const gameIdLocal = url.split('/').slice(-1)[0];
       const response = await dispatch(
         thunks.checkGameThunk({ gameId: gameIdLocal })
@@ -51,8 +72,16 @@ const FormWelcome = (): JSX.Element => {
       const { gameExists } = response.payload as ICheckGameResponse;
       setLobbyConnect(gameExists);
       if (!gameExists) {
-        setWarn(`Game with id '${gameId} is not found'`);
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(
+              `Game with id '${gameId}' is not found`,
+              TInfoMessageType.error
+            ).toObject()
+          )
+        );
       } else {
+        await dispatch(thunks.connectThunk());
         setGameId(gameIdLocal);
       }
     }
@@ -63,10 +92,10 @@ const FormWelcome = (): JSX.Element => {
       {isLobbyConnect && (
         <ConnectToLobby
           gameId={gameId}
-          onCancelClick={() => setLobbyConnect(false)}
+          handleCancelClick={() => setLobbyConnect(false)}
         />
       )}
-      {isNewGame && <CreateGame onCancelClick={() => setNewGame(false)} />}
+      {isNewGame && <CreateGame handleCancelClick={() => setNewGame(false)} />}
       <div className={styles.wrapperLogo}>
         <img src={logoGame} className={styles.logo} alt="logo game"></img>
       </div>
@@ -102,7 +131,7 @@ const FormWelcome = (): JSX.Element => {
           >
             Connect
           </Button>
-          <span className={styles.warning}>{warn}</span>
+          {/* <span className={styles.warning}>{warn}</span> */}
         </Form.Group>
       </Form>
     </div>

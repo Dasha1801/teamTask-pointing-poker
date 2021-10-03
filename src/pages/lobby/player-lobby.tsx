@@ -45,19 +45,19 @@ const PlayerLobby = (): JSX.Element => {
 
   useEffect(() => {
     if (wasKicked) {
-      history.push('/');
+      history.replace('/');
     }
   }, [wasKicked]);
 
   useEffect(() => {
     if (gameCancelled) {
-      history.push('/');
+      history.replace('/');
     }
   }, [gameCancelled]);
 
   useEffect(() => {
     if (gameStatus === TGameStatus.started) {
-      history.push(`/game/${gameId}`);
+      history.replace(`/game/${gameId}`);
     }
   }, [gameStatus]);
 

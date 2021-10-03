@@ -7,9 +7,9 @@ import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './shared/serviceWorker';
 import { GameService } from './shared/services/game-service';
-import { socketIO } from './shared/services/socket';
+import { socketIO, socketIODealer } from './shared/services/socket';
 
-const gameService = new GameService(socketIO);
+const gameService = new GameService(socketIO, socketIODealer);
 gameService.init();
 
 ReactDOM.render(

@@ -1,12 +1,14 @@
-import { TStatusCode } from '../constants';
 import {
-  IUser,
-  IMessage,
-  IIssue,
   IGameSettings,
-  TGameStatus,
+  IIssue,
+  IMessage,
+  IUser,
   TCardScore,
+  TGameStatus,
+  TRoundResult,
+  TUserRole,
 } from '../../redux/types';
+import { TStatusCode } from '../constants';
 
 export interface IResponse {
   statusCode: TStatusCode;
@@ -35,10 +37,45 @@ export interface IAddPlayerResponse extends IResponse {
   issues: IIssue[];
   players: IUser[];
   gameStatus: TGameStatus;
+  currentIssueId: string;
 }
 
 export interface IAddPlayerResponseWS {
   addedPlayer: IUser;
+}
+
+export interface IFinishGameResponseWS {
+  roundResult: TRoundResult;
+  totalScore: number;
+}
+
+export interface IEntryRequestResponseWS {
+  playerId: string;
+  firstName: string;
+  lastName: string;
+  role: TUserRole;
+  jobPosition: string;
+}
+
+export interface IIssueScoreUpdatedResponseWS {
+  issueId: string;
+  roundResult: TRoundResult;
+  totalScore: number;
+}
+
+export interface IAdmitPlayerResponseWS {
+  playerId: string;
+  messages: IMessage[];
+  issues: IIssue[];
+  players: IUser[];
+  gameStatus: TGameStatus;
+  currentIssueId: string;
+  gameId: string;
+  gameSettings: IGameSettings;
+}
+
+export interface IRejectPlayerResponseWS {
+  gameId: string;
 }
 
 export interface IUpdateIssueResponseWS {
@@ -55,10 +92,14 @@ export interface IStartGameResponseWS {
 
 export interface ILeaveGameResponseWS {
   playerId: string;
+  firstName: string;
+  lastName?: string;
 }
 
 export interface IKickPlayerResponseWS {
   kickedPlayerId: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface IStartVotingToKickResponseWS {
@@ -68,12 +109,15 @@ export interface IStartVotingToKickResponseWS {
 
 export interface IVoteToKickResponseWS {
   kickedPlayerId: string;
+  firstName: string;
+  lastName?: string;
   acceptNumber: number;
   numberOfPlayers: number;
 }
 
 export interface IDeleteIssueResponseWS {
   deletedIssueId: string;
+  title: string;
 }
 
 export interface IPostMessageResponseWS {

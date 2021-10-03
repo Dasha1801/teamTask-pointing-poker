@@ -1,7 +1,10 @@
-import { TCardScoreSpecialValue } from '../../../../redux/types/card';
+import {
+  TCardScoreSpecialValue,
+  TCardType,
+} from '../../../../redux/types/card';
 
 export const deck = {
-  fib: [
+  [TCardType.fib]: [
     TCardScoreSpecialValue.unknown,
     TCardScoreSpecialValue.break,
     0,
@@ -16,7 +19,7 @@ export const deck = {
     55,
     89,
   ],
-  powersOfTwo: [
+  [TCardType.powersOfTwo]: [
     TCardScoreSpecialValue.unknown,
     TCardScoreSpecialValue.break,
     0,
@@ -31,5 +34,8 @@ export const deck = {
     256,
     512,
   ],
-  custom: [TCardScoreSpecialValue.unknown, TCardScoreSpecialValue.break],
+  [TCardType.custom]: [
+    TCardScoreSpecialValue.unknown,
+    TCardScoreSpecialValue.break,
+  ],
 };

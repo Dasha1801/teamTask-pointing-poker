@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { gameSettingsSelectors } from '../../../../redux/selectors';
 import { gameSettingsActions } from '../../../../redux/slices/game-settings/game-settings-slice';
 import { TCardType } from '../../../../redux/types';
+import { APP_CONSTANTS } from '../../../../shared/constants';
 import Timer from '../../../shared/timer/timer';
 import { deck } from '../cards/constants';
 import Deck from '../cards/deck';
@@ -25,27 +26,9 @@ const GameSettings = (): JSX.Element => {
     dispatch(
       gameSettingsActions.changeSettings({
         cardType: value,
+        cardValues: deck[value].slice(0, APP_CONSTANTS.DECK_SIZE),
       })
     );
-    if (value === 'fib') {
-      dispatch(
-        gameSettingsActions.changeSettings({ cardValues: deck.fib.slice(0, 5) })
-      );
-    }
-    if (value === 'powersOfTwo') {
-      dispatch(
-        gameSettingsActions.changeSettings({
-          cardValues: deck.powersOfTwo.slice(0, 5),
-        })
-      );
-    }
-    if (value === 'custom') {
-      dispatch(
-        gameSettingsActions.changeSettings({
-          cardValues: deck.custom,
-        })
-      );
-    }
   };
   return (
     <div className={styles.settingsList}>

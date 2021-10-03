@@ -16,6 +16,7 @@ export interface IIssue {
   priority: TIssuePriority;
   link: string;
   lastRoundResult: TRoundResult;
+  score: number;
 }
 
 type TIssueParameters = Omit<IIssue, 'priority' | 'link'> &
@@ -27,6 +28,7 @@ export class Issue implements IIssue {
   priority = TIssuePriority.medium;
   link = '';
   lastRoundResult: TRoundResult = {};
+  score = 0;
 
   constructor(issueParameters?: Partial<TIssueParameters>) {
     Object.assign(this, issueParameters);
@@ -39,6 +41,7 @@ export class Issue implements IIssue {
       priority: this.priority,
       link: this.link,
       lastRoundResult: this.lastRoundResult,
+      score: this.score,
     };
   }
 
@@ -50,23 +53,26 @@ export class Issue implements IIssue {
     return Math.trunc(sum / (issueScores.length || 1));
   }
 
-  static getRoundResultPercentages(issue: IIssue): number[] {
+  static calculateStatistics(issue: IIssue): Array<[TCardScore, number]> {
     const issueScores = Object.values(issue.lastRoundResult);
-    const groupedVotes = issueScores.reduce(
-      (acc: TIssueScoreStatistics, cur: TCardScore) => {
-        const score = acc[cur];
-        if (score !== undefined) {
-          acc[cur] = score + 1;
+    const groupedVotes: TIssueScoreStatistics = issueScores.reduce(
+      (acc: TIssueScoreStatistics, score) => {
+        const currentScore = acc[score];
+        if (currentScore) {
+          acc[score] = currentScore + 1;
         } else {
-          acc[cur] = 1;
+          acc[score] = 1;
         }
         return acc;
       },
       {}
     );
-    return Object.values(groupedVotes).map(
-      (numberOfVotes) => ((numberOfVotes || 0) / issueScores.length) * 100
-    );
+    return Object.entries(groupedVotes).map(([score, numberOfVotes]) => {
+      return [
+        score as TCardScore,
+        ((numberOfVotes as number) / issueScores.length) * 100,
+      ];
+    });
   }
 }
 

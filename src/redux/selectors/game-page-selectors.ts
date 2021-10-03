@@ -9,6 +9,12 @@ const selectTimer = createSelector(
   (gamePage) => gamePage.timer
 );
 
+const selectIsSideBarShown = createSelector(
+  selectGamePage,
+  (gamePage) => gamePage.isSideBarShown
+);
+
 export const gamePageSelectors = {
   selectTimer,
+  selectIsSideBarShown,
 };

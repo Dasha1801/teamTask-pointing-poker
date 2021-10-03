@@ -1,15 +1,11 @@
-import styles from './info-message-list.module.scss';
 import React from 'react';
-import { IInfoMessage } from '../../../redux/types/info-message';
+import { useSelector } from 'react-redux';
+import { appSelectors } from '../../../redux/selectors';
 import InfoMessage from '../info-message/info-message';
+import styles from './info-message-list.module.scss';
 
-interface IInfoMessageListProps {
-  messages: IInfoMessage[];
-}
-
-export default function InfoMessageList({
-  messages,
-}: IInfoMessageListProps): JSX.Element {
+export default function InfoMessageList(): JSX.Element {
+  const messages = useSelector(appSelectors.selectInfoMessages);
   return (
     <ul className={styles.infoMessageList}>
       {messages.map((message) => (

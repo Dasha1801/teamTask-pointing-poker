@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { appSelectors, currentUserSelectors } from '../redux/selectors';
+import { currentUserSelectors } from '../redux/selectors';
 import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
 import styles from './app.module.scss';
@@ -17,27 +17,23 @@ import WelcomePage from './welcome/welcome';
 
 function App(): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
-  const listMessages = useSelector(appSelectors.selectInfoMessages);
 
   return (
     <div className={styles.app}>
       <Router>
         <Header />
         <main className={styles.content}>
-          <InfoMessageList messages={listMessages} />
+          <InfoMessageList />
           <TransitionGroup className={styles.transitionGroup}>
             <CSSTransition
               timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}
               classNames="page"
             >
               <Switch>
-                <Route path="/results">
-                  <div>Results</div>
-                </Route>
                 <Route exact path="/">
                   <WelcomePage />
                 </Route>
-                <Route exact path="/game/result">
+                <Route path="/game-result/">
                   <GameResult />
                 </Route>
                 <Route path="/game/:gameId">

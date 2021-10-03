@@ -1,8 +1,10 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { currentUserSelectors } from '../../../redux/selectors';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import { thunks } from '../../../redux/thunks/thunks';
 import { IUser, TUserRole } from '../../../redux/types';
 import removeUser from '../../../shared/assets/icons/remove-user.svg';
+import { BasePopup } from '../../shared/base-popup/base-popup';
 import styles from './player-card.module.scss';
 
 export interface IPlayerCardProps {
@@ -11,13 +13,22 @@ export interface IPlayerCardProps {
 }
 
 const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
+  const MIN_NUMBER_OF_PLAYERS_TO_VOTE = 3;
+  const dispatch = useDispatch();
+  const gameId = useSelector(gameSelectors.selectId);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
-  const canRemove =
-    currentUser.role !== TUserRole.observer &&
-    user.role !== TUserRole.dealer &&
-    user.id !== currentUser.id;
+  const dealer = useSelector(gameSelectors.selectDealer) as IUser;
+  const [showDealerKickPopup, setDealerKickPopup] = useState(false);
+  const [showPlayerKickPopup, setPlayerKickPopup] = useState(false);
+  const players = useSelector(gameSelectors.selectPlayers);
+  const canKick =
+    currentUser.id !== user.id &&
+    ((currentUser.role !== TUserRole.observer &&
+      players.length > MIN_NUMBER_OF_PLAYERS_TO_VOTE &&
+      user.role !== TUserRole.dealer) ||
+      currentUser.role === TUserRole.dealer);
 
-  const name = (a: string, b: string | undefined): string => {
+  const getName = (a: string, b: string | undefined): string => {
     let str = '';
     str += a.slice(0, 1);
     if (b != undefined) {
@@ -26,30 +37,91 @@ const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
     return str;
   };
 
+  const handleClickKick = () => {
+    if (currentUser.id === dealer.id) {
+      setDealerKickPopup(true);
+    } else {
+      setPlayerKickPopup(true);
+    }
+  };
+
+  const handleCloseKickPopup = () => {
+    setDealerKickPopup(false);
+    setPlayerKickPopup(false);
+  };
+
+  const kick = async () => {
+    await dispatch(
+      thunks.kickPlayerThunk({
+        dealerId: currentUser.id,
+        kickedPlayerId: user.id,
+        gameId,
+      })
+    );
+    handleCloseKickPopup();
+  };
+
+  const startVotingToKick = async () => {
+    await dispatch(
+      thunks.startVotingToKickThunk({
+        votingPlayerId: currentUser.id,
+        kickedPlayerId: user.id,
+        gameId,
+      })
+    );
+    handleCloseKickPopup();
+  };
+
   return (
     <div className={`${styles.card} ${customClass || ''}`}>
-      <div className={styles.avatarContainer}>
-        {user?.image ? (
-          <img className={styles.img} src={user?.image}></img>
-        ) : (
-          <div className={styles.avatar}>
-            {name(user.firstName, user?.lastName)}
+      {showDealerKickPopup && (
+        <BasePopup
+          headingText="Kick player"
+          buttonOkText="Kick"
+          buttonCancelText="Cancel"
+          buttonOkProps={{ onClick: kick }}
+          buttonCancelProps={{ onClick: handleCloseKickPopup }}
+        >
+          <div className={styles.dealerKickPopup}>
+            {`Kick ${user.firstName} ${user.lastName} from the game?`}
           </div>
-        )}
-      </div>
+        </BasePopup>
+      )}
+      {showPlayerKickPopup && (
+        <BasePopup
+          headingText="Kick player"
+          buttonOkText="Kick"
+          buttonCancelText="Cancel"
+          buttonOkProps={{ onClick: startVotingToKick }}
+          buttonCancelProps={{ onClick: handleCloseKickPopup }}
+        >
+          <div className={styles.dealerKickPopup}>
+            {`Vote to kick ${user.firstName} ${user.lastName} from the game?`}
+          </div>
+        </BasePopup>
+      )}
+      {user?.image ? (
+        <img className={styles.img} src={user?.image}></img>
+      ) : (
+        <div className={styles.avatarContainer}>
+          <div className={styles.avatar}>
+            {getName(user.firstName, user?.lastName)}
+          </div>
+        </div>
+      )}
       <div className={styles.info}>
-        {user.id === currentUser.id && (
+        {currentUser.id === user.id && (
           <div className={styles.currentUser}>It`s you</div>
         )}
         <div className={styles.name}>
-          {`${user?.firstName} ${user.lastName || ''}`}
+          {user?.firstName} {user?.lastName}
         </div>
-        <div className={styles.jobPosition}>{user.jobPosition || ''}</div>
+        <div className={styles.jobPosition}>{user?.jobPosition}</div>
       </div>
-      {canRemove && (
-        <div className={styles.remove}>
+      {canKick && (
+        <button className={styles.remove} onClick={handleClickKick}>
           <img src={removeUser} className={styles.removeImg} alt="Kick" />
-        </div>
+        </button>
       )}
     </div>
   );

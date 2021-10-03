@@ -16,7 +16,7 @@ $text-dark: rgba(79, 79, 79, 1);
   height: 40px;
   background: transparent;
   border: none;
-  z-index: $z-index;
+  z-index: 1;
   cursor: pointer;
 }
 .buttonAdd:hover {

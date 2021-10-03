@@ -3,21 +3,21 @@ import { BasePopup } from '../../shared/base-popup/base-popup';
 import FormCreateGame from './form-create-game/form-create-game';
 
 interface ICreateGameProps {
-  onCancelClick: () => void;
+  handleCancelClick: () => void;
 }
 
-const CreateGame = ({ onCancelClick }: ICreateGameProps): JSX.Element => {
+const CreateGame = ({ handleCancelClick }: ICreateGameProps): JSX.Element => {
   return (
     <BasePopup
       buttonOkText="Confirm"
       buttonCancelText="Cancel"
-      buttonCancelProps={{ onClick: onCancelClick }}
+      buttonCancelProps={{ onClick: handleCancelClick }}
       buttonOkProps={{
         form: 'textId',
         type: 'submit',
       }}
     >
-      <FormCreateGame onCancelClick={onCancelClick} />
+      <FormCreateGame onCancelClick={handleCancelClick} />
     </BasePopup>
   );
 };

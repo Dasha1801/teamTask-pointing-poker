@@ -25,19 +25,16 @@ export default function GameControls(): JSX.Element {
   const dispatch = useDispatch();
 
   const handleExit = async () => {
-    history.push('/');
     await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
   };
 
   const handleNextIssue = async () => {
-    if (currentIssue?.id) {
-      dispatch(
-        thunks.getNextIssueThunk({
-          dealerId: currentUser.id,
-          gameId,
-        })
-      );
-    }
+    dispatch(
+      thunks.getNextIssueThunk({
+        dealerId: currentUser.id,
+        gameId,
+      })
+    );
   };
 
   const handleStart = async () => {
@@ -64,12 +61,20 @@ export default function GameControls(): JSX.Element {
     }
   };
 
-  const handleStopRound = async () => {
-    console.log('stop round');
+  const handleFinishRound = async () => {
+    await dispatch(
+      thunks.finishRoundThunk({ dealerId: currentUser.id, gameId })
+    );
   };
 
-  const handleFinish = async () => {
-    history.push('/results');
+  const handleCancelGame = async () => {
+    await dispatch(
+      thunks.cancelGameThunk({ dealerId: currentUser.id, gameId })
+    );
+  };
+
+  const handleFinishGame = async () => {
+    history.replace('/game-result', { issues });
     await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
     );
@@ -77,11 +82,7 @@ export default function GameControls(): JSX.Element {
 
   return (
     <div className={styles.gameControls}>
-      {settings.timer && (
-        <div className={styles.timer}>
-          <Timer />
-        </div>
-      )}
+      {settings.timer && <Timer />}
       <div className={styles.buttons}>
         {currentUser.role === TUserRole.dealer ? (
           <>
@@ -89,14 +90,14 @@ export default function GameControls(): JSX.Element {
               <BaseButton
                 disabled={gameStatus !== TGameStatus.started}
                 className={styles.button}
-                onClick={handleExit}
+                onClick={handleCancelGame}
               >
                 Stop Game
               </BaseButton>
               <BaseButton
                 disabled={gameStatus !== TGameStatus.started}
                 className={styles.button}
-                onClick={handleFinish}
+                onClick={handleFinishGame}
               >
                 Finish Game
               </BaseButton>
@@ -127,7 +128,7 @@ export default function GameControls(): JSX.Element {
               <ButtonBlue
                 disabled={gameStatus !== TGameStatus.roundInProgress}
                 className={styles.button}
-                onClick={handleStopRound}
+                onClick={handleFinishRound}
               >
                 Stop round
               </ButtonBlue>

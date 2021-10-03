@@ -6,11 +6,17 @@ $second-font: var(--second-font);
   row-gap: 17px;
 }
 
-.scoreItem {
+.scoreItem,
+.scoreItemWide,
+.scoreItemNarrow {
   display: flex;
   flex-wrap: wrap-reverse;
   column-gap: 17px;
   max-width: 440px;
+}
+
+.scoreItemNarrow {
+  display: none;
 }
 
 .heading,
@@ -34,6 +40,15 @@ $second-font: var(--second-font);
 .playerCard {
   width: 200px;
   font-size: 18px;
+}
+
+@media (max-width: 860px) {
+  .scoreItemWide {
+    display: none;
+  }
+  .scoreItemNarrow {
+    display: flex;
+  }
 }
 
 @media (max-width: 730px) {

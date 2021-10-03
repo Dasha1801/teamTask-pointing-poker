@@ -4,6 +4,7 @@ import { IGamePage } from '../../types/game-page';
 
 const initialGamePageState: IGamePage = {
   timer: { minutes: 0, seconds: 0 },
+  isSideBarShown: true,
 };
 
 export const gamePageSlice = createSlice({

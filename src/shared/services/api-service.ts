@@ -1,5 +1,6 @@
 import {
   IClientAddPlayerParameters,
+  IClientAdmitPlayerParameters,
   IClientCancelGameParameters,
   IClientChangeCurrentIssueParameters,
   IClientCheckGameParameters,
@@ -7,10 +8,12 @@ import {
   IClientCreateIssueParameters,
   IClientDeleteIssueParameters,
   IClientFinishGameParameters,
+  IClientFinishRoundParameters,
   IClientGetNextIssueParameters,
   IClientKickPlayerParameters,
   IClientLeaveGameParameters,
   IClientPostMessageParameters,
+  IClientRejectPlayerParameters,
   IClientScoreIssueParameters,
   IClientStartGameParameters,
   IClientStartRoundParameters,
@@ -50,7 +53,28 @@ export class ApiService {
       response.json()
     );
     socketIO.connect();
+    console.log(socketIO.id);
     return { ...json, socketId: socketIO.id };
+  }
+
+  static async admitPlayer({
+    gameId,
+  }: IClientAdmitPlayerParameters): Promise<Partial<IResponse>> {
+    const response: Partial<IResponse> = await asyncEmit<
+      IClientAdmitPlayerParameters,
+      Partial<IResponse>
+    >('admitPlayer', { gameId });
+    return response;
+  }
+
+  static async rejectPlayer({
+    gameId,
+  }: IClientRejectPlayerParameters): Promise<Partial<IResponse>> {
+    const response: Partial<IResponse> = await asyncEmit<
+      IClientRejectPlayerParameters,
+      Partial<IResponse>
+    >('rejectPlayer', { gameId });
+    return response;
   }
 
   static async createGame(
@@ -116,6 +140,17 @@ export class ApiService {
       IClientStartRoundParameters,
       Partial<IStartRoundResponse>
     >('startRound', { dealerId, issueId, gameId });
+    return response;
+  }
+
+  static async finishRound({
+    dealerId,
+    gameId,
+  }: IClientFinishRoundParameters): Promise<Partial<IResponse>> {
+    const response = await asyncEmit<
+      IClientFinishRoundParameters,
+      Partial<IResponse>
+    >('finishRound', { dealerId, gameId });
     return response;
   }
 
@@ -208,6 +243,8 @@ export class ApiService {
     settings,
     gameId,
   }: IClientStartGameParameters): Promise<Partial<IStartGameResponse>> {
+    console.log('start game');
+
     const response = await asyncEmit<
       IClientStartGameParameters,
       Partial<IStartGameResponse>
@@ -231,7 +268,7 @@ export class ApiService {
     issueId,
     score,
     gameId,
-  }: IClientScoreIssueParameters): Promise<Partial<IStartRoundResponse>> {
+  }: IClientScoreIssueParameters): Promise<Partial<IResponse>> {
     const response = await asyncEmit<
       IClientScoreIssueParameters,
       Partial<IStartRoundResponse>
