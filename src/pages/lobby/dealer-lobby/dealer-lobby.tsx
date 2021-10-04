@@ -33,7 +33,7 @@ const DealerLobby = (): JSX.Element => {
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
   const gameStatus = useSelector(gameSelectors.selectStatus);
-  const clientHeight = globalThis.screen.height;
+  const clientHeight = globalThis.screen.height/2;
   const [messageUserIds, setMessageUserIds] = useState(new Set());
 
   useEffect(() => {

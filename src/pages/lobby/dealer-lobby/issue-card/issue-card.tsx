@@ -75,7 +75,9 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
           className={styles.name}
           onMouseOver={showInfoIssue}
           onMouseOut={hideInfoIssue}
-        >{`${infoIssue.title.slice(0, 13)}...`}</div>
+        >
+          {infoIssue.title}
+        </div>
         <img
           src={editIssue}
           className={styles.iconEdit}

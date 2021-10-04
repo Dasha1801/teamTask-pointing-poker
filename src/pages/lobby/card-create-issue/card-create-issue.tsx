@@ -96,40 +96,38 @@ function CreateIssueCard(): JSX.Element {
 
   return (
     <div className={styles.cardCreateIssue}>
-      <div className={styles.name}>Create new Issue</div>
-      <div className={styles.containerBtn}>
-        <div className={styles.form__inputFile}>
-          <label htmlFor="file">
-            <img
-              title='Add file with issue: {
+      <div className={styles.name}>Create Issue</div>
+      <label htmlFor="file">
+        <img
+          title='Add file with issue: {
               "issues": [
                   {"title": ..., "priority": ...},
                   ...
                 ]
             }
             }'
-              src={downloadIcon}
-              alt="icon download file"
-              className={styles.downloadIcon}
-            />
-          </label>
-          <input
-            className={styles.visuallyHidden}
-            type="file"
-            id="file"
-            onChange={handleChangeFile}
-            value=""
-            accept=".json"
-          />
-        </div>
-        <span
-          className={styles.addedIssue}
-          onClick={handleShowPopUp}
-          title="Add issue"
-        >
-          +
-        </span>
-      </div>
+          src={downloadIcon}
+          alt="icon download file"
+          className={styles.downloadIcon}
+        />
+      </label>
+      <input
+        className={styles.visuallyHidden}
+        type="file"
+        id="file"
+        onChange={handleChangeFile}
+        value=""
+        accept=".json"
+      />
+
+      <span
+        className={styles.addedIssue}
+        onClick={handleShowPopUp}
+        title="Add issue"
+      >
+        +
+      </span>
+
       {showPopup && (
         <CreateIssuePopup
           handleClose={handleClose}
