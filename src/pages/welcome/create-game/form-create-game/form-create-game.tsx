@@ -3,6 +3,7 @@ import { Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import { appActions } from '../../../../redux/slices/app/app-slice';
 import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
 import {
@@ -10,6 +11,10 @@ import {
   TUserRole,
   User,
 } from '../../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../../redux/types/info-message';
 import FirstName from '../../connect-to-lobby/components/first-name';
 import HeadingText from '../../connect-to-lobby/components/heading-text';
 import ImageLoader from '../../connect-to-lobby/components/image-loader';
@@ -17,7 +22,7 @@ import JobPosition from '../../connect-to-lobby/components/job-position';
 import LastName from '../../connect-to-lobby/components/last-name';
 import styles from '../../connect-to-lobby/connect-to-lobby.module.scss';
 
-interface IFormCreateGame {
+interface IFormCreateGameProps {
   onCancelClick: () => void;
 }
 
@@ -32,27 +37,27 @@ function toBase64String(
   img: HTMLImageElement | null,
   fileName: string
 ): string | undefined {
-  const c = document.createElement('canvas');
+  const canvas = document.createElement('canvas');
   let ctx, base64String;
   if (img && fileName !== '') {
     const minSide = Math.min(img.naturalHeight, img.naturalWidth);
     if (img.naturalHeight > minSide) {
-      c.height = (img.naturalHeight / minSide) * 100;
-      c.width = 100;
+      canvas.height = (img.naturalHeight / minSide) * 100;
+      canvas.width = 100;
     } else {
-      c.height = 100;
-      c.width = (img.naturalWidth / minSide) * 100;
+      canvas.height = 100;
+      canvas.width = (img.naturalWidth / minSide) * 100;
     }
-    ctx = c.getContext('2d');
-    if (ctx) ctx.drawImage(img, 0, 0, c.width, c.height);
-    base64String = c.toDataURL();
+    ctx = canvas.getContext('2d');
+    if (ctx) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    base64String = canvas.toDataURL();
   } else {
     base64String = '';
   }
   return base64String;
 }
 
-const FormCreateGame = ({}: IFormCreateGame): JSX.Element => {
+const FormCreateGame = ({}: IFormCreateGameProps): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
 
@@ -80,13 +85,18 @@ const FormCreateGame = ({}: IFormCreateGame): JSX.Element => {
       jobPosition: data.jobPosition,
       image: base64String,
     });
+
     const response = await dispatch(
       thunks.createGameThunk({ dealerInfo: currentUser })
     );
-    // !handle error
     const payload = response.payload as Partial<ICreateGameRequestResult>;
     if (payload.message) {
-      throw Error(payload.message);
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
     }
     const { gameId } = response.payload as ICreateGameRequestResult;
     history.replace(`/lobby/${gameId}`);

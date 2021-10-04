@@ -16,14 +16,20 @@ import SprintHeading from '../../shared/sprint-heading/sprint-heading';
 import AboutDealer from '../about-dealer/about-dealer';
 import CreateIssueCard from '../card-create-issue/card-create-issue';
 import Members from '../members/members';
-import styles from './dealer-lobby.module.scss';
 import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
-import { TGameStatus } from '../../../redux/types';
+import { IRequestResult, TGameStatus } from '../../../redux/types';
 import { APP_CONSTANTS } from '../../../shared/constants';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
+import styles from './dealer-lobby.module.scss';
 
 const DealerLobby = (): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
@@ -49,18 +55,38 @@ const DealerLobby = (): JSX.Element => {
   }, [gameStatus]);
 
   const handleCancel = async () => {
-    await dispatch(thunks.cancelGameThunk({ dealerId: dealer.id, gameId }));
+    const response = await dispatch(
+      thunks.cancelGameThunk({ dealerId: dealer.id, gameId })
+    );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleStart = async () => {
-    history.replace(`/game/${gameId}`);
-    await dispatch(
+    const response = await dispatch(
       thunks.startGameThunk({
         settings: gameSettings,
         gameId,
         dealerId: dealer.id,
       })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
+    history.replace(`/game/${gameId}`);
   };
 
   return (

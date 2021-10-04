@@ -4,13 +4,19 @@ import {
   currentUserSelectors,
   gameSelectors,
 } from '../../../../redux/selectors';
+import { appActions } from '../../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
-import { IIssue } from '../../../../redux/types';
+import { IIssue, IRequestResult } from '../../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../../redux/types/info-message';
 import deleteIssue from '../../../../shared/assets/icons/deleteIssue.png';
 import editIssue from '../../../../shared/assets/icons/edit-issue.svg';
 import { BasePopup } from '../../../shared/base-popup/base-popup';
-import styles from './issue-card.module.scss';
 import PopupChangeIssue from './popupChangeIssue/popupChangeIssue';
+import styles from './issue-card.module.scss';
 
 export interface IPropsIssue {
   infoIssue: IIssue;
@@ -23,7 +29,8 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   const [warning, setWarning] = useState('');
   const gameId = useSelector(gameSelectors.selectId);
   const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleClose = () => {
     setShowEdit(false);
   };
@@ -40,7 +47,7 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
     setShowInfo(false);
   };
   const handleUpdateIssue = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.updateIssueThunk({
         dealerId: dealer.id,
         updatedIssue: issueFields,
@@ -48,6 +55,15 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       })
     );
     handleClose();
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleSubmit = () => {

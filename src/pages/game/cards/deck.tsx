@@ -5,13 +5,20 @@ import {
   gameSelectors,
   gameSettingsSelectors,
 } from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
 import { thunks } from '../../../redux/thunks/thunks';
+import { IRequestResult } from '../../../redux/types';
 import { TCardScore } from '../../../redux/types/card';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import PlayCard from './card';
 import styles from './deck.module.scss';
 
 function Deck(): JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const gameId = useSelector(gameSelectors.selectId);
   const currentIssueId = useSelector(gameSelectors.selectCurrentIssueId);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
@@ -20,7 +27,7 @@ function Deck(): JSX.Element {
 
   async function handleClick(cardValue: TCardScore) {
     setSelectedCard(cardValue);
-    await dispatch(
+    const response = await dispatch(
       thunks.scoreIssueThunk({
         issueId: currentIssueId,
         playerId: currentUser.id,
@@ -28,6 +35,15 @@ function Deck(): JSX.Element {
         gameId,
       })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   }
   return (
     <>

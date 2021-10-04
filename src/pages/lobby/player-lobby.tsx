@@ -9,9 +9,10 @@ import {
 } from '../../redux/selectors';
 import { lobbyPageSelectors } from '../../redux/selectors/lobby-page-selectors';
 import { appActions } from '../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../redux/store';
 import { thunks } from '../../redux/thunks/thunks';
-import { TGameStatus } from '../../redux/types';
-import { InfoMessage } from '../../redux/types/info-message';
+import { IRequestResult, TGameStatus } from '../../redux/types';
+import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
 import { BasePopup } from '../shared/base-popup/base-popup';
 import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
@@ -20,7 +21,7 @@ import Members from './members/members';
 import styles from './player-lobby.module.scss';
 
 const PlayerLobby = (): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const [showVotingPopup, setShowVotingPopup] = useState(false);
   const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
@@ -69,13 +70,24 @@ const PlayerLobby = (): JSX.Element => {
 
   const handleExit = async () => {
     history.push('/');
-    await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
+    const response = await dispatch(
+      thunks.leaveGameThunk({ playerId: currentUser.id, gameId })
+    );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
     dispatch(
       appActions.changeInfoMessages([new InfoMessage('You have left the game')])
     );
   };
   const declineKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -84,10 +96,19 @@ const PlayerLobby = (): JSX.Element => {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const acceptKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -96,6 +117,15 @@ const PlayerLobby = (): JSX.Element => {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   return (

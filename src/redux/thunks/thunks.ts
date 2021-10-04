@@ -37,7 +37,6 @@ import {
   ICreateGameRequestResult,
   IRequestResult,
   Issue,
-  IUser,
   Message,
   TGameStatus,
   TUserRole,
@@ -364,8 +363,7 @@ export const finishRoundThunk = createAsyncThunk<
 
 export const leaveGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
-  IClientLeaveGameParameters,
-  { state: IUser }
+  IClientLeaveGameParameters
 >('game/leaveGameThunk', async ({ playerId, gameId }) => {
   const response = await ApiService.leaveGame({
     playerId,

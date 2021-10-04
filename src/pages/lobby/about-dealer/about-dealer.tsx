@@ -2,13 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { gameSelectors } from '../../../redux/selectors';
 import { IUser } from '../../../redux/types';
-import { mockDealer } from '../../../shared/mocks';
 import PlayerCard from '../../shared/player-card/player-card';
 import styles from './about-dealer.module.scss';
 
 const AboutDealer = (): JSX.Element => {
-  const dealer = (useSelector(gameSelectors.selectDealer) ||
-    mockDealer) as IUser; // !DEBUG
+  const dealer = useSelector(gameSelectors.selectDealer) as IUser;
 
   return (
     <div className={styles.container}>

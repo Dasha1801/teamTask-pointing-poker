@@ -12,14 +12,35 @@ function GameResult(): JSX.Element {
   const history = useHistory();
   const { issues } = history.location.state as { issues: IIssue[] };
 
+  const generateCSV = (): string => {
+    const prefix =
+      'data:application/octet-stream, Issue%20title%2CCard%20value%2CPercentage\n';
+    const result = issues.reduce((resultString, issue) => {
+      const issueStatistics = Issue.calculateStatistics(issue);
+      const issueTitle = `${issue.title.replaceAll(' ', '%20')}`;
+      const rows = issueStatistics.reduce((acc, [score, percentage]) => {
+        return `${acc}${issueTitle}%2C${score}%2C${percentage}\n`;
+      }, '');
+      return `${resultString}${rows}`;
+    }, prefix);
+    return result;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.headingContainer}>
           <SprintHeading issues={issues} />
-          <ButtonBlue className={styles.buttonDownload} title="Download result">
-            <IconDownload />
-          </ButtonBlue>
+          <a
+            title="Download result"
+            className={styles.buttonDownload}
+            download="statistics.csv"
+            href={generateCSV()}
+          >
+            <ButtonBlue>
+              <IconDownload />
+            </ButtonBlue>
+          </a>
         </div>
         <div className={styles.setOfIssues}>
           {issues.map((issue) => {

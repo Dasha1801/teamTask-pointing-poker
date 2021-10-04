@@ -9,9 +9,21 @@ import {
   votingKickSelectors,
 } from '../../../redux/selectors';
 import { entryRequestSelectors } from '../../../redux/selectors/entry-request-selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
 import { entryRequestsActions } from '../../../redux/slices/entry-requests/entry-requests';
+import { AppDispatch } from '../../../redux/store';
 import { thunks } from '../../../redux/thunks/thunks';
-import { IUser, TGameStatus, TUserRole, User } from '../../../redux/types';
+import {
+  IRequestResult,
+  IUser,
+  TGameStatus,
+  TUserRole,
+  User,
+} from '../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import { BasePopup } from '../../shared/base-popup/base-popup';
 import DealerSection from '../../shared/dealer-section/dealer-section';
 import SprintHeading from '../../shared/sprint-heading/sprint-heading';
@@ -24,7 +36,7 @@ import styles from './game-page.module.scss';
 
 export function GamePage(): JSX.Element {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const isSideBarShown = useSelector(gamePageSelectors.selectIsSideBarShown);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const gameId = useSelector(gameSelectors.selectId);
@@ -41,12 +53,6 @@ export function GamePage(): JSX.Element {
   const [showVotingPopup, setShowVotingPopup] = useState(false);
 
   useEffect(() => {
-    console.log(entryRequest);
-  });
-
-  useEffect(() => {
-    console.log('cur changed');
-
     if (firstRender.current) {
       firstRender.current = false;
       return;
@@ -91,7 +97,7 @@ export function GamePage(): JSX.Element {
   }, [votingKick.kickedPlayerId]);
 
   const declineKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -100,10 +106,19 @@ export function GamePage(): JSX.Element {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const acceptKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -112,6 +127,43 @@ export function GamePage(): JSX.Element {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
+  };
+
+  const admitEntryRequest = async () => {
+    const response = await dispatch(thunks.admitPlayerThunk({ gameId }));
+    dispatch(entryRequestsActions.popEntryRequest());
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
+  };
+
+  const rejectEntryRequest = async () => {
+    const response = await dispatch(thunks.rejectPlayerThunk({ gameId }));
+    dispatch(entryRequestsActions.popEntryRequest());
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   return (
@@ -130,16 +182,10 @@ export function GamePage(): JSX.Element {
           buttonOkText="Admit"
           buttonCancelText="Reject"
           buttonCancelProps={{
-            onClick: async () => {
-              await dispatch(thunks.rejectPlayerThunk({ gameId }));
-              dispatch(entryRequestsActions.popEntryRequest());
-            },
+            onClick: rejectEntryRequest,
           }}
           buttonOkProps={{
-            onClick: async () => {
-              await dispatch(thunks.admitPlayerThunk({ gameId }));
-              dispatch(entryRequestsActions.popEntryRequest());
-            },
+            onClick: admitEntryRequest,
           }}
         >
           {`Admit ${User.getFullName(

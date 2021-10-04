@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
 import { thunks } from '../../../redux/thunks/thunks';
-import { IUser, TUserRole } from '../../../redux/types';
+import { IRequestResult, IUser, TUserRole } from '../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import removeUser from '../../../shared/assets/icons/remove-user.svg';
 import { BasePopup } from '../../shared/base-popup/base-popup';
 import styles from './player-card.module.scss';
@@ -14,7 +20,7 @@ export interface IPlayerCardProps {
 
 const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
   const MIN_NUMBER_OF_PLAYERS_TO_VOTE = 3;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const gameId = useSelector(gameSelectors.selectId);
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
   const dealer = useSelector(gameSelectors.selectDealer) as IUser;
@@ -51,7 +57,7 @@ const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
   };
 
   const kick = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.kickPlayerThunk({
         dealerId: currentUser.id,
         kickedPlayerId: user.id,
@@ -59,10 +65,19 @@ const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
       })
     );
     handleCloseKickPopup();
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const startVotingToKick = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.startVotingToKickThunk({
         votingPlayerId: currentUser.id,
         kickedPlayerId: user.id,
@@ -70,6 +85,15 @@ const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
       })
     );
     handleCloseKickPopup();
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   return (

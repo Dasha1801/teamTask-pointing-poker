@@ -14,48 +14,50 @@ import Footer from './shared/footer/footer';
 import Header from './shared/header/header';
 import InfoMessageList from './shared/info-message-list/info-message-list';
 import WelcomePage from './welcome/welcome';
+import ErrorBoundary from './error-boundary';
 
 function App(): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
-
   return (
     <div className={styles.app}>
-      <Router>
-        <Header />
-        <main className={styles.content}>
-          <InfoMessageList />
-          <TransitionGroup className={styles.transitionGroup}>
-            <CSSTransition
-              timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}
-              classNames="page"
-            >
-              <Switch>
-                <Route exact path="/">
-                  <WelcomePage />
-                </Route>
-                <Route path="/game-result/">
-                  <GameResult />
-                </Route>
-                <Route path="/game/:gameId">
-                  {currentUser.role === TUserRole.dealer ? (
-                    <GamePage />
-                  ) : (
-                    <GamePage />
-                  )}
-                </Route>
-                <Route path="/lobby/:gameId">
-                  {currentUser.role === TUserRole.dealer ? (
-                    <DealerLobby />
-                  ) : (
-                    <PlayerLobby />
-                  )}
-                </Route>
-              </Switch>
-            </CSSTransition>
-          </TransitionGroup>
-        </main>
-        <Footer />
-      </Router>
+      <ErrorBoundary>
+        <Router>
+          <Header />
+          <main className={styles.content}>
+            <InfoMessageList />
+            <TransitionGroup className={styles.transitionGroup}>
+              <CSSTransition
+                timeout={APP_CONSTANTS.ROUTER_TRANSITION_TIMEOUT}
+                classNames="page"
+              >
+                <Switch>
+                  <Route exact path="/">
+                    <WelcomePage />
+                  </Route>
+                  <Route path="/game-result/">
+                    <GameResult />
+                  </Route>
+                  <Route path="/game/:gameId">
+                    {currentUser.role === TUserRole.dealer ? (
+                      <GamePage />
+                    ) : (
+                      <GamePage />
+                    )}
+                  </Route>
+                  <Route path="/lobby/:gameId">
+                    {currentUser.role === TUserRole.dealer ? (
+                      <DealerLobby />
+                    ) : (
+                      <PlayerLobby />
+                    )}
+                  </Route>
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          </main>
+          <Footer />
+        </Router>
+      </ErrorBoundary>
     </div>
   );
 }

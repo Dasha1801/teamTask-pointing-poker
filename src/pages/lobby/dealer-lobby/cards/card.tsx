@@ -50,6 +50,7 @@ function PlayCard({
     );
     handleClose();
   };
+
   return (
     <>
       <section

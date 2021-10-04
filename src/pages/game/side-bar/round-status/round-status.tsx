@@ -13,7 +13,6 @@ export default function RoundStatus(): JSX.Element {
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const scores = useSelector(gameSelectors.selectCurrentIssue)?.lastRoundResult;
-  console.log('change?');
 
   const getPlayerStatus = (player: IUser): string => {
     if (
