@@ -7,36 +7,35 @@ import {
   gameSelectors,
   gameSettingsSelectors,
   votingKickSelectors,
-} from '../../../redux/selectors';
-import { entryRequestSelectors } from '../../../redux/selectors/entry-request-selectors';
-import { appActions } from '../../../redux/slices/app/app-slice';
-import { entryRequestsActions } from '../../../redux/slices/entry-requests/entry-requests';
-import { AppDispatch } from '../../../redux/store';
-import { thunks } from '../../../redux/thunks/thunks';
+} from '../../redux/selectors';
+import { entryRequestSelectors } from '../../redux/selectors/entry-request-selectors';
+import { appActions } from '../../redux/slices/app/app-slice';
+import { entryRequestsActions } from '../../redux/slices/entry-requests/entry-requests';
+import { AppDispatch } from '../../redux/store';
+import { thunks } from '../../redux/thunks/thunks';
 import {
   IRequestResult,
   IUser,
   TGameStatus,
   TUserRole,
   User,
-} from '../../../redux/types';
-import {
-  InfoMessage,
-  TInfoMessageType,
-} from '../../../redux/types/info-message';
-import { BasePopup } from '../../shared/base-popup/base-popup';
-import DealerSection from '../../shared/dealer-section/dealer-section';
-import SprintHeading from '../../shared/sprint-heading/sprint-heading';
-import Deck from '../cards/deck';
-import GameControls from '../game-controls/game-controls';
-import IssuesList from '../issues-list/issues-list';
-import SideBar from '../side-bar/side-bar';
-import IssueStatistics from '../statistics/issue-statistics';
+} from '../../redux/types';
+import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
+import { BasePopup } from '../shared/base-popup/base-popup';
+import DealerSection from '../shared/dealer-section/dealer-section';
+import SprintHeading from '../shared/sprint-heading/sprint-heading';
+import Deck from './cards/deck';
+import GameControls from './game-controls/game-controls';
+import IssuesList from './issues-list/issues-list';
+import SideBar from '../shared/side-bar/side-bar';
+import IssueStatistics from './statistics/issue-statistics';
 import styles from './game-page.module.scss';
+import { gameService } from '../..';
 
 export function GamePage(): JSX.Element {
   const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
+  const [isGameFinished, setIsGameFinished] = useState(false);
   const isSideBarShown = useSelector(gamePageSelectors.selectIsSideBarShown);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const gameId = useSelector(gameSelectors.selectId);
@@ -73,7 +72,14 @@ export function GamePage(): JSX.Element {
   useEffect(() => {
     switch (gameStatus) {
       case TGameStatus.inactive:
-        history.replace('/');
+        {
+          if (!isGameFinished) {
+            history.replace('/');
+          } else {
+            history.replace('/game-result', { issues });
+          }
+          gameService.resetState();
+        }
         break;
       case TGameStatus.started:
         if (lastGameStatus === TGameStatus.roundInProgress) {
@@ -205,7 +211,7 @@ export function GamePage(): JSX.Element {
           </div>
           <DealerSection dealer={dealer} />
           <div className={styles.controls}>
-            <GameControls />
+            <GameControls setIsGameFinished={setIsGameFinished} />
           </div>
           <div className={styles.main}>
             <div className={styles.issues}>

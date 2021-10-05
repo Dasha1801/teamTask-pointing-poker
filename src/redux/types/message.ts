@@ -18,7 +18,7 @@ export class Message implements IMessage {
   toObject(): IMessage {
     return {
       id: this.id,
-      userId: this.id,
+      userId: this.userId,
       message: this.message,
     };
   }

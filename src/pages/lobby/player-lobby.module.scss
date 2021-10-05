@@ -1,17 +1,29 @@
 $btn-background: var(--bg-blue);
-.wrapper {
+$font: var(--second-font);
+$page-width: var(--page-width);
+$page-width-sidebar: var(--page-width-sidebar);
+$button-width: 189px;
+
+// .wrapper {
+//   width: 70%;
+//   margin: 0 auto;
+//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+//   padding: 2% 3% 0;
+// }
+
+.container {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+.content {
   width: 70%;
-  margin: 0 auto;
+  max-width: $page-width;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 2% 3% 0;
 }
-.rootContainer {
-  display: flex;
-  justify-content: space-around;
-}
-
-.sideBar {
-  width: 30%;
+.contentWithSidebar {
+  max-width: $page-width-sidebar;
 }
 
 .btnExitContainer {
@@ -28,10 +40,10 @@ $btn-background: var(--bg-blue);
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.dealerKickPopup{
+.dealerKickPopup {
   margin: 0 auto;
 }
-.nameKickPlayer{
+.nameKickPlayer {
   color: #66999b;
   font-weight: 500;
 }

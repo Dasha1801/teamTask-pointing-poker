@@ -2,6 +2,8 @@ import React from 'react';
 import { useHistory } from 'react-router';
 import { IIssue, Issue } from '../../redux/types';
 import { ReactComponent as IconDownload } from '../../shared/assets/icons/download.svg';
+import { ReactComponent as IconRestart } from '../../shared/assets/icons/restart.svg';
+
 import IssueCard from '../game/issue-card/issue-card';
 import { ButtonBlue } from '../shared/buttons/button-blue/button-blue';
 import IssueScoreStatistics from '../shared/issue-score-statistics/issue-score-statistics';
@@ -31,6 +33,11 @@ function GameResult(): JSX.Element {
       <div className={styles.content}>
         <div className={styles.headingContainer}>
           <SprintHeading issues={issues} />
+          <a href="/" title="Restart game" className={styles.buttonRestart}>
+            <ButtonBlue>
+              <IconRestart />
+            </ButtonBlue>
+          </a>
           <a
             title="Download result"
             className={styles.buttonDownload}
@@ -48,16 +55,15 @@ function GameResult(): JSX.Element {
               <div className={styles.issueCardContainer} key={issue.id}>
                 <IssueCard
                   customClass={styles.customIssueCard}
-                  key={issue.id}
                   issue={issue}
                   canEditScore={false}
                   canRemove={false}
                 />
-                <div className={styles.issueStatisticBlock} key={issue.id}>
+                <div className={styles.issueStatisticBlock}>
                   {Issue.calculateStatistics(issue).map(
                     ([score, percentage]) => (
                       <IssueScoreStatistics
-                        key={score}
+                        key={`${issue.id}_${score}`}
                         score={score}
                         percentage={percentage}
                       />

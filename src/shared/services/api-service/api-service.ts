@@ -20,14 +20,11 @@ import {
   IClientStartVotingToKickParameters,
   IClientUpdateIssueParameters,
   IClientVoteToKickParameters,
-} from '../../redux/types';
-import { APP_CONSTANTS } from '../constants';
-import { socketIO } from './socket';
+} from '../../../redux/types';
+import { APP_CONSTANTS } from '../../constants';
 import {
   IAddPlayerResponse,
   IChangeCurrentIssueResponse,
-  ICheckGameResponse,
-  IConnectResponse,
   ICreateGameResponse,
   ICreateIssueResponse,
   IGetNextIssueResponse,
@@ -35,27 +32,14 @@ import {
   ILeaveGameResponse,
   IPostMessageResponse,
   IResponse,
-  IStartGameResponse,
   IStartRoundResponse,
-} from './types';
-
-async function asyncEmit<T, K>(event: string, data: T): Promise<K> {
-  return new Promise((resolve) =>
-    socketIO.emit(event, data, (response: K) => {
-      return resolve(response);
-    })
-  );
-}
+} from '../types';
+import { asyncEmit } from './async-emit';
+import ApiConnect from './handlers/api-connect';
+import handleAPIError from './handlers/handle-api-error';
 
 export class ApiService {
-  static async connect(): Promise<IConnectResponse> {
-    const json = fetch(`${APP_CONSTANTS.SERVER_URL}/connect`).then((response) =>
-      response.json()
-    );
-    socketIO.connect();
-    console.log(socketIO.id);
-    return { ...json, socketId: socketIO.id };
-  }
+  static connect = handleAPIError<void, IResponse>(ApiConnect);
 
   static async admitPlayer({
     gameId,
@@ -98,16 +82,16 @@ export class ApiService {
     return response;
   }
 
-  static async checkGame({
-    gameId,
-  }: IClientCheckGameParameters): Promise<ICheckGameResponse> {
-    const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/check-game`, {
-      method: 'POST',
-      body: JSON.stringify({ gameId }),
-      headers: { 'Content-Type': 'application/json' },
-    }).then((response) => response.json());
-    return json;
-  }
+  static checkGame = handleAPIError<IClientCheckGameParameters, IResponse>(
+    async ({ gameId }: IClientCheckGameParameters): Promise<IResponse> => {
+      const json = await fetch(`${APP_CONSTANTS.SERVER_URL}/check-game`, {
+        method: 'POST',
+        body: JSON.stringify({ gameId }),
+        headers: { 'Content-Type': 'application/json' },
+      }).then((response) => response.json());
+      return json;
+    }
+  );
 
   static async postMessage({
     message,
@@ -242,13 +226,14 @@ export class ApiService {
     dealerId,
     settings,
     gameId,
-  }: IClientStartGameParameters): Promise<Partial<IStartGameResponse>> {
+  }: IClientStartGameParameters): Promise<IResponse> {
     console.log('start game');
+    const response = await asyncEmit<IClientStartGameParameters, IResponse>(
+      'startGame',
+      { dealerId, gameId, settings }
+    );
+    console.log('got response', response);
 
-    const response = await asyncEmit<
-      IClientStartGameParameters,
-      Partial<IStartGameResponse>
-    >('startGame', { dealerId, gameId, settings });
     return response;
   }
 

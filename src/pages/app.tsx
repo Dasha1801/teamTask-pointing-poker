@@ -5,9 +5,8 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { currentUserSelectors } from '../redux/selectors';
 import { TUserRole } from '../redux/types';
 import { APP_CONSTANTS } from '../shared/constants';
-import styles from './app.module.scss';
 import GameResult from './game-result/game-result';
-import { GamePage } from './game/game-page-player/game-page';
+import { GamePage } from './game/game-page';
 import DealerLobby from './lobby/dealer-lobby/dealer-lobby';
 import PlayerLobby from './lobby/player-lobby';
 import Footer from './shared/footer/footer';
@@ -15,6 +14,7 @@ import Header from './shared/header/header';
 import InfoMessageList from './shared/info-message-list/info-message-list';
 import WelcomePage from './welcome/welcome';
 import ErrorBoundary from './error-boundary';
+import styles from './app.module.scss';
 
 function App(): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);

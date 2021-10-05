@@ -5,7 +5,7 @@ import {
   gameSelectors,
   gameSettingsSelectors,
 } from '../../../../redux/selectors';
-import PlayerCard from '../../player-card/player-card';
+import PlayerCard from '../../../game/player-card/player-card';
 import { IUser, TGameStatus, TUserRole } from '../../../../redux/types';
 
 export default function RoundStatus(): JSX.Element {

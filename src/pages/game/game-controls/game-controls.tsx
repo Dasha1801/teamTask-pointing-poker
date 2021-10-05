@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
 import {
   currentUserSelectors,
   gameSelectors,
@@ -20,14 +19,20 @@ import { ButtonBlue } from '../../shared/buttons/button-blue/button-blue';
 import Timer from '../timer/timer';
 import styles from './game-controls.module.scss';
 
-export default function GameControls(): JSX.Element {
+interface IGameControlsProps {
+  setIsGameFinished: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function GameControls({
+  setIsGameFinished,
+}: IGameControlsProps): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
   const gameId = useSelector(gameSelectors.selectId);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
   const settings = useSelector(gameSettingsSelectors.selectSettings);
   const issues = useSelector(gameSelectors.selectIssues);
-  const history = useHistory();
+  // const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
 
   const handleExit = async () => {
@@ -127,7 +132,8 @@ export default function GameControls(): JSX.Element {
   };
 
   const handleFinishGame = async () => {
-    history.replace('/game-result', { issues });
+    console.log('handle finish');
+    setIsGameFinished(true);
     const response = await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
     );
@@ -138,8 +144,11 @@ export default function GameControls(): JSX.Element {
           new InfoMessage(payload.message, TInfoMessageType.error).toObject()
         )
       );
+      setIsGameFinished(false);
+
       return;
     }
+    console.log('got here');
   };
 
   return (

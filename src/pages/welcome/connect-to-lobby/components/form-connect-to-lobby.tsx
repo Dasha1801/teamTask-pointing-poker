@@ -14,13 +14,13 @@ import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../../redux/types/info-message';
-import styles from '../connect-to-lobby.module.scss';
 import FirstName from './first-name';
 import HeadingText from './heading-text';
 import ImageLoader from './image-loader';
 import JobPosition from './job-position';
 import LastName from './last-name';
 import Switcher from './switcher/switcher';
+import styles from '../connect-to-lobby.module.scss';
 
 interface IFormConnectToLobby {
   gameId: string;
@@ -126,7 +126,7 @@ const FormConnectToLobby = ({
     <Form id="textId" className={styles.connect} onSubmit={onConfirmClick}>
       <Container className={styles.container}>
         <Row className={styles.rowTitle}>
-          <HeadingText />
+          <HeadingText text="Connect to lobby" />
           <Switcher reg={{ ...register('isObserver') }} />
         </Row>
         <FirstName

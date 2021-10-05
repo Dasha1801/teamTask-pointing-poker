@@ -15,12 +15,13 @@ import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../../redux/types/info-message';
+import { IResponse } from '../../../../shared/services/types';
 import FirstName from '../../connect-to-lobby/components/first-name';
-import HeadingText from '../../connect-to-lobby/components/heading-text';
 import ImageLoader from '../../connect-to-lobby/components/image-loader';
 import JobPosition from '../../connect-to-lobby/components/job-position';
 import LastName from '../../connect-to-lobby/components/last-name';
-import styles from '../../connect-to-lobby/connect-to-lobby.module.scss';
+import styles from './form-create-game.module.scss';
+import HeadingText from './heading-text/heading-text';
 
 interface IFormCreateGameProps {
   onCancelClick: () => void;
@@ -73,6 +74,19 @@ const FormCreateGame = ({}: IFormCreateGameProps): JSX.Element => {
   const [playerName, setPlayerName] = useState('NN');
 
   const onConfirmClick = handleSubmit(async (data) => {
+    const connectionResponse = await dispatch(thunks.connectThunk());
+    const connectionPayload = connectionResponse.payload as IResponse;
+    if (connectionPayload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(
+            `Can't connect to server`,
+            TInfoMessageType.error
+          ).toObject()
+        )
+      );
+      return;
+    }
     let base64String: string | undefined;
     if (image.current) {
       base64String = toBase64String(image.current, fileName);
@@ -125,7 +139,7 @@ const FormCreateGame = ({}: IFormCreateGameProps): JSX.Element => {
     <Form id="textId" className={styles.connect} onSubmit={onConfirmClick}>
       <Container className={styles.container}>
         <Row className={styles.rowTitle}>
-          <HeadingText />
+          <HeadingText text="Create game" />
         </Row>
         <FirstName
           handleChangeInput={handleChangeInput}

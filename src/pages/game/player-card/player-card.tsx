@@ -124,15 +124,16 @@ const PlayerCard = ({ user, customClass }: IPlayerCardProps): JSX.Element => {
           </div>
         </BasePopup>
       )}
-      {user?.image ? (
-        <img className={styles.img} src={user?.image}></img>
-      ) : (
-        <div className={styles.avatarContainer}>
+
+      <div className={styles.avatarContainer}>
+        {user?.image ? (
+          <img className={styles.img} src={user?.image} />
+        ) : (
           <div className={styles.avatar}>
             {getName(user.firstName, user?.lastName)}
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <div className={styles.info}>
         {currentUser.id === user.id && (
           <div className={styles.currentUser}>It`s you</div>

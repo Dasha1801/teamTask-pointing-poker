@@ -1,23 +1,23 @@
-import styles from './form.module.scss';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import logoGame from '../../../shared/assets/icons/logo.svg';
-import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { APP_CONSTANTS } from '../../../shared/constants';
+import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
-import { thunks } from '../../../redux/thunks/thunks';
-import { AppDispatch } from '../../../redux/store';
-import ConnectToLobby from '../connect-to-lobby/connect-to-lobby';
-import { ICheckGameResponse } from '../../../shared/services/types';
-import CreateGame from '../create-game/create-game';
-import { gameSelectors } from '../../../redux/selectors';
-import { TGameStatus } from '../../../redux/types';
 import { useHistory } from 'react-router';
+import { gameSelectors } from '../../../redux/selectors';
 import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
+import { thunks } from '../../../redux/thunks/thunks';
+import { TGameStatus } from '../../../redux/types';
 import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../redux/types/info-message';
+import logoGame from '../../../shared/assets/icons/logo.svg';
+import { APP_CONSTANTS } from '../../../shared/constants';
+import { ICheckGameResponse, IResponse } from '../../../shared/services/types';
+import ConnectToLobby from '../connect-to-lobby/connect-to-lobby';
+import CreateGame from '../create-game/create-game';
+import styles from './form.module.scss';
 
 const FormWelcome = (): JSX.Element => {
   const [url, setUrl] = useState('');
@@ -58,7 +58,6 @@ const FormWelcome = (): JSX.Element => {
   };
 
   const handleClickNewGame = async () => {
-    await dispatch(thunks.connectThunk());
     setNewGame(true);
   };
 
@@ -69,7 +68,19 @@ const FormWelcome = (): JSX.Element => {
       const response = await dispatch(
         thunks.checkGameThunk({ gameId: gameIdLocal })
       );
-      const { gameExists } = response.payload as ICheckGameResponse;
+      const payload = response.payload as ICheckGameResponse;
+      if (payload.message) {
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(
+              `Can't connect to server`,
+              TInfoMessageType.error
+            ).toObject()
+          )
+        );
+        return;
+      }
+      const { gameExists } = payload;
       setLobbyConnect(gameExists);
       if (!gameExists) {
         dispatch(
@@ -81,7 +92,19 @@ const FormWelcome = (): JSX.Element => {
           )
         );
       } else {
-        await dispatch(thunks.connectThunk());
+        const connectionResponse = await dispatch(thunks.connectThunk());
+        const { message } = connectionResponse.payload as IResponse;
+        if (message) {
+          dispatch(
+            appActions.addOneInfoMessage(
+              new InfoMessage(
+                `Can't connect to server`,
+                TInfoMessageType.error
+              ).toObject()
+            )
+          );
+          return;
+        }
         setGameId(gameIdLocal);
       }
     }
@@ -131,7 +154,6 @@ const FormWelcome = (): JSX.Element => {
           >
             Connect
           </Button>
-          {/* <span className={styles.warning}>{warn}</span> */}
         </Form.Group>
       </Form>
     </div>

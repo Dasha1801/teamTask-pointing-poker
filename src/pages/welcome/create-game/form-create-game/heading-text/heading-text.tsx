@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
-import styles from '../connect-to-lobby.module.scss';
+import styles from './heading-text.module.scss';
 
 interface IHeadingProps {
   text: string;

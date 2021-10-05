@@ -1,7 +1,10 @@
-import styles from './input-file.module.scss';
-import lobbyStyles from '../../connect-to-lobby.module.scss';
 import React, { useRef } from 'react';
 import { Form, FormControl, InputGroup } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { appActions } from '../../../../../redux/slices/app/app-slice';
+import { InfoMessage } from '../../../../../redux/types/info-message';
+import lobbyStyles from '../../connect-to-lobby.module.scss';
+import styles from './input-file.module.scss';
 
 interface IInputFileProps {
   fileName: string;
@@ -13,6 +16,7 @@ function InputFile(
   props: React.PropsWithChildren<IInputFileProps>
 ): JSX.Element {
   const { fileName, setFileName, setFilePath } = props;
+  const dispatch = useDispatch();
 
   const inputFile = useRef<HTMLInputElement>(null);
 
@@ -22,7 +26,11 @@ function InputFile(
         setFileName(inputFile.current.files[0].name);
         setFilePath(window.URL.createObjectURL(inputFile.current.files[0]));
       } else {
-        alert('The size of the files to download is limited to 10mb');
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage('The file must be at most 10Mb')
+          )
+        );
       }
     }
   };
@@ -39,7 +47,7 @@ function InputFile(
         <FormControl
           className={lobbyStyles.placeholder}
           value={fileName}
-          placeholder="Choose footer"
+          placeholder="Upload image"
           aria-describedby="basic-addon2"
           readOnly
         />
