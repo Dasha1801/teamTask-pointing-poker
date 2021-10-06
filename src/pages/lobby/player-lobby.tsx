@@ -123,13 +123,13 @@ const PlayerLobby = (): JSX.Element => {
             buttonCancelProps={{ onClick: declineKickVote }}
           >
             <div className={styles.dealerKickPopup}>
-              Kick
+              Kick{' '}
               <span className={styles.nameKickPlayer}>
                 {User.getFullName(
                   kickPlayer?.firstName as string,
                   kickPlayer?.lastName
                 )}
-              </span>
+              </span>{' '}
               from the game?
             </div>
           </BasePopup>
