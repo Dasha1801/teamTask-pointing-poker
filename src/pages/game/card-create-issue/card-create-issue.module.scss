@@ -4,7 +4,6 @@ $shadow: var(--main-shadow);
 
 .issueCard {
   display: flex;
-  position: relative;
   padding: 18px 24px 18px 18px;
   box-shadow: $shadow;
 }

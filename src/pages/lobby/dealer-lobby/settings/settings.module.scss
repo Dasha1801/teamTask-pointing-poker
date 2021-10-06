@@ -21,6 +21,7 @@ $font: var(--second-font);
   font-family: $font;
   font-weight: bold;
   font-size: 18px;
+  cursor: pointer;
 }
 .select {
   border: 1px solid #2b3a67;
@@ -59,7 +60,7 @@ $font: var(--second-font);
   .setting {
     font-size: 16px;
   }
-  .playCards{
+  .playCards {
     width: 130%;
   }
 }
@@ -68,7 +69,7 @@ $font: var(--second-font);
   .settingsList {
     width: 85%;
   }
-  .playCards{
+  .playCards {
     width: 118%;
   }
   .setting {
@@ -82,7 +83,7 @@ $font: var(--second-font);
     text-align: start;
     margin: 0 auto;
   }
-  .playCards{
+  .playCards {
     width: 101%;
   }
   .select {

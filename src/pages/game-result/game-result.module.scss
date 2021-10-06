@@ -7,6 +7,10 @@ $page-width: var(--page-width);
 }
 
 .buttonDownload {
+  margin-left: 5px;
+}
+
+.buttonRestart {
   margin-left: auto;
 }
 
@@ -73,6 +77,11 @@ $page-width: var(--page-width);
     position: absolute;
     top: 5px;
     right: 5px;
+  }
+  .buttonRestart {
+    position: absolute;
+    top: 5px;
+    left: 5px;
   }
   .headingContainer {
     margin-top: 50px;

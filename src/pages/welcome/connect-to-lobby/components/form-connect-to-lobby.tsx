@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { appActions } from '../../../../redux/slices/app/app-slice';
 import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
 import {
@@ -9,13 +10,17 @@ import {
   TUserRole,
   User,
 } from '../../../../redux/types';
-import styles from '../connect-to-lobby.module.scss';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../../redux/types/info-message';
 import FirstName from './first-name';
 import HeadingText from './heading-text';
 import ImageLoader from './image-loader';
 import JobPosition from './job-position';
 import LastName from './last-name';
 import Switcher from './switcher/switcher';
+import styles from '../connect-to-lobby.module.scss';
 
 interface IFormConnectToLobby {
   gameId: string;
@@ -89,9 +94,13 @@ const FormConnectToLobby = ({
     );
     const { message } = response.payload as IClientAddPlayerResult;
     if (message) {
-      throw Error(`addPlayer: something wrong - ${message}`);
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
     }
-    // !handle error
   });
 
   const handleChangeInput = handleSubmit((data) => {
@@ -117,7 +126,7 @@ const FormConnectToLobby = ({
     <Form id="textId" className={styles.connect} onSubmit={onConfirmClick}>
       <Container className={styles.container}>
         <Row className={styles.rowTitle}>
-          <HeadingText />
+          <HeadingText text="Connect to lobby" />
           <Switcher reg={{ ...register('isObserver') }} />
         </Row>
         <FirstName

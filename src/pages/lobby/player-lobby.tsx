@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import {
@@ -9,10 +8,13 @@ import {
 } from '../../redux/selectors';
 import { lobbyPageSelectors } from '../../redux/selectors/lobby-page-selectors';
 import { appActions } from '../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../redux/store';
 import { thunks } from '../../redux/thunks/thunks';
-import { TGameStatus } from '../../redux/types';
-import { InfoMessage } from '../../redux/types/info-message';
+import { IRequestResult, TGameStatus, User } from '../../redux/types';
+import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
+import { gameService } from '../../shared/services/game-service/game-service';
 import { BasePopup } from '../shared/base-popup/base-popup';
+import { ButtonBlue } from '../shared/buttons/button-blue/button-blue';
 import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
 import AboutDealer from './about-dealer/about-dealer';
@@ -20,15 +22,12 @@ import Members from './members/members';
 import styles from './player-lobby.module.scss';
 
 const PlayerLobby = (): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const [showVotingPopup, setShowVotingPopup] = useState(false);
-  const sideBar = useSelector(lobbyPageSelectors.selectIsSideBarShown);
+  const isSideBarShown = useSelector(lobbyPageSelectors.selectIsSideBarShown);
   const users = useSelector(gameSelectors.selectPlayers);
-  const messages = useSelector(gameSelectors.selectGame).messages;
   const issues = useSelector(gameSelectors.selectIssues);
-  const wasKicked = useSelector(currentUserSelectors.selectCurrentUser).kicked;
-  const gameCancelled = useSelector(lobbyPageSelectors.selectGameCancelled);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const gameId = useSelector(gameSelectors.selectId);
   const votingKick = useSelector(votingKickSelectors.selectVotingKick);
@@ -37,27 +36,12 @@ const PlayerLobby = (): JSX.Element => {
     (user) => user.id === votingKick.kickedPlayerId
   );
 
-  const [messageUserIds, setMessageUserIds] = useState(new Set());
-
-  useEffect(() => {
-    setMessageUserIds(new Set(messages.map((item) => item.userId)));
-  }, [messages]);
-
-  useEffect(() => {
-    if (wasKicked) {
-      history.replace('/');
-    }
-  }, [wasKicked]);
-
-  useEffect(() => {
-    if (gameCancelled) {
-      history.replace('/');
-    }
-  }, [gameCancelled]);
-
   useEffect(() => {
     if (gameStatus === TGameStatus.started) {
       history.replace(`/game/${gameId}`);
+    } else if (gameStatus !== TGameStatus.lobby) {
+      history.replace('/');
+      gameService.resetState();
     }
   }, [gameStatus]);
 
@@ -68,14 +52,21 @@ const PlayerLobby = (): JSX.Element => {
   }, [votingKick.kickedPlayerId]);
 
   const handleExit = async () => {
-    history.push('/');
-    await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
-    dispatch(
-      appActions.changeInfoMessages([new InfoMessage('You have left the game')])
+    const response = await dispatch(
+      thunks.leaveGameThunk({ playerId: currentUser.id, gameId })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
   const declineKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -84,10 +75,19 @@ const PlayerLobby = (): JSX.Element => {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const acceptKickVote = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.voteToKickThunk({
         votingPlayerId: currentUser.id,
         gameId,
@@ -96,46 +96,63 @@ const PlayerLobby = (): JSX.Element => {
       })
     );
     setShowVotingPopup(false);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
-  return (
-    <div className={styles.rootContainer}>
-      {showVotingPopup && (
-        <BasePopup
-          headingText="Kick player"
-          buttonOkText="Yes"
-          buttonCancelText="No"
-          buttonOkProps={{ onClick: acceptKickVote }}
-          buttonCancelProps={{ onClick: declineKickVote }}
-        >
-          <div className={styles.dealerKickPopup}>
-            Kick
-            <span className={styles.nameKickPlayer}>
-              {` ${kickPlayer?.firstName} ${kickPlayer?.lastName} `}
-            </span>
-            from the game?
-          </div>
-        </BasePopup>
-      )}
-      <div className={styles.wrapper}>
-        <SprintHeading issues={issues} />
+  return gameStatus === TGameStatus.lobby ? (
+    <div className={styles.container}>
+      <div
+        className={`${styles.content} ${
+          isSideBarShown ? styles.contentWithSidebar : ''
+        }`}
+      >
+        {showVotingPopup && (
+          <BasePopup
+            headingText="Kick player"
+            buttonOkText="Yes"
+            buttonCancelText="No"
+            buttonOkProps={{ onClick: acceptKickVote }}
+            buttonCancelProps={{ onClick: declineKickVote }}
+          >
+            <div className={styles.dealerKickPopup}>
+              Kick
+              <span className={styles.nameKickPlayer}>
+                {User.getFullName(
+                  kickPlayer?.firstName as string,
+                  kickPlayer?.lastName
+                )}
+              </span>
+              from the game?
+            </div>
+          </BasePopup>
+        )}
+        <div className={styles.titleSprint}>
+          <SprintHeading issues={issues} />
+        </div>
         <AboutDealer />
         <div className={styles.btnExitContainer}>
-          <Button type="button" className={styles.btnExit} onClick={handleExit}>
+          <ButtonBlue
+            type="button"
+            className={styles.btnExit}
+            onClick={handleExit}
+          >
             Exit
-          </Button>
+          </ButtonBlue>
         </div>
         <Members users={users} />
       </div>
-      {sideBar ? (
-        <div className={styles.sideBar}>
-          <SideBar
-            messages={messages}
-            users={users.filter((user) => messageUserIds.has(user.id))}
-          />
-        </div>
-      ) : null}
+      {isSideBarShown && <SideBar />}
     </div>
+  ) : (
+    <div />
   );
 };
 

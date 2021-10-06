@@ -6,8 +6,8 @@ import { gameSettingsActions } from '../../../../redux/slices/game-settings/game
 import { TCardType } from '../../../../redux/types';
 import { APP_CONSTANTS } from '../../../../shared/constants';
 import Timer from '../../../shared/timer/timer';
-import { deck } from '../cards/constants';
-import Deck from '../cards/deck';
+import { deck } from '../../../shared/cards/constants';
+import Deck from '../../../shared/cards/deck';
 import styles from './settings.module.scss';
 
 const GameSettings = (): JSX.Element => {
@@ -33,12 +33,15 @@ const GameSettings = (): JSX.Element => {
   return (
     <div className={styles.settingsList}>
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Scram master as player:</h5>
+        <label htmlFor="can-dealer-play" className={styles.setting}>
+          Scram master as player:
+        </label>
         <Col lg={2} className={styles.right}>
           <div className={`${styles.container} form-check form-switch`}>
             <FormControl
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
+              id="can-dealer-play"
               onChange={() =>
                 dispatch(
                   gameSettingsActions.changeSettings({
@@ -52,10 +55,13 @@ const GameSettings = (): JSX.Element => {
       </div>
 
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Changing card in round end:</h5>
+        <label htmlFor="can-score-after-flip" className={styles.setting}>
+          Changing card in round end:
+        </label>
         <Col lg={2} className={styles.right}>
           <div className={`${styles.container} form-check form-switch`}>
             <FormControl
+              id="can-score-after-flip"
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
               onChange={() =>
@@ -71,12 +77,15 @@ const GameSettings = (): JSX.Element => {
       </div>
 
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Automatically admit all new members:</h5>
+        <label htmlFor="auto-admit" className={styles.setting}>
+          Automatically admit all new members:
+        </label>
         <Col lg={2} className={styles.right}>
           <div className={`${styles.container} form-check form-switch`}>
             <FormControl
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
+              id="auto-admit"
               onChange={() =>
                 dispatch(
                   gameSettingsActions.changeSettings({ autoAdmit: !autoAdmit })
@@ -88,12 +97,15 @@ const GameSettings = (): JSX.Element => {
       </div>
 
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Automatic flip of cards:</h5>
+        <label htmlFor="auto-flip" className={styles.setting}>
+          Automatic flip of cards:
+        </label>
         <Col lg={2} className={styles.right}>
           <div className={`${styles.container} form-check form-switch`}>
             <FormControl
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
+              id="auto-flip"
               onChange={() =>
                 dispatch(
                   gameSettingsActions.changeSettings({
@@ -107,12 +119,15 @@ const GameSettings = (): JSX.Element => {
       </div>
 
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Set timer:</h5>
+        <label htmlFor="is-timer-set" className={styles.setting}>
+          Set timer:
+        </label>
         <Col lg={2} className={styles.right}>
           <div className={`${styles.container} form-check form-switch`}>
             <FormControl
               className={`${styles.switcher} form-check-input`}
               type="checkbox"
+              id="is-timer-set"
               onChange={() => {
                 if (timer) {
                   dispatch(
@@ -145,8 +160,11 @@ const GameSettings = (): JSX.Element => {
       )}
 
       <div className={styles.itemSettings}>
-        <h5 className={styles.setting}>Score type:</h5>
+        <label htmlFor="score" className={styles.setting}>
+          Score type:
+        </label>
         <select
+          id="score"
           className={styles.select}
           value={cardType}
           onChange={handleCardType}

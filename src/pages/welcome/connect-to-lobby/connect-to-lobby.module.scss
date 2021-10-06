@@ -1,10 +1,13 @@
+$main-font: var(--main-font);
+$second-font: var(--second-font);
+
 .connect {
   max-width: 876px;
   display: flex;
 }
 
 .title {
-  font-family: Roboto;
+  font-family: $main-font;
   font-style: normal;
   font-weight: bold;
   font-size: 64px;
@@ -19,7 +22,7 @@
 .observerLabel {
   margin-top: 15px;
   width: 200px;
-  font-family: Ruda;
+  font-family: $second-font;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -47,7 +50,7 @@
 
 .label {
   text-align: start;
-  font-family: Roboto;
+  font-family: $main-font;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -58,7 +61,7 @@
 }
 
 .placeholder {
-  font-family: Roboto;
+  font-family: $main-font;
   font-style: normal;
   font-weight: 300;
   font-size: 20px;
@@ -75,7 +78,7 @@
   border-radius: 50px;
   background: #60dabf;
   box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-  font-family: Roboto;
+  font-family: $main-font;
   font-style: normal;
   font-weight: bold;
   font-size: 48px;
@@ -97,7 +100,7 @@
   border: 1px solid #496a81;
   box-sizing: border-box;
   border-radius: 3px;
-  font-family: Ruda;
+  font-family: $second-font;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -114,7 +117,7 @@
   border: 1px solid #496a81;
   box-sizing: border-box;
   border-radius: 3px;
-  font-family: Ruda;
+  font-family: $second-font;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -148,4 +151,20 @@
   opacity: 0;
   visibility: hidden;
   position: absolute;
+}
+
+@media (max-width: 1000px) {
+  .title {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 700px) {
+  .title {
+    font-size: 24px;
+  }
+  .label {
+    font-size: 18px;
+    font-weight: 500;
+  }
 }

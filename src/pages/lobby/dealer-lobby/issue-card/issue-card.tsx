@@ -4,13 +4,19 @@ import {
   currentUserSelectors,
   gameSelectors,
 } from '../../../../redux/selectors';
+import { appActions } from '../../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../../redux/store';
 import { thunks } from '../../../../redux/thunks/thunks';
-import { IIssue } from '../../../../redux/types';
+import { IIssue, IRequestResult } from '../../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../../redux/types/info-message';
 import deleteIssue from '../../../../shared/assets/icons/deleteIssue.png';
 import editIssue from '../../../../shared/assets/icons/edit-issue.svg';
 import { BasePopup } from '../../../shared/base-popup/base-popup';
-import styles from './issue-card.module.scss';
 import PopupChangeIssue from './popupChangeIssue/popupChangeIssue';
+import styles from './issue-card.module.scss';
 
 export interface IPropsIssue {
   infoIssue: IIssue;
@@ -22,8 +28,10 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
   const [issueFields, setIssueFields] = useState(infoIssue);
   const [warning, setWarning] = useState('');
   const gameId = useSelector(gameSelectors.selectId);
-  const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
+  const [isWithinIssueCard, setIsWithinIssueCard] = useState(false);
+  const [isWithinIssueCardInfo, setIsWithinIssueCardInfo] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleClose = () => {
     setShowEdit(false);
   };
@@ -32,15 +40,8 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
     setShowEdit(true);
   };
 
-  const showInfoIssue = () => {
-    setShowInfo(true);
-  };
-
-  const hideInfoIssue = () => {
-    setShowInfo(false);
-  };
   const handleUpdateIssue = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.updateIssueThunk({
         dealerId: dealer.id,
         updatedIssue: issueFields,
@@ -48,6 +49,15 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       })
     );
     handleClose();
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleSubmit = () => {
@@ -73,9 +83,16 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
       <div className={styles.main}>
         <div
           className={styles.name}
-          onMouseOver={showInfoIssue}
-          onMouseOut={hideInfoIssue}
-        >{`${infoIssue.title.slice(0, 13)}...`}</div>
+          onMouseEnter={() => {
+            setIsWithinIssueCard(true);
+            setIsWithinIssueCardInfo(true);
+          }}
+          onMouseLeave={() => {
+            setIsWithinIssueCard(false);
+          }}
+        >
+          {infoIssue.title}
+        </div>
         <img
           src={editIssue}
           className={styles.iconEdit}
@@ -104,14 +121,29 @@ const IssueCard = ({ infoIssue }: IPropsIssue): JSX.Element => {
           />
         </BasePopup>
       )}
-      {showInfo && (
-        <div className={styles.info}>
+      {(isWithinIssueCard || isWithinIssueCardInfo) && (
+        <div
+          className={styles.infoPopup}
+          onMouseEnter={() => {
+            setIsWithinIssueCardInfo(true);
+          }}
+          onMouseLeave={() => {
+            setIsWithinIssueCardInfo(false);
+          }}
+        >
           <div className={styles.infoTitle}>
-            <span className={styles.nameInfo}>Title:</span> {infoIssue.title}
+            <div className={styles.nameInfo}>Title:</div>
+            <div className={styles.infoValue}>{infoIssue.title}</div>
+          </div>
+          <div className={styles.infoLink}>
+            <div className={styles.nameInfo}>Link:</div>
+            <div className={styles.infoValue}>
+              <a href={infoIssue.link}>{infoIssue.link}</a>
+            </div>
           </div>
           <div className={styles.infoPriority}>
-            <span className={styles.nameInfo}>Priority:</span>{' '}
-            {infoIssue.priority}
+            <div className={styles.nameInfo}>Priority:</div>
+            <div className={styles.infoValue}>{infoIssue.priority}</div>
           </div>
         </div>
       )}

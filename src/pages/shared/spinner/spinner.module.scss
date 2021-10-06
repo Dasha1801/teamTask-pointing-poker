@@ -1,10 +1,15 @@
-.loading {
+$z-index: var(--max-z-index);
+
+.loadingAnimation {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 200px;
+  z-index: $z-index;
   margin: auto;
+  pointer-events: none;
   animation-name: rotation;
   animation-duration: 7s;
   animation-iteration-count: infinite;

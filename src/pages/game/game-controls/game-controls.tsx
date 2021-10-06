@@ -1,31 +1,52 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
 import {
   currentUserSelectors,
   gameSelectors,
   gameSettingsSelectors,
 } from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
 import { gameActions } from '../../../redux/slices/game/game-slice';
+import { AppDispatch } from '../../../redux/store';
 import { thunks } from '../../../redux/thunks/thunks';
-import { TGameStatus, TUserRole } from '../../../redux/types';
+import { IRequestResult, TGameStatus, TUserRole } from '../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import { BaseButton } from '../../shared/buttons/base-button/base-button';
 import { ButtonBlue } from '../../shared/buttons/button-blue/button-blue';
 import Timer from '../timer/timer';
 import styles from './game-controls.module.scss';
 
-export default function GameControls(): JSX.Element {
+interface IGameControlsProps {
+  setIsGameFinished: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function GameControls({
+  setIsGameFinished,
+}: IGameControlsProps): JSX.Element {
   const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
   const gameId = useSelector(gameSelectors.selectId);
   const gameStatus = useSelector(gameSelectors.selectStatus);
   const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
   const settings = useSelector(gameSettingsSelectors.selectSettings);
   const issues = useSelector(gameSelectors.selectIssues);
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleExit = async () => {
-    await dispatch(thunks.leaveGameThunk({ playerId: currentUser.id, gameId }));
+    const response = await dispatch(
+      thunks.leaveGameThunk({ playerId: currentUser.id, gameId })
+    );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleNextIssue = async () => {
@@ -39,45 +60,91 @@ export default function GameControls(): JSX.Element {
 
   const handleStart = async () => {
     if (currentIssue) {
-      await dispatch(
+      const response = await dispatch(
         thunks.startRoundThunk({
           dealerId: currentUser.id,
           issueId: currentIssue.id,
           gameId,
         })
       );
+      const payload = response.payload as Partial<IRequestResult>;
+      if (payload.message) {
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+          )
+        );
+        return;
+      }
     }
   };
 
   const handleRestart = async () => {
     if (currentIssue) {
-      dispatch(
+      const response = dispatch(
         gameActions.updateIssue({
           issueId: currentIssue.id,
           updatedIssue: { lastRoundResult: {} },
         })
       );
+      const payload = response.payload as Partial<IRequestResult>;
+      if (payload.message) {
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+          )
+        );
+        return;
+      }
       handleStart();
     }
   };
 
   const handleFinishRound = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.finishRoundThunk({ dealerId: currentUser.id, gameId })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleCancelGame = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.cancelGameThunk({ dealerId: currentUser.id, gameId })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleFinishGame = async () => {
-    history.replace('/game-result', { issues });
-    await dispatch(
+    setIsGameFinished(true);
+    const response = await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
     );
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      setIsGameFinished(false);
+      return;
+    }
   };
 
   return (

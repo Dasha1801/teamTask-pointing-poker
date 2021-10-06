@@ -1,6 +1,6 @@
 import React from 'react';
 import { gameActions, gameSlice } from '../../../redux/slices/game/game-slice';
-import { IGame } from '../../../redux/types';
+import { IGame, TGameStatus } from '../../../redux/types';
 import { mockDealer, mockIssue } from '../../../shared/mocks';
 import { render } from '../../../shared/test-utils';
 import DealerLobby from './dealer-lobby';
@@ -12,6 +12,10 @@ describe('render page DealerLobby', () => {
       undefined,
       gameActions.changePlayers([mockDealer])
     );
+    gameState = gameSlice.reducer(
+      gameState,
+      gameActions.changeStatus(TGameStatus.lobby)
+    );
   });
 
   test('should handle dealer', () => {
@@ -22,14 +26,9 @@ describe('render page DealerLobby', () => {
   });
 
   test('should handle issue', () => {
-    const issueState = gameSlice.reducer(
-      undefined,
-      gameActions.changeIssues([mockIssue])
-    );
-
     gameState = gameSlice.reducer(
-      issueState,
-      gameActions.changePlayers([mockDealer])
+      gameState,
+      gameActions.changeIssues([mockIssue])
     );
     const page = render(<DealerLobby />, {
       preloadedState: { game: gameState },

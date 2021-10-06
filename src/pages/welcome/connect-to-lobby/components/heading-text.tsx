@@ -1,11 +1,15 @@
-import styles from '../connect-to-lobby.module.scss';
 import React from 'react';
 import { Col } from 'react-bootstrap';
+import styles from '../connect-to-lobby.module.scss';
 
-function HeadingText(): JSX.Element {
+interface IHeadingProps {
+  text: string;
+}
+
+function HeadingText({ text }: IHeadingProps): JSX.Element {
   return (
     <Col lg={8} className={styles.left}>
-      <h1 className={styles.title}>Connect to lobby</h1>
+      <h2 className={styles.title}>{text}</h2>
     </Col>
   );
 }

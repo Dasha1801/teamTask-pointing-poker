@@ -1,15 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ApiService } from '../../shared/services/api-service';
+import { ApiService } from '../../shared/services/api-service/api-service';
 import {
   IAddPlayerResponse,
   ICheckGameResponse,
   IConnectResponse,
   ICreateGameResponse,
   IPostMessageResponse,
+  IResponse,
 } from '../../shared/services/types';
 import { appActions } from '../slices/app/app-slice';
 import { currentUserActions } from '../slices/current-user/current-user-slice';
-import { gameSettingsActions } from '../slices/game-settings/game-settings-slice';
 import { gameActions } from '../slices/game/game-slice';
 import {
   IClientAddPlayerParameters,
@@ -37,7 +37,6 @@ import {
   ICreateGameRequestResult,
   IRequestResult,
   Issue,
-  IUser,
   Message,
   TGameStatus,
   TUserRole,
@@ -45,10 +44,13 @@ import {
 } from '../types';
 import { InfoMessage } from '../types/info-message';
 
-export const connectThunk = createAsyncThunk<IConnectResponse, void>(
+export const connectThunk = createAsyncThunk<IResponse, void>(
   'app/connectThunk',
   async (_, thunkApi) => {
-    const response = await ApiService.connect();
+    const response = (await ApiService.connect()) as IConnectResponse;
+    if (response.message) {
+      return response;
+    }
     thunkApi.dispatch(
       appActions.changeConnectionStatus(response.connectionStatus)
     );
@@ -116,7 +118,9 @@ export const checkGameThunk = createAsyncThunk<
   ICheckGameResponse,
   IClientCheckGameParameters
 >('game/checkGameThunk', async ({ gameId }) => {
-  const response = await ApiService.checkGame({ gameId });
+  const response = (await ApiService.checkGame({
+    gameId,
+  })) as ICheckGameResponse;
   return response;
 });
 
@@ -206,15 +210,11 @@ export const deleteIssueThunk = createAsyncThunk<
 export const startGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientStartGameParameters
->('game/startGameThunk', async ({ dealerId, settings, gameId }, thunkApi) => {
-  console.log('start game thunk');
-
+>('game/startGameThunk', async ({ dealerId, settings, gameId }) => {
   const response = await ApiService.startGame({ dealerId, settings, gameId });
   if (response.message) {
     return response;
   }
-  thunkApi.dispatch(gameSettingsActions.changeSettings(settings));
-  thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
   return {};
 });
 
@@ -267,14 +267,11 @@ export const kickPlayerThunk = createAsyncThunk<
 export const cancelGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientCancelGameParameters
->('game/cancelGameThunk', async ({ dealerId, gameId }, thunkApi) => {
+>('game/cancelGameThunk', async ({ dealerId, gameId }) => {
   const response = await ApiService.cancelGame({ dealerId, gameId });
   if (response.message) {
     return response;
   }
-  thunkApi.dispatch(currentUserActions.changeCurrentUser({ id: '' }));
-  thunkApi.dispatch(gameSettingsActions.resetSettings());
-  thunkApi.dispatch(gameActions.resetGame());
   return {};
 });
 
@@ -294,14 +291,11 @@ export const scoreIssueThunk = createAsyncThunk<
 export const finishGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientFinishGameParameters
->('game/finishGameThunk', async ({ dealerId, gameId }, thunkApi) => {
+>('game/finishGameThunk', async ({ dealerId, gameId }) => {
   const response = await ApiService.finishGame({ dealerId, gameId });
   if (response.message) {
     return response;
   }
-  thunkApi.dispatch(currentUserActions.changeCurrentUser({ id: '' }));
-  thunkApi.dispatch(gameSettingsActions.resetSettings());
-  thunkApi.dispatch(gameActions.resetGame());
   return {};
 });
 
@@ -364,8 +358,7 @@ export const finishRoundThunk = createAsyncThunk<
 
 export const leaveGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
-  IClientLeaveGameParameters,
-  { state: IUser }
+  IClientLeaveGameParameters
 >('game/leaveGameThunk', async ({ playerId, gameId }) => {
   const response = await ApiService.leaveGame({
     playerId,

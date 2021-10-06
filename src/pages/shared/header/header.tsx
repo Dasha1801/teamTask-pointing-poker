@@ -7,6 +7,7 @@ import { lobbyPageActions } from '../../../redux/slices/lobby-page/lobby-page';
 import { TGameStatus } from '../../../redux/types';
 import logo from '../../../shared/assets/icons/logo-header.svg';
 import message from '../../../shared/assets/icons/message.svg';
+import sidebar from '../../../shared/assets/icons/sidebar.svg';
 import styles from './header.module.scss';
 
 const Header = (): JSX.Element => {
@@ -23,19 +24,35 @@ const Header = (): JSX.Element => {
     }
   };
 
+  const generateHeaderIcon = (): JSX.Element => {
+    let src = '';
+    if (gameStatus === TGameStatus.lobby) {
+      src = message;
+    } else if (gameStatus !== TGameStatus.inactive) {
+      src = sidebar;
+    }
+    return (
+      <img
+        src={src}
+        className={styles.showSidebar}
+        alt="Show sidebar"
+        title="Show sidebar"
+        onClick={showSideBar}
+      />
+    );
+  };
+
   return (
     <header className={styles.header} data-testid="header">
       <a href="/">
-        <img src={logo} className={styles.logo} alt="logo" />
-      </a>
-      {gameStatus !== TGameStatus.inactive ? (
         <img
-          src={message}
-          className={styles.message}
-          alt="message"
-          onClick={showSideBar}
+          src={logo}
+          className={styles.logo}
+          alt="logo"
+          title="Go to start page"
         />
-      ) : null}
+      </a>
+      {gameStatus !== TGameStatus.inactive && generateHeaderIcon()}
     </header>
   );
 };

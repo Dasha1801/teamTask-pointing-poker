@@ -1,15 +1,13 @@
-import './shared/assets/css/base.scss';
-import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import './index.scss';
 import App from './pages/app';
 import { store } from './redux/store';
-import { Provider } from 'react-redux';
+import './shared/assets/css/base.scss';
+import { gameService } from './shared/services/game-service/game-service';
 import * as serviceWorker from './shared/serviceWorker';
-import { GameService } from './shared/services/game-service';
-import { socketIO, socketIODealer } from './shared/services/socket';
 
-const gameService = new GameService(socketIO, socketIODealer);
 gameService.init();
 
 ReactDOM.render(

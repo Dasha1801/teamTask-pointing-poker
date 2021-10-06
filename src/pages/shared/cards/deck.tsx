@@ -1,46 +1,86 @@
-import React, { SyntheticEvent, useState } from 'react';
-import { TCardType } from '../../../redux/types/card';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  currentUserSelectors,
+  gameSelectors,
+  gameSettingsSelectors,
+} from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
+import { thunks } from '../../../redux/thunks/thunks';
+import { IRequestResult, TGameStatus } from '../../../redux/types';
+import { TCardScore } from '../../../redux/types/card';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import PlayCard from './card';
-import s from './cards.module.scss';
-import { deck } from './constants';
+import CardAdd from './card-add';
+import styles from './deck.module.scss';
 
-const Deck = ({ typeOfDeck }: { typeOfDeck: TCardType }): JSX.Element => {
-  const currentDeck = [...deck[typeOfDeck]];
-  const [selectedCard, setSelectedCard] = useState<string | undefined>('');
+function Deck(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  const { cardValues } = useSelector(gameSettingsSelectors.selectSettings);
+  const gameId = useSelector(gameSelectors.selectId);
+  const currentIssueId = useSelector(gameSelectors.selectCurrentIssueId);
+  const currentUser = useSelector(currentUserSelectors.selectCurrentUser);
+  const currentDeck = cardValues;
+  const [selectedCard, setSelectedCard] = useState<TCardScore>(-1);
+  const gameStatus = useSelector(gameSelectors.selectStatus);
+  const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
 
-  function handlerClick(event: SyntheticEvent) {
-    const card = event.target as HTMLDivElement;
-    const prevSelectedCards = document.querySelectorAll('section');
-    prevSelectedCards.forEach((element) => {
-      element.setAttribute('data-selected', 'no');
-    });
-    card.closest('section')?.setAttribute('data-selected', 'selected');
-    setSelectedCard(card.closest('section')?.dataset.rank);
+  async function handleClick(cardValue: TCardScore) {
+    if (
+      gameStatus === TGameStatus.roundInProgress ||
+      (gameStatus === TGameStatus.started && gameSettings.canScoreAfterFlip)
+    ) {
+      setSelectedCard(cardValue);
+      const response = await dispatch(
+        thunks.scoreIssueThunk({
+          issueId: currentIssueId,
+          playerId: currentUser.id,
+          score: cardValue,
+          gameId,
+        })
+      );
+      const payload = response.payload as Partial<IRequestResult>;
+      if (payload.message) {
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+          )
+        );
+        return;
+      }
+    }
   }
+
   return (
     <>
-      <div className={s.deck} onClick={handlerClick}>
-        {currentDeck.map((card, i) =>
+      <div className={styles.deck}>
+        {currentDeck.map((cardValue, i) =>
           i === 0 ? (
             <PlayCard
-              key={card}
-              cardValue={card}
+              key={cardValue}
+              cardValue={cardValue}
               mode="single"
-              selectedCard={selectedCard}
+              isSelected={selectedCard === cardValue}
+              handleClick={() => handleClick(cardValue)}
             />
           ) : (
             <PlayCard
-              key={card}
-              cardValue={card}
+              key={cardValue}
+              cardValue={cardValue}
               mode="deck"
-              selectedCard={selectedCard}
+              isSelected={selectedCard === cardValue}
+              handleClick={() => handleClick(cardValue)}
             />
           )
         )}
+        {gameStatus === 'lobby' && <CardAdd />}
       </div>
-      <div style={{ margin: '50px', fontSize: '24px' }}>{selectedCard}</div>
     </>
   );
-};
+}
 
 export default Deck;

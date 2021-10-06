@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
+import { appActions } from '../../../redux/slices/app/app-slice';
+import { AppDispatch } from '../../../redux/store';
 import { thunks } from '../../../redux/thunks/thunks';
-import { TIssuePriority } from '../../../redux/types';
+import { IRequestResult, TIssuePriority } from '../../../redux/types';
+import {
+  InfoMessage,
+  TInfoMessageType,
+} from '../../../redux/types/info-message';
 import ButtonAdd from '../../shared/buttons/button-add/button-add';
 import { CreateIssuePopup } from '../../shared/create-issue-popup/create-issue-popup';
 import styles from './card-create-issue.module.scss';
@@ -21,7 +27,7 @@ function CreateIssueCard(): JSX.Element {
   const [issueFields, setIssueFields] = useState(emptyIssue);
   const [warning, setWarning] = useState('');
   const gameId = useSelector(gameSelectors.selectId);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const handleClose = () => {
     setShowPopup(false);
   };
@@ -31,7 +37,7 @@ function CreateIssueCard(): JSX.Element {
   };
 
   const handleCreateIssue = async () => {
-    await dispatch(
+    const response = await dispatch(
       thunks.createIssueThunk({
         dealerId: dealer.id,
         addedIssue: issueFields,
@@ -40,6 +46,15 @@ function CreateIssueCard(): JSX.Element {
     );
     handleClose();
     setIssueFields(emptyIssue);
+    const payload = response.payload as Partial<IRequestResult>;
+    if (payload.message) {
+      dispatch(
+        appActions.addOneInfoMessage(
+          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+        )
+      );
+      return;
+    }
   };
 
   const handleSubmit = () => {

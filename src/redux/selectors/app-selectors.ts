@@ -11,8 +11,11 @@ const selectConnectionStatus = createSelector(
 
 const selectInfoMessages = createSelector(selectApp, (app) => app.infoMessages);
 
+const selectIsLoading = createSelector(selectApp, (app) => app.isLoading);
+
 export const appSelectors = {
   selectApp,
   selectConnectionStatus,
   selectInfoMessages,
+  selectIsLoading,
 };

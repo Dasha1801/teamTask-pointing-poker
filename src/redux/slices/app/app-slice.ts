@@ -6,6 +6,7 @@ const initialAppState: IApp = {
   isConnected: false,
   infoMessages: [],
   socketId: '',
+  isLoading: false,
 };
 
 export const appSlice = createSlice({

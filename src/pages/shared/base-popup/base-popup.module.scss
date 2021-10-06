@@ -15,10 +15,11 @@ $bg-overlay: var(--bg-overlay);
 }
 
 .popupContainer {
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: $popup-z-index;
   left: 0;
   top: 0;
   bottom: 0;
@@ -29,7 +30,6 @@ $bg-overlay: var(--bg-overlay);
   position: fixed;
   display: flex;
   flex-flow: column nowrap;
-  z-index: $popup-z-index;
   width: 60%;
   max-width: 876px;
   padding: 36px 40px 33px;

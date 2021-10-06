@@ -6,7 +6,6 @@ describe('Lobby page slice', () => {
   const initialState: ILobbyPage = {
     isSideBarShown: false,
     wasKicked: false,
-    gameCancelled: false,
     isVotingInProgress: false,
   };
 

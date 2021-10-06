@@ -1,100 +1,80 @@
+$page-width: var(--page-width);
+$guidelines-width: var(--guidelines);
+$bg-highlight: var(--bg-light-gray);
+$sidebar-width: var(--sidebar-width);
+$shadow: var(--main-shadow);
+$z-index: var(--sidebar-z-index);
+
 .container {
-  width: 97%;
+  flex-shrink: 0;
+  z-index: $z-index;
+  width: $sidebar-width;
   display: flex;
-  margin: 2% auto;
+  padding: 40px 17px;
   justify-content: space-between;
   flex-direction: column;
+  box-shadow: $shadow;
+}
+
+.messageHighlight {
+  background: $bg-highlight;
 }
 
 .cardItem {
-  margin-bottom: 2%;
-}
-
-.author {
-  width: 30%;
-  font-size: 11px;
-}
-
-.cardKickUser {
-  text-align: center;
-  color: red;
-  min-width: 30%;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  padding: 0.5% 1%;
-  font-style: var(--second-font);
-  margin-bottom: 2%;
-  font-size: 12px;
-}
-
-.message {
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  text-align: start;
-  padding: 2% 1% 1% 3%;
-  border-radius: 20px 0px 0px 20px;
-  width: 70%;
-  font-size: 12px;
-  word-break: break-word;
-}
-
-.wrapperMessage {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap-reverse;
 }
 
-.textarea {
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  padding: 2% 1% 1% 3%;
-  border-radius: 20px 20px 0px 20px;
-  font-size: 12px;
-}
+// @media (max-width: 1110px) {
+//   .author {
+//     font-size: 9px;
+//   }
+//   .message {
+//     font-size: 10px;
+//   }
+// }
 
-.iconMessage {
-  width: 6%;
-}
-.cardItem {
-  display: flex;
-}
+// @media (max-width: 960px) {
+//   .author {
+//     font-size: 7px;
+//   }
+//   .message {
+//     font-size: 8px;
+//   }
+// }
 
-@media (max-width: 1110px) {
-  .author {
-    font-size: 9px;
-  }
-  .message,
-  .textarea,
-  .cardKickUser {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 960px) {
-  .author {
-    font-size: 7px;
-  }
-  .message,
-  .textarea,
-  .cardKickUser {
-    font-size: 8px;
+@media (max-width: 860px) {
+  .container {
+    width: calc(#{$sidebar-width} / 2);
   }
 }
 
-@media (max-width: 780px) {
-  .message,
-  .textarea,
-  .cardKickUser {
-    font-size: 7px;
-  }
-  .author {
-    font-size: 6px;
-  }
-}
+// @media (max-width: 780px) {
+//   .message {
+//     font-size: 7px;
+//   }
+//   .author {
+//     font-size: 6px;
+//   }
+// }
 
-@media (max-width: 620px) {
-  .message,
-  .textarea,
-  .cardKickUser {
-    font-size: 6px;
-  }
-  .author {
-    font-size: 4px;
+// @media (max-width: 620px) {
+//   .message {
+//     font-size: 6px;
+//   }
+//   .author {
+//     font-size: 4px;
+//   }
+// }
+
+@media (max-width: 499px) {
+  .container {
+    position: fixed;
+    align-items: center;
+    right: -100%;
+    transform: translateX(-100%);
+    width: 100%;
+    height: 100%;
+    background: #fff;
   }
 }

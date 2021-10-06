@@ -7,7 +7,7 @@ import {
   currentUserActions,
   currentUserSlice,
 } from '../../redux/slices/current-user/current-user-slice';
-import { IGame } from '../../redux/types';
+import { IGame, TGameStatus } from '../../redux/types';
 import { mockCurrentUser1, mockDealer, mockIssue } from '../../shared/mocks';
 
 describe('render page PlayerLobby', () => {
@@ -16,6 +16,10 @@ describe('render page PlayerLobby', () => {
     gameState = gameSlice.reducer(
       undefined,
       gameActions.changePlayers([mockDealer])
+    );
+    gameState = gameSlice.reducer(
+      gameState,
+      gameActions.changeStatus(TGameStatus.lobby)
     );
   });
 
@@ -27,14 +31,9 @@ describe('render page PlayerLobby', () => {
   });
 
   test('should handle issue', () => {
-    const issueState = gameSlice.reducer(
-      undefined,
-      gameActions.changeIssues([mockIssue])
-    );
-
     gameState = gameSlice.reducer(
-      issueState,
-      gameActions.changePlayers([mockDealer])
+      gameState,
+      gameActions.changeIssues([mockIssue])
     );
     const page = render(<PlayerLobby />, {
       preloadedState: { game: gameState },
@@ -44,7 +43,7 @@ describe('render page PlayerLobby', () => {
 
   test('should handle currentUser', () => {
     const currentGameState = gameSlice.reducer(
-      undefined,
+      gameState,
       gameActions.changePlayers([mockDealer, mockCurrentUser1])
     );
     const currenUserState = currentUserSlice.reducer(
