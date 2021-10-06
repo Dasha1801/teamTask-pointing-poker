@@ -9,7 +9,7 @@ import editCard from '../../../shared/assets/icons/edit-issue.svg';
 import breakImage from '../../../shared/assets/icons/break.svg';
 import styles from './card.module.scss';
 import { TGameStatus } from '../../../redux/types';
-
+import close from '../../../shared/assets/icons/close.png';
 interface IPlayCardProps {
   mode: string;
   cardValue: TCardScore;
@@ -38,6 +38,15 @@ export default function PlayCard({
 
   const handleShowEdit = () => {
     setShowEdit(true);
+  };
+
+  const handleDelete = () => {
+    dispatch(
+      gameSettingsActions.changeSettings({
+        cardValues: cardValues.filter((el) => el !== value),
+      })
+    );
+    handleClose();
   };
 
   const handleSubmit = () => {
@@ -101,11 +110,20 @@ export default function PlayCard({
 
       {showEdit && (
         <BasePopup
-          buttonCancelProps={{ onClick: handleClose }}
+          buttonCancelProps={{
+            onClick: handleDelete,
+            className: `${styles.btnDelete}`,
+          }}
           buttonOkProps={{ onClick: handleSubmit }}
-          buttonCancelText="No"
-          buttonOkText="Yes"
+          buttonCancelText="Delete"
+          buttonOkText="Add"
         >
+          <img
+            src={close}
+            alt="close popup"
+            className={styles.iconClose}
+            onClick={handleClose}
+          />
           <PopupChangeCard setValue={setValue} cardValues={cardValues} />
         </BasePopup>
       )}
