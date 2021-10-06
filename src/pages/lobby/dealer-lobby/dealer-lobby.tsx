@@ -16,7 +16,6 @@ import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../redux/types/info-message';
-import editIssue from '../../../shared/assets/icons/edit-issue.svg';
 import { APP_CONSTANTS } from '../../../shared/constants';
 import { gameService } from '../../../shared/services/game-service/game-service';
 import { BaseButton } from '../../shared/buttons/base-button/base-button';
@@ -31,8 +30,6 @@ import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
 
 const DealerLobby = (): JSX.Element => {
-  console.log('hey dealer');
-
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const isSideBarShown = useSelector(lobbyPageSelectors.selectIsSideBarShown);
@@ -42,13 +39,10 @@ const DealerLobby = (): JSX.Element => {
   const gameSettings = useSelector(gameSettingsSelectors.selectSettings);
   const gameId = useSelector(gameSelectors.selectGame).id;
   const gameStatus = useSelector(gameSelectors.selectStatus);
-  const clientHeight = globalThis.screen.height;
 
   const [gameURL] = useState(`${APP_CONSTANTS.URL}/lobby/${gameId}`);
 
   useEffect(() => {
-    console.log('gamest', gameStatus);
-
     if (gameStatus === TGameStatus.inactive) {
       history.replace('/');
       gameService.resetState();
@@ -107,11 +101,6 @@ const DealerLobby = (): JSX.Element => {
       >
         <div className={styles.titleSprint}>
           <SprintHeading issues={issues} />
-          <img
-            src={editIssue}
-            className={styles.iconIssue}
-            onClick={() => scroll(0, clientHeight)}
-          ></img>
         </div>
         <AboutDealer />
         <div className={styles.containerLinkToLobby}>
