@@ -15,7 +15,17 @@ $second-font: var(--second-font);
   border-radius: 10px;
   cursor: pointer;
 }
-
+.iconClose {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 4%;
+  right: 2%;
+  cursor: pointer;
+}
+.btnDelete:hover {
+  background: red !important;
+}
 .iconEdit {
   width: 20px;
   position: absolute;
