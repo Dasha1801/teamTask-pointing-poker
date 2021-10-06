@@ -22,15 +22,15 @@ import {
 } from '../../redux/types';
 import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
 import { BasePopup } from '../shared/base-popup/base-popup';
+import Deck from '../shared/cards/deck';
 import DealerSection from '../shared/dealer-section/dealer-section';
+import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
-import Deck from './cards/deck';
 import GameControls from './game-controls/game-controls';
 import IssuesList from './issues-list/issues-list';
-import SideBar from '../shared/side-bar/side-bar';
 import IssueStatistics from './statistics/issue-statistics';
 import styles from './game-page.module.scss';
-import { gameService } from '../..';
+import { gameService } from '../../shared/services/game-service/game-service';
 
 export function GamePage(): JSX.Element {
   const history = useHistory();
@@ -52,6 +52,10 @@ export function GamePage(): JSX.Element {
   const [showVotingPopup, setShowVotingPopup] = useState(false);
 
   useEffect(() => {
+    console.log('hey');
+  }, []);
+
+  useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
@@ -70,6 +74,8 @@ export function GamePage(): JSX.Element {
   }, [currentIssue?.id]);
 
   useEffect(() => {
+    console.log('gamest', gameStatus);
+
     switch (gameStatus) {
       case TGameStatus.inactive:
         {
@@ -181,7 +187,18 @@ export function GamePage(): JSX.Element {
           buttonCancelText="No"
           buttonOkProps={{ onClick: acceptKickVote }}
           buttonCancelProps={{ onClick: declineKickVote }}
-        ></BasePopup>
+        >
+          <div className={styles.dealerKickPopup}>
+            Kick
+            <span className={styles.nameKickPlayer}>
+              {User.getFullName(
+                entryRequest.firstName as string,
+                entryRequest.lastName
+              )}
+            </span>
+            from the game?
+          </div>
+        </BasePopup>
       )}
       {entryRequest && (
         <BasePopup

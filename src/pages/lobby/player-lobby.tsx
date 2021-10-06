@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { gameService } from '../..';
 import {
   currentUserSelectors,
   gameSelectors,
@@ -12,9 +10,11 @@ import { lobbyPageSelectors } from '../../redux/selectors/lobby-page-selectors';
 import { appActions } from '../../redux/slices/app/app-slice';
 import { AppDispatch } from '../../redux/store';
 import { thunks } from '../../redux/thunks/thunks';
-import { IRequestResult, TGameStatus } from '../../redux/types';
+import { IRequestResult, TGameStatus, User } from '../../redux/types';
 import { InfoMessage, TInfoMessageType } from '../../redux/types/info-message';
+import { gameService } from '../../shared/services/game-service/game-service';
 import { BasePopup } from '../shared/base-popup/base-popup';
+import { ButtonBlue } from '../shared/buttons/button-blue/button-blue';
 import SideBar from '../shared/side-bar/side-bar';
 import SprintHeading from '../shared/sprint-heading/sprint-heading';
 import AboutDealer from './about-dealer/about-dealer';
@@ -37,8 +37,6 @@ const PlayerLobby = (): JSX.Element => {
   );
 
   useEffect(() => {
-    console.log('status change', gameStatus);
-
     if (gameStatus === TGameStatus.started) {
       history.replace(`/game/${gameId}`);
     } else if (gameStatus !== TGameStatus.lobby) {
@@ -109,7 +107,7 @@ const PlayerLobby = (): JSX.Element => {
     }
   };
 
-  return (
+  return gameStatus === TGameStatus.lobby ? (
     <div className={styles.container}>
       <div
         className={`${styles.content} ${
@@ -127,7 +125,10 @@ const PlayerLobby = (): JSX.Element => {
             <div className={styles.dealerKickPopup}>
               Kick
               <span className={styles.nameKickPlayer}>
-                {` ${kickPlayer?.firstName} ${kickPlayer?.lastName} `}
+                {User.getFullName(
+                  kickPlayer?.firstName as string,
+                  kickPlayer?.lastName
+                )}
               </span>
               from the game?
             </div>
@@ -138,14 +139,20 @@ const PlayerLobby = (): JSX.Element => {
         </div>
         <AboutDealer />
         <div className={styles.btnExitContainer}>
-          <Button type="button" className={styles.btnExit} onClick={handleExit}>
+          <ButtonBlue
+            type="button"
+            className={styles.btnExit}
+            onClick={handleExit}
+          >
             Exit
-          </Button>
+          </ButtonBlue>
         </div>
         <Members users={users} />
       </div>
       {isSideBarShown && <SideBar />}
     </div>
+  ) : (
+    <div />
   );
 };
 

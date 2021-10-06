@@ -39,10 +39,18 @@ const removeOneInfoMessage: CaseReducer<IApp, PayloadAction<number>> = (
   );
 };
 
+const changeIsLoading: CaseReducer<IApp, PayloadAction<boolean>> = (
+  state,
+  action
+) => {
+  state.isLoading = action.payload;
+};
+
 export const appReducers = {
   changeConnectionStatus,
   changeInfoMessages,
   addOneInfoMessage,
   removeOneInfoMessage,
   changeSocketId,
+  changeIsLoading,
 };

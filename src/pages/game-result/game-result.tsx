@@ -3,7 +3,6 @@ import { useHistory } from 'react-router';
 import { IIssue, Issue } from '../../redux/types';
 import { ReactComponent as IconDownload } from '../../shared/assets/icons/download.svg';
 import { ReactComponent as IconRestart } from '../../shared/assets/icons/restart.svg';
-
 import IssueCard from '../game/issue-card/issue-card';
 import { ButtonBlue } from '../shared/buttons/button-blue/button-blue';
 import IssueScoreStatistics from '../shared/issue-score-statistics/issue-score-statistics';
@@ -12,7 +11,9 @@ import styles from './game-result.module.scss';
 
 function GameResult(): JSX.Element {
   const history = useHistory();
-  const { issues } = history.location.state as { issues: IIssue[] };
+  const { issues } = (history?.location?.state as { issues: IIssue[] }) || {
+    issues: [],
+  };
 
   const generateCSV = (): string => {
     const prefix =

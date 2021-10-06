@@ -1,11 +1,16 @@
 import React from 'react';
 import loading from '../../../shared/assets/icons/loading.svg';
-import s from './spinner.module.scss';
+import styles from './spinner.module.scss';
 
-const LoadSpinner = (): JSX.Element => {
+interface ILoadSpinnerProps {
+  text?: string;
+}
+
+const LoadSpinner = ({ text }: ILoadSpinnerProps): JSX.Element => {
   return (
     <>
-      <img src={loading} alt="Loading..." className={s.loading} />
+      {Boolean(text) && <div className="loadingText">{text}</div>}
+      <img src={loading} alt="Loading..." className={styles.loadingAnimation} />
     </>
   );
 };

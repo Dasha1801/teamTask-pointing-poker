@@ -59,3 +59,16 @@ $second-font: var(--second-font);
     max-width: 200px;
   }
 }
+@media (max-width: 499px) {
+  .scoreItemNarrow {
+    justify-content: center;
+  }
+  .roundStatus {
+    max-width: initial;
+    justify-content: center;
+  }
+  .scoreItem {
+    max-width: initial;
+    justify-content: center;
+  }
+}

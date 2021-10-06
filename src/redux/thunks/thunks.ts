@@ -10,7 +10,6 @@ import {
 } from '../../shared/services/types';
 import { appActions } from '../slices/app/app-slice';
 import { currentUserActions } from '../slices/current-user/current-user-slice';
-import { gameSettingsActions } from '../slices/game-settings/game-settings-slice';
 import { gameActions } from '../slices/game/game-slice';
 import {
   IClientAddPlayerParameters,
@@ -211,17 +210,11 @@ export const deleteIssueThunk = createAsyncThunk<
 export const startGameThunk = createAsyncThunk<
   Partial<IRequestResult>,
   IClientStartGameParameters
->('game/startGameThunk', async ({ dealerId, settings, gameId }, thunkApi) => {
-  console.log('start game thunk');
-
+>('game/startGameThunk', async ({ dealerId, settings, gameId }) => {
   const response = await ApiService.startGame({ dealerId, settings, gameId });
-  console.log('got resp', response);
-
   if (response.message) {
     return response;
   }
-  thunkApi.dispatch(gameSettingsActions.changeSettings(settings));
-  thunkApi.dispatch(gameActions.changeStatus(TGameStatus.started));
   return {};
 });
 
@@ -279,8 +272,6 @@ export const cancelGameThunk = createAsyncThunk<
   if (response.message) {
     return response;
   }
-  console.log('cncl thunk');
-
   return {};
 });
 

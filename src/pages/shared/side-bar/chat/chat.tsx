@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { KeyboardEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,7 +13,7 @@ import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../../redux/types/info-message';
-import messageIcon from '../../../../shared/assets/icons/messageIcon.png';
+import messageIcon from '../../../../shared/assets/icons/send-message.svg';
 import styles from './chat.module.scss';
 import PlayerCard from './player-card/player-card';
 
@@ -21,14 +21,10 @@ export default function Chat(): JSX.Element {
   const currentUserId = useSelector(currentUserSelectors.selectCurrentUser).id;
   const messages = useSelector(gameSelectors.selectMessages);
   const users = useSelector(gameSelectors.selectPlayers);
-
   const gameId = useSelector(gameSelectors.selectId);
-  const dispatch = useDispatch<AppDispatch>();
   const [textarea, setTextarea] = useState('');
-  useEffect(() => {
-    console.log('users', users);
-    console.log('messages', messages);
-  });
+  const dispatch = useDispatch<AppDispatch>();
+
   const generateChatItems = () =>
     messages.map((message) => ({
       message: message,
@@ -36,27 +32,34 @@ export default function Chat(): JSX.Element {
     }));
 
   const handleSubmit = async () => {
-    console.log('currentUserId', currentUserId);
-
-    const message = new Message({
-      message: textarea,
-      userId: currentUserId,
-    }).toObject();
-    const response = await dispatch(
-      thunks.postMessageThunk({
-        message,
-        gameId: gameId,
-      })
-    );
-    setTextarea('');
-    const payload = response.payload as Partial<IRequestResult>;
-    if (payload.message) {
-      dispatch(
-        appActions.addOneInfoMessage(
-          new InfoMessage(payload.message, TInfoMessageType.error).toObject()
-        )
+    setTextarea((text) => text.trim());
+    if (textarea.trim()) {
+      const message = new Message({
+        message: textarea,
+        userId: currentUserId,
+      });
+      const response = await dispatch(
+        thunks.postMessageThunk({
+          message,
+          gameId: gameId,
+        })
       );
-      return;
+      setTextarea('');
+      const payload = response.payload as Partial<IRequestResult>;
+      if (payload.message) {
+        dispatch(
+          appActions.addOneInfoMessage(
+            new InfoMessage(payload.message, TInfoMessageType.error).toObject()
+          )
+        );
+        return;
+      }
+    }
+  };
+
+  const handleKeyDown = async (event: KeyboardEvent) => {
+    if (event.shiftKey && event.key === 'Enter' && textarea) {
+      await handleSubmit();
     }
   };
 
@@ -91,6 +94,9 @@ export default function Chat(): JSX.Element {
               placeholder="write message....."
               className={styles.textarea}
               onChange={(event) => setTextarea(event.target.value)}
+              onKeyDown={async (event: KeyboardEvent) => {
+                await handleKeyDown(event);
+              }}
             />
             {textarea && (
               <img
@@ -100,6 +106,11 @@ export default function Chat(): JSX.Element {
               ></img>
             )}
           </Form.Group>
+          {textarea && (
+            <div className={styles.messagePrompt}>
+              Press Shift+Enter to post message
+            </div>
+          )}
         </Form>
       </div>
     </div>

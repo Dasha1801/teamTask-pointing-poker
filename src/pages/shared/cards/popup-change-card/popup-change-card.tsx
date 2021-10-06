@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { gameSettingsSelectors } from '../../../../../redux/selectors';
-import { TCardScore, TCardScoreSpecialValue } from '../../../../../redux/types';
+import { gameSettingsSelectors } from '../../../../redux/selectors';
+import { TCardScore, TCardScoreSpecialValue } from '../../../../redux/types';
 import { deck as chosenDeck } from '../constants';
-import styles from './popupChangeCard.module.scss';
+import styles from './popup-change-card.module.scss';
 
 interface IPropsCard {
   setValue: React.Dispatch<
@@ -12,7 +12,7 @@ interface IPropsCard {
   cardValues: TCardScore[];
 }
 
-const PopupChangeCard = ({ setValue, cardValues}: IPropsCard): JSX.Element => {
+const PopupChangeCard = ({ setValue, cardValues }: IPropsCard): JSX.Element => {
   const cardType = useSelector(gameSettingsSelectors.selectSettings).cardType;
   const deck = chosenDeck[cardType];
   const newCardValues = deck.filter((item) => !cardValues.includes(item));

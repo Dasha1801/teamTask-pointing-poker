@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { gameService } from '../../..';
 import {
   currentUserSelectors,
   gameSelectors,
@@ -19,6 +18,7 @@ import {
 } from '../../../redux/types/info-message';
 import editIssue from '../../../shared/assets/icons/edit-issue.svg';
 import { APP_CONSTANTS } from '../../../shared/constants';
+import { gameService } from '../../../shared/services/game-service/game-service';
 import { BaseButton } from '../../shared/buttons/base-button/base-button';
 import { ButtonBlue } from '../../shared/buttons/button-blue/button-blue';
 import SideBar from '../../shared/side-bar/side-bar';
@@ -31,6 +31,8 @@ import IssueCard from './issue-card/issue-card';
 import Settings from './settings/settings';
 
 const DealerLobby = (): JSX.Element => {
+  console.log('hey dealer');
+
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const isSideBarShown = useSelector(lobbyPageSelectors.selectIsSideBarShown);
@@ -45,7 +47,12 @@ const DealerLobby = (): JSX.Element => {
   const [gameURL] = useState(`${APP_CONSTANTS.URL}/lobby/${gameId}`);
 
   useEffect(() => {
-    if (gameStatus === TGameStatus.started) {
+    console.log('gamest', gameStatus);
+
+    if (gameStatus === TGameStatus.inactive) {
+      history.replace('/');
+      gameService.resetState();
+    } else if (gameStatus === TGameStatus.started) {
       history.replace(`/game/${gameId}`);
     } else if (gameStatus !== TGameStatus.lobby) {
       history.replace('/');
@@ -69,6 +76,8 @@ const DealerLobby = (): JSX.Element => {
   };
 
   const handleStart = async () => {
+    console.log('start');
+
     const response = await dispatch(
       thunks.startGameThunk({
         settings: gameSettings,
@@ -77,6 +86,8 @@ const DealerLobby = (): JSX.Element => {
       })
     );
     const payload = response.payload as Partial<IRequestResult>;
+    console.log('payload');
+
     if (payload.message) {
       dispatch(
         appActions.addOneInfoMessage(
@@ -87,7 +98,7 @@ const DealerLobby = (): JSX.Element => {
     }
   };
 
-  return (
+  return gameStatus !== TGameStatus.inactive ? (
     <div className={styles.container}>
       <div
         className={`${styles.content} ${
@@ -149,7 +160,6 @@ const DealerLobby = (): JSX.Element => {
             <CreateIssueCard />
           </div>
         </div>
-
         <div className={styles.containerSettings}>
           <div className={styles.titleSettings}>Game settings:</div>
           <Settings />
@@ -157,6 +167,8 @@ const DealerLobby = (): JSX.Element => {
       </div>
       {isSideBarShown && <SideBar />}
     </div>
+  ) : (
+    <div />
   );
 };
 

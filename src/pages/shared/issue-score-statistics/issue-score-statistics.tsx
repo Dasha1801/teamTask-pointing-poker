@@ -1,7 +1,6 @@
 import React from 'react';
 import { TCardScore } from '../../../redux/types';
-import PlayCard from '../../game/cards/card';
-
+import PlayCard from '../cards/card';
 import styles from './issue-score-statistics.module.scss';
 
 interface IIssueScoreStatisticsProps {

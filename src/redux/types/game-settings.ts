@@ -1,5 +1,5 @@
 import { TCardScore } from '.';
-import { deck } from '../../pages/lobby/dealer-lobby/cards/constants';
+import { deck } from '../../pages/shared/cards/constants';
 
 import { TCardType } from './card';
 

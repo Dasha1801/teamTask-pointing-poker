@@ -5,8 +5,6 @@ import { TGameStatus } from '../../../../redux/types';
 import { InfoMessage } from '../../../../redux/types/info-message';
 
 export default function gameFinished(): void {
-  console.log('finished');
-
   store.dispatch(gameActions.changeStatus(TGameStatus.inactive));
   store.dispatch(
     appActions.addOneInfoMessage(

@@ -1,6 +1,6 @@
 import React from 'react';
 import { IUser, TUserRole } from '../../../redux/types';
-import PlayerCard from '../../shared/player-card/player-card';
+import PlayerCard from '../../game/player-card/player-card';
 import styles from './members.module.scss';
 
 interface IUsersProps {

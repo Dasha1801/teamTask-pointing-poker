@@ -1,7 +1,7 @@
 import { TStatusCode } from '../../../constants';
 import { IResponse } from '../../types';
 
-export default function handleAPIError<T, K>(
+export function handleAPIError<T, K>(
   apiFunction: (input: T) => Promise<K>
 ): (input: T) => Promise<K | IResponse> {
   async function inner(input: T): Promise<K | IResponse> {

@@ -1,3 +1,4 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 import React, { SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelectors, gameSelectors } from '../../../redux/selectors';
@@ -9,9 +10,9 @@ import {
   InfoMessage,
   TInfoMessageType,
 } from '../../../redux/types/info-message';
-import downloadIcon from '../../../shared/assets/icons/downloadIcon.png';
 import { APP_CONSTANTS } from '../../../shared/constants';
 import { CreateIssuePopup } from '../../shared/create-issue-popup/create-issue-popup';
+import uploadIcon from '../../../shared/assets/icons/upload.svg';
 import styles from './card-create-issue.module.scss';
 
 function CreateIssueCard(): JSX.Element {
@@ -60,17 +61,41 @@ function CreateIssueCard(): JSX.Element {
   };
 
   const handleFile = async (e: ProgressEvent<FileReader>) => {
-    const content = JSON.parse((e.target as FileReader).result as string);
-    const { issues } = content;
-    await issues.map((item: IIssue) => {
+    try {
+      const content = JSON.parse((e.target as FileReader).result as string);
+      const { issues } = content;
+      const promises: Array<Promise<PayloadAction<IRequestResult>>> =
+        issues.map((item: IIssue) =>
+          dispatch(
+            thunks.createIssueThunk({
+              dealerId: dealer.id,
+              addedIssue: item,
+              gameId,
+            })
+          )
+        );
+      for (let i = 0; i < promises.length; i++) {
+        const response = await promises[i];
+        const { message } = response.payload;
+        if (message) {
+          dispatch(
+            appActions.addOneInfoMessage(
+              new InfoMessage(message, TInfoMessageType.error).toObject()
+            )
+          );
+          break;
+        }
+      }
+    } catch (error) {
       dispatch(
-        thunks.createIssueThunk({
-          dealerId: dealer.id,
-          addedIssue: item,
-          gameId,
-        })
+        appActions.addOneInfoMessage(
+          new InfoMessage(
+            `Can't parse the file - make sure it has the right structure`,
+            TInfoMessageType.error
+          ).toObject()
+        )
       );
-    });
+    }
   };
 
   const handleChangeFile = (e: SyntheticEvent) => {
@@ -81,14 +106,14 @@ function CreateIssueCard(): JSX.Element {
     const fileData = new FileReader();
     const fileSizeKb = file.size / 1000;
 
-    if (fileSizeKb <= APP_CONSTANTS.MAX_FILE_SIZE) {
+    if (fileSizeKb <= APP_CONSTANTS.MAX_FILE_SIZE * 1024) {
       fileData.onload = handleFile;
       fileData.readAsText(file);
     } else {
       dispatch(
         appActions.addOneInfoMessage(
           new InfoMessage(
-            'The size of the files to download is limited to 1mb',
+            `Maximum file size is ${APP_CONSTANTS.MAX_FILE_SIZE} Mb`,
             TInfoMessageType.error
           )
         )
@@ -111,16 +136,16 @@ function CreateIssueCard(): JSX.Element {
         <div className={styles.form__inputFile}>
           <label htmlFor="file">
             <img
-              title='Add file with issue: {
+              title='Choose file with issues: {
               "issues": [
                   {"title": ..., "priority": ...},
                   ...
                 ]
             }
             }'
-              src={downloadIcon}
-              alt="icon download file"
-              className={styles.downloadIcon}
+              src={uploadIcon}
+              alt="load from file"
+              className={styles.uploadIcon}
             />
           </label>
           <input

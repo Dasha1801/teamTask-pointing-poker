@@ -7,15 +7,11 @@ export default function votingToKickStarted({
   kickedPlayerId,
   votingPlayerId,
 }: IStartVotingToKickResponseWS): void {
-  console.log('voting start');
-
   const currentUser = store.getState().currentUser;
   if (
     currentUser.id !== kickedPlayerId &&
     currentUser.role !== TUserRole.dealer
   ) {
-    console.log('dispatch popup');
-
     store.dispatch(
       votingKickActions.changeVotingKick({ kickedPlayerId, votingPlayerId })
     );

@@ -68,28 +68,12 @@ $bg-highlight: var(--bg-light-gray);
 .cardItem {
   display: flex;
 }
-
-// @media (max-width: 1110px) {
-//   .author {
-//     font-size: 9px;
-//   }
-//   .message,
-//   .textarea,
-//   .cardKickUser {
-//     font-size: 10px;
-//   }
-// }
-
-// @media (max-width: 960px) {
-//   .author {
-//     font-size: 7px;
-//   }
-//   .message,
-//   .textarea,
-//   .cardKickUser {
-//     font-size: 8px;
-//   }
-// }
+.messagePrompt {
+  position: absolute;
+  padding-top: 5px;
+  color: rgb(128, 128, 128);
+  text-align: left;
+}
 
 @media (max-width: 860px) {
   .author,

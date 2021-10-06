@@ -7,8 +7,6 @@ import { InfoMessage } from '../../../../redux/types/info-message';
 import { IStartGameResponseWS } from '../../types';
 
 export default function gameStarted({ settings }: IStartGameResponseWS): void {
-  console.log('game started');
-
   store.dispatch(gameSettingsActions.changeSettings(settings));
   store.dispatch(gameActions.changeStatus(TGameStatus.started));
   store.dispatch(

@@ -19,4 +19,5 @@ export enum SocketResponseEvents {
   playerRejected = 'playerRejected',
   entryRequested = 'entryRequested',
   issueScoreUpdated = 'issueScoreUpdated',
+  playerNotKickedByVote = 'playerNotKickedByVote',
 }

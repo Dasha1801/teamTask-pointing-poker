@@ -67,8 +67,6 @@ export default function Timer(): JSX.Element {
       gameStatus === TGameStatus.started &&
       lastGameStatus === TGameStatus.roundInProgress
     ) {
-      console.log('clearing interval');
-
       setLastGameStatus(TGameStatus.started);
       clearInterval(Number(intervalHandle.current) || undefined);
     }

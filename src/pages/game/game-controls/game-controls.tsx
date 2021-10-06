@@ -32,7 +32,6 @@ export default function GameControls({
   const currentIssue = useSelector(gameSelectors.selectCurrentIssue);
   const settings = useSelector(gameSettingsSelectors.selectSettings);
   const issues = useSelector(gameSelectors.selectIssues);
-  // const history = useHistory();
   const dispatch = useDispatch<AppDispatch>();
 
   const handleExit = async () => {
@@ -132,7 +131,6 @@ export default function GameControls({
   };
 
   const handleFinishGame = async () => {
-    console.log('handle finish');
     setIsGameFinished(true);
     const response = await dispatch(
       thunks.finishGameThunk({ dealerId: currentUser.id, gameId })
@@ -145,10 +143,8 @@ export default function GameControls({
         )
       );
       setIsGameFinished(false);
-
       return;
     }
-    console.log('got here');
   };
 
   return (

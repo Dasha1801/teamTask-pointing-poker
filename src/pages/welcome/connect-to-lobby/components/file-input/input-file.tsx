@@ -55,6 +55,7 @@ function InputFile(
           ref={inputFile}
           id="avatar"
           type="file"
+          accept="image/png,image/jpeg"
           className={lobbyStyles.field__file}
         />
         <Form.Label htmlFor="avatar" className={styles.chooser}>

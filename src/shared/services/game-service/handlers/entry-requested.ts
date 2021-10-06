@@ -10,7 +10,6 @@ export default function entryRequested({
   role,
   jobPosition,
 }: IEntryRequestResponseWS): void {
-  console.log('entry requested');
   store.dispatch(
     entryRequestsActions.pushEntryRequest(
       new User({

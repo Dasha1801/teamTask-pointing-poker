@@ -9,12 +9,7 @@ const toggleKicked: CaseReducer<ILobbyPage, AnyAction> = (state) => {
   state.wasKicked = !state.wasKicked;
 };
 
-const toggleGameCancelled: CaseReducer<ILobbyPage, AnyAction> = (state) => {
-  state.gameCancelled = !state.gameCancelled;
-};
-
 export const lobbyPageReducers = {
   toggleSideBar,
   toggleKicked,
-  toggleGameCancelled,
 };

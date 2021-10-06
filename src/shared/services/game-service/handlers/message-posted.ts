@@ -9,6 +9,8 @@ export default function messagePosted({
   userId,
 }: IPostMessageResponseWS): void {
   store.dispatch(
-    gameActions.postMessage(new Message({ id: messageId, userId, message }))
+    gameActions.postMessage(
+      new Message({ id: messageId, userId, message }).toObject()
+    )
   );
 }

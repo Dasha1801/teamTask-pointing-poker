@@ -1,9 +1,9 @@
 import React, { SyntheticEvent } from 'react';
 import { useSelector } from 'react-redux';
-import { gameSettingsSelectors } from '../../../../../redux/selectors';
-import { TCardScore } from '../../../../../redux/types';
+import { gameSettingsSelectors } from '../../../../redux/selectors';
+import { TCardScore } from '../../../../redux/types';
 import { deck as chosenDeck } from '../constants';
-import styles from './popupAddCard.module.scss';
+import styles from './popup-add-card.module.scss';
 
 interface IPropsCard {
   setValues: React.Dispatch<React.SetStateAction<TCardScore[]>>;

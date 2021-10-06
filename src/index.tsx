@@ -5,11 +5,9 @@ import './index.scss';
 import App from './pages/app';
 import { store } from './redux/store';
 import './shared/assets/css/base.scss';
-import { GameService } from './shared/services/game-service/game-service';
-import { socketIO } from './shared/services/socket';
+import { gameService } from './shared/services/game-service/game-service';
 import * as serviceWorker from './shared/serviceWorker';
 
-export const gameService = new GameService(socketIO);
 gameService.init();
 
 ReactDOM.render(

@@ -8,6 +8,7 @@ describe('app slice', () => {
     isConnected: false,
     infoMessages: [],
     socketId: '',
+    isLoading: false,
   };
 
   test('should handle initial state', () => {

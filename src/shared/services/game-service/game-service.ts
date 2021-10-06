@@ -5,6 +5,7 @@ import { gameSettingsActions } from '../../../redux/slices/game-settings/game-se
 import { gameActions } from '../../../redux/slices/game/game-slice';
 import { votingKickActions } from '../../../redux/slices/voting-kick/voting-kick';
 import { store } from '../../../redux/store';
+import { socketIO } from '../socket';
 import currentIssueChanged from './handlers/current-issue-changed';
 import entryRequested from './handlers/entry-requested';
 import gameCancelled from './handlers/game-cancelled';
@@ -22,6 +23,7 @@ import playerAdmitted from './handlers/player-admitted';
 import playerKicked from './handlers/player-kicked';
 import playerKickedByVote from './handlers/player-kicked-by-vote';
 import playerLeft from './handlers/player-left';
+import playerNotKickedByVote from './handlers/player-not-kicked-by-vote';
 import playerRejected from './handlers/player-rejected';
 import roundFinished from './handlers/round-finished';
 import roundStarted from './handlers/round-started';
@@ -44,6 +46,10 @@ export class GameService {
   init(): void {
     this.io.on('error', handleError);
     this.io.on('disconnect', handleDisconnect);
+    this.io.on(
+      SocketResponseEvents.playerNotKickedByVote,
+      playerNotKickedByVote
+    );
     this.io.on(SocketResponseEvents.playerAdded, playerAdded);
     this.io.on(SocketResponseEvents.issueUpdated, issueUpdated);
     this.io.on(SocketResponseEvents.issueCreated, issueCreated);
@@ -65,3 +71,5 @@ export class GameService {
     this.io.on(SocketResponseEvents.issueScoreUpdated, issueScoreUpdated);
   }
 }
+
+export const gameService = new GameService(socketIO);

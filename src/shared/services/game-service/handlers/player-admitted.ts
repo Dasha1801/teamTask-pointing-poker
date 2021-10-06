@@ -16,7 +16,6 @@ export default function playerAdmitted({
   gameId,
   gameSettings,
 }: IAdmitPlayerResponseWS): void {
-  console.log('player admitted', gameId, gameStatus);
   store.dispatch(gameActions.changeId(gameId));
   store.dispatch(gameActions.changeMessages(messages));
   store.dispatch(gameActions.changeIssues(issues));

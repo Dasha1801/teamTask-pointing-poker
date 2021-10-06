@@ -5,7 +5,6 @@ import { ILobbyPage } from '../../types/lobby-page';
 const initialLobbyPageState: ILobbyPage = {
   isSideBarShown: false,
   wasKicked: false,
-  gameCancelled: false,
   isVotingInProgress: false,
 };
 
